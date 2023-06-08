@@ -125,11 +125,11 @@ class TagAliasTest < ActiveSupport::TestCase
 
     should "push the antecedent's category to the consequent if the consequent is non-general" do
       tag1 = create(:tag, name: "aaa", category: 1)
-      tag2 = create(:tag, name: "bbb", category: 3)
+      tag2 = create(:tag, name: "bbb", category: 4)
       ta = create(:tag_alias, antecedent_name: "aaa", consequent_name: "bbb")
       ta.approve!(approver: @admin)
 
-      assert_equal(3, tag2.reload.category)
+      assert_equal(4, tag2.reload.category)
     end
 
     should "push the antecedent's category to the consequent" do
@@ -143,11 +143,11 @@ class TagAliasTest < ActiveSupport::TestCase
 
     should "not push the antecedent's category if the consequent is locked" do
       tag1 = create(:tag, name: "aaa", category: 1)
-      tag2 = create(:tag, name: "bbb", category: 3, is_locked: true)
+      tag2 = create(:tag, name: "bbb", category: 4, is_locked: true)
       ta = create(:tag_alias, antecedent_name: "aaa", consequent_name: "bbb")
       ta.approve!(approver: @admin)
 
-      assert_equal(3, tag2.reload.category)
+      assert_equal(4, tag2.reload.category)
     end
 
     context "with an associated forum topic" do

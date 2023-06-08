@@ -22,7 +22,6 @@
       return {
         uploaded: (window.uploaderSettings.uploadTags || []),
         recent: (window.uploaderSettings.recentTags || []).sort(tagSorter),
-        artists: (window.uploaderSettings.artistTags || []).sort(tagSorter)
       };
     },
     methods: {
@@ -65,12 +64,6 @@
             groups.push({
               title: "Recent",
               tags: this.recent
-            });
-          }
-          if (this.artists && this.artists.length) {
-            groups.push({
-              title: "Artists",
-              tags: this.artists
             });
           }
           if (this.related && this.related.length) {

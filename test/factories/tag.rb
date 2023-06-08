@@ -6,12 +6,8 @@ FactoryBot.define do
     related_tags { "" }
     related_tags_updated_at {Time.now}
 
-    factory(:artist_tag) do
-      category {Tag.categories.artist}
-    end
-
-    factory(:copyright_tag) do
-      category {Tag.categories.copyright}
+    factory(:director_tag) do
+      category {Tag.categories.director}
     end
 
     factory(:character_tag) do

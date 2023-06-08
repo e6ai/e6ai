@@ -494,23 +494,23 @@ class PostTest < ActiveSupport::TestCase
         setup do
           CurrentUser.user = create(:janitor_user)
           with_inline_jobs do
-            @post.update(tag_string: "art:abc")
-            @post.update(tag_string: "copy:abc")
+            @post.update(tag_string: "dir:abc")
+            @post.update(tag_string: "char:abc")
           end
           @post.reload
         end
 
         should "update the category of the tag" do
-          assert_equal(Tag.categories.copyright, Tag.find_by_name("abc").category)
+          assert_equal(Tag.categories.character, Tag.find_by_name("abc").category)
         end
 
         should "1234 update the category cache of the tag" do
-          assert_equal(Tag.categories.copyright, Cache.fetch("tc:abc"))
+          assert_equal(Tag.categories.character, Cache.fetch("tc:abc"))
         end
 
         should "update the tag counts of the posts" do
-          assert_equal(0, @post.tag_count_artist)
-          assert_equal(1, @post.tag_count_copyright)
+          assert_equal(0, @post.tag_count_director)
+          assert_equal(1, @post.tag_count_character)
           assert_equal(0, @post.tag_count_general)
         end
       end
@@ -519,7 +519,7 @@ class PostTest < ActiveSupport::TestCase
         setup do
           create(:tag_alias, antecedent_name: "abc", consequent_name: "xyz")
           @post = Post.find(@post.id)
-          @post.update(:tag_string => "art:abc")
+          @post.update(:tag_string => "dir:abc")
           @post.reload
         end
 
@@ -1135,22 +1135,20 @@ class PostTest < ActiveSupport::TestCase
         end
 
         should "update its tag counts" do
-          artist_tag = create(:artist_tag)
-          copyright_tag = create(:copyright_tag)
+          director_tag = create(:director_tag)
+          character_tag = create(:character_tag)
           general_tag = create(:tag)
-          new_post = create(:post, tag_string: "#{artist_tag.name} #{copyright_tag.name} #{general_tag.name}")
-          assert_equal(1, new_post.tag_count_artist)
-          assert_equal(1, new_post.tag_count_copyright)
+          new_post = create(:post, tag_string: "#{director_tag.name} #{character_tag.name} #{general_tag.name}")
+          assert_equal(1, new_post.tag_count_director)
+          assert_equal(1, new_post.tag_count_character)
           assert_equal(1, new_post.tag_count_general)
-          assert_equal(0, new_post.tag_count_character)
           assert_equal(3, new_post.tag_count)
 
           new_post.tag_string = "babs"
           new_post.save
-          assert_equal(0, new_post.tag_count_artist)
-          assert_equal(0, new_post.tag_count_copyright)
-          assert_equal(1, new_post.tag_count_general)
+          assert_equal(0, new_post.tag_count_director)
           assert_equal(0, new_post.tag_count_character)
+          assert_equal(1, new_post.tag_count_general)
           assert_equal(1, new_post.tag_count)
         end
 
@@ -1244,19 +1242,6 @@ class PostTest < ActiveSupport::TestCase
           @post.save
 
           assert_match(/Created 1 new tag: \[\[tag\]\]/, @post.warnings.full_messages.join)
-        end
-
-        should "warn when adding an artist tag without an artist entry" do
-          @post.add_tag("artist:bkub")
-          @post.save
-
-          assert_match(/Artist \[\[bkub\]\] requires an artist entry./, @post.warnings.full_messages.join)
-        end
-
-        should "warn when a post from a known source is missing an artist tag" do
-          post = build(:post, source: "https://www.pixiv.net/member_illust.php?mode=medium&illust_id=65985331")
-          post.save
-          assert_match(/Artist tag is required/, post.warnings.full_messages.join)
         end
 
         should "warn when an upload doesn't have enough tags" do
@@ -1763,11 +1748,11 @@ class PostTest < ActiveSupport::TestCase
     end
 
     should "return posts for the tagcount:<n> metatags" do
-      post = create(:post, tag_string: "artist:wokada copyright:vocaloid char:hatsune_miku twintails")
+      post = create(:post, tag_string: "dir:wokada species:vocaloid char:hatsune_miku twintails")
 
       assert_tag_match([post], "tagcount:4")
-      assert_tag_match([post], "arttags:1")
-      assert_tag_match([post], "copytags:1")
+      assert_tag_match([post], "dirtags:1")
+      assert_tag_match([post], "spectags:1")
       assert_tag_match([post], "chartags:1")
       assert_tag_match([post], "gentags:1")
     end

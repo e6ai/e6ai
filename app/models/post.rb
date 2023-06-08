@@ -23,7 +23,6 @@ class Post < ApplicationRecord
   validates :description, length: { maximum: Danbooru.config.post_descr_max_size }, if: :description_changed?
   validate :added_tags_are_valid, if: :should_process_tags?
   validate :removed_tags_are_valid, if: :should_process_tags?
-  validate :has_artist_tag, if: :should_process_tags?
   validate :has_enough_tags, if: :should_process_tags?
   validate :post_is_not_its_own_parent
   validate :updater_can_change_rating
@@ -1564,7 +1563,6 @@ class Post < ApplicationRecord
       added_invalid_tags = added.select { |t| t.category == Tag.categories.invalid }
       new_tags = added.select { |t| t.post_count <= 0 }
       new_general_tags = new_tags.select { |t| t.category == Tag.categories.general }
-      new_artist_tags = new_tags.select { |t| t.category == Tag.categories.artist }
       # See https://github.com/e621ng/e621ng/issues/494
       # If the tag is fresh it's save to assume it was created with a prefix
       repopulated_tags = new_tags.select { |t| t.category != Tag.categories.general && t.category != Tag.categories.meta && t.created_at < 10.seconds.ago }
@@ -1585,12 +1583,6 @@ class Post < ApplicationRecord
         n = repopulated_tags.size
         tag_wiki_links = repopulated_tags.map { |tag| "[[#{tag.name}]]" }
         warnings.add(:base, "Repopulated #{n} old #{'tag'.pluralize(n)}: #{tag_wiki_links.join(', ')}")
-      end
-
-      new_artist_tags.each do |tag|
-        if tag.artist.blank?
-          warnings.add(:base, "Artist [[#{tag.name}]] requires an artist entry. \"Create new artist entry\":[/artists/new?artist%5Bname%5D=#{CGI.escape(tag.name)}]")
-        end
       end
     end
 
@@ -1713,8 +1705,7 @@ class Post < ApplicationRecord
   end
 
   def uploader_linked_artists
-    linked_artists ||= tags.select { |t| t.category == Tag.categories.artist }.filter_map(&:artist)
-    linked_artists.select { |artist| artist.linked_user_id == uploader_id }
+    []
   end
 
   def flaggable_for_guidelines?

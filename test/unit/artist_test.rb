@@ -253,14 +253,6 @@ class ArtistTest < ActiveSupport::TestCase
       assert_equal(%w[yyy], artist.other_names)
     end
 
-    should "update the category of the tag when created" do
-      CurrentUser.user = create(:janitor_user)
-      tag = create(:tag, name: "abc")
-      artist = create(:artist, name: "abc")
-      tag.reload
-      assert_equal(Tag.categories.artist, tag.category)
-    end
-
     context "when saving" do
       setup do
         @artist = create(:artist, url_string: "http://foo.com")

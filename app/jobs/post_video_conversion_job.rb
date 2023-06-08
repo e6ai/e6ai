@@ -92,7 +92,7 @@ class PostVideoConversionJob < ApplicationJob
       "-map_metadata",
       "-1",
       "-metadata",
-      'title="e621.net_preview_quality_conversion,_visit_site_for_full_quality_download"',
+      'title="e6ai.net_preview_quality_conversion,_visit_site_for_full_quality_download"',
       webm_file.path,
     ]
     mp4_args = [
@@ -121,7 +121,7 @@ class PostVideoConversionJob < ApplicationJob
       "-map_metadata",
       "-1",
       "-metadata",
-      'title="e621.net_preview_quality_conversion,_visit_site_for_full_quality_download"',
+      'title="e6ai.net_preview_quality_conversion,_visit_site_for_full_quality_download"',
       "-movflags",
       "+faststart",
       mp4_file.path,

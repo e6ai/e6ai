@@ -128,7 +128,6 @@ class TagAlias < TagRelationship
       update_blacklists_undo
       update_posts_undo
       forum_updater.update(retirement_message, "UNDONE") if update_topic
-      rename_artist_undo
     end
     tag_rel_undos.update_all(applied: true)
   end
@@ -195,7 +194,6 @@ class TagAlias < TagRelationship
         update_blacklists
         update_posts
         forum_updater.update(approval_message(approver), "APPROVED") if update_topic
-        rename_artist
         update(status: 'active', post_count: consequent_tag.post_count)
         # TODO: Race condition with indexing jobs here.
         antecedent_tag.fix_post_count if antecedent_tag

@@ -18,13 +18,11 @@ module PostIndex
         indexes :change_seq,        type: 'long'
 
         indexes :tag_count_general,   type: 'integer'
-        indexes :tag_count_artist,    type: 'integer'
+        indexes :tag_count_director,  type: 'integer'
         indexes :tag_count_character, type: 'integer'
-        indexes :tag_count_copyright, type: 'integer'
         indexes :tag_count_meta,      type: 'integer'
         indexes :tag_count_species,   type: 'integer'
         indexes :tag_count_invalid,   type: 'integer'
-        indexes :tag_count_lore,      type: 'integer'
         indexes :comment_count,       type: 'integer'
 
         indexes :file_size,     type: 'integer'
@@ -221,13 +219,11 @@ module PostIndex
       change_seq:        change_seq,
 
       tag_count_general:   tag_count_general,
-      tag_count_artist:    tag_count_artist,
+      tag_count_director:  tag_count_director,
       tag_count_character: tag_count_character,
-      tag_count_copyright: tag_count_copyright,
       tag_count_meta:      tag_count_meta,
       tag_count_species:   tag_count_species,
       tag_count_invalid:   tag_count_invalid,
-      tag_count_lore:      tag_count_lore,
       comment_count:       options[:comment_count] || comment_count,
 
       file_size:    file_size,

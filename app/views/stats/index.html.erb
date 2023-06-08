@@ -8,7 +8,6 @@
           ["Average posts per day", "average_posts_per_day"],
           ["Average comments per day", "average_comments_per_day"],
           ["Average forum posts per day", "average_forum_posts_per_day"],
-          ["Average blips per day", "average_blips_per_day"],
         ]
       %>
 
@@ -76,24 +75,14 @@
         ]
       %>
 
-      <%= render "percentage_table", header_title: "Blips", data: [
-          ["Blip count", "total_blips"],
-          ["Active blips", "active_blips", "total_blips"],
-          ["Hidden blips", "hidden_blips", "total_blips"],
-          ["Deleted blips", "deleted_blips", "total_blips"],
-        ]
-      %>
-
       <%= render "percentage_table", header_title: "Tags", data: [
           ["Tag count", "total_tags"],
           ["General tag count", "general_tags", "total_tags"],
-          ["Artist tag count", "artist_tags", "total_tags"],
+          ["Director tag count", "director_tags", "total_tags"],
           ["Character tag count", "character_tags", "total_tags"],
-          ["Copyright tag count", "copyright_tags", "total_tags"],
           ["Species tag count", "species_tags", "total_tags"],
           ["Meta tag count", "meta_tags", "total_tags"],
           ["Invalid tag count", "invalid_tags", "total_tags"],
-          ["Lore tag count", "lore_tags", "total_tags"],
         ]
       %>
     </div>

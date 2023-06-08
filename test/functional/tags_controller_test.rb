@@ -5,7 +5,7 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
     setup do
       @user = create(:janitor_user)
       as(@user) do
-        @tag = create(:tag, name: "touhou", category: Tag.categories.copyright, post_count: 1)
+        @tag = create(:tag, name: "touhou", category: Tag.categories.character, post_count: 1)
       end
     end
 
@@ -94,7 +94,7 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
         as(@user) do
           @tag.update(category: Tag.categories.general, post_count: 1001)
         end
-        put_auth tag_path(@tag), @user, params: { tag: { category: Tag.categories.artist } }
+        put_auth tag_path(@tag), @user, params: { tag: { category: Tag.categories.director } }
 
         assert_response :forbidden
         assert_equal(Tag.categories.general, @tag.reload.category)

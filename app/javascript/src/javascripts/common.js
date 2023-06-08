@@ -30,7 +30,7 @@ $(function() {
   });
 
   {
-    let theme = LS.get("theme") || "hexagon";
+    let theme = LS.get("theme") || "bloodlust";
     $("body").attr("data-th-main", theme);
     $("#theme-switcher").val(theme);
   }

@@ -16,9 +16,8 @@
             <div class="flex-grid border-bottom">
                 <div class="col">
                     <label class="section-label" for="post_sources">Sources</label>
-                    <div>You should include: A link to the artists page where this was obtained, and a link to the
-                        submission page where this image was obtained. No available source should ONLY be used if the
-                        content has never been posted online anywhere else.
+                    <div>You should include: A link to the page where this was obtained, and a link to the
+                        submission page where this image was obtained. Useful if this content was posted to ex. Twitter.
                     </div>
                 </div>
                 <div class="col2">
@@ -28,14 +27,13 @@
             <template v-if="normalMode">
                 <div class="flex-grid border-bottom">
                     <div class="col">
-                        <label class="section-label" for="names">Artists</label>
-                        <div><a href="/forum_topics/23553">How do I tag an artist?</a></div>
-                        <div>Please don't use <a href="/wiki_pages/anonymous_artist">anonymous_artist</a> or <a href="/wiki_pages/unknown_artist">unknown_artist</a> tags unless they fall under those definitions on the wiki.</div>
+                        <label class="section-label" for="post_directors">Directors</label>
+                        <div>A director is the individual/s that directed the model to produce content. Usually you.<br>Please don't use <a href="/wiki_pages/anonymous_director">anonymous_director</a> or <a href="/wiki_pages/unknown_director">unknown_director</a> tags unless they fall under those definitions on the wiki.</div>
                     </div>
                     <div class="col2">
                         <div>
-            <textarea class="tag-textarea" v-model="tagEntries.character" id="post_characters" rows="2"
-                      placeholder="Ex: artist_name, unknown_artist, anonymous_artist etc." data-autocomplete="tag-edit"></textarea>
+            <textarea class="tag-textarea" v-model="tagEntries.director" id="post_directors" rows="2"
+                      placeholder="Ex: director_name, unknown_director, anonymous_director etc." data-autocomplete="tag-edit"></textarea>
                         </div>
                     </div>
                 </div>
@@ -68,7 +66,7 @@
                                             v-for="check in checkboxes.pairing" @set="setCheck"
                                             :key="check.name"></image-checkbox>
                         </div>
-                        <textarea class="tag-textarea" rows="2" v-model="tagEntries.sex" id="post_sexes"
+                        <textarea class="tag-textarea" rows="2" v-model="tagEntries.character" id="post_sexes"
                                   placeholder="Ex: character_name solo_focus etc."
                                   data-autocomplete="tag-edit"></textarea>
                     </div>
@@ -101,7 +99,7 @@
                     <div class="col2">
           <textarea class="tag-textarea" v-model="tagEntries.theme" id="post_themes" rows="2"
                     data-autocomplete="tag-edit"
-                    placeholder="Ex: cub young gore scat watersports diaper my_little_pony vore not_furry rape hyper etc."></textarea>
+                    placeholder="Ex: gore scat watersports diaper my_little_pony vore not_furry rape hyper etc."></textarea>
                     </div>
                 </div>
             </template>
@@ -160,8 +158,6 @@
                     <div class="related-tag-functions">
                         Related:
                         <a href="#" @click.prevent="findRelated()">Tags</a> |
-                        <a href="#" @click.prevent="findRelated('artist')">Artists</a> |
-                        <a href="#" @click.prevent="findRelated('copyright')">Copyrights</a> |
                         <a href="#" @click.prevent="findRelated('char')">Characters</a> |
                         <a href="#" @click.prevent="findRelated('species')">Species</a> |
                         <a href="#" @click.prevent="findRelated('meta')">Metatags</a> |
@@ -343,6 +339,7 @@
           all: allChecks
         },
         tagEntries: {
+          director: '',
           character: '',
           sex: '',
           bodyType: '',
@@ -574,7 +571,7 @@
           return self.checkboxes.selected[x] === true;
         });
         return checked.concat([this.tagEntries.other, this.tagEntries.sex, this.tagEntries.bodyType,
-          this.tagEntries.theme, this.tagEntries.character]).join(' ').replace(',', ' ').trim().replace(/ +/g, ' ');
+          this.tagEntries.theme, this.tagEntries.character, this.tagEntries.director]).join(' ').replace(',', ' ').trim().replace(/ +/g, ' ');
       },
       tagsArray() {
         return this.tags.toLowerCase().split(' ');

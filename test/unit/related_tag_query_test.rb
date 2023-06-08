@@ -72,9 +72,9 @@ class RelatedTagQueryTest < ActiveSupport::TestCase
   context "a related tag query with a category constraint" do
     setup do
       @post_1 = create(:post, tag_string: "aaa bbb")
-      @post_2 = create(:post, tag_string: "aaa art:ccc")
-      @post_3 = create(:post, tag_string: "aaa copy:ddd")
-      @query = RelatedTagQuery.new(query: "aaa", category: "artist")
+      @post_2 = create(:post, tag_string: "aaa dir:ccc")
+      @post_3 = create(:post, tag_string: "aaa char:ddd")
+      @query = RelatedTagQuery.new(query: "aaa", category: "director")
     end
 
     should "find the related tags" do

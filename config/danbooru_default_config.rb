@@ -9,15 +9,15 @@ module Danbooru
 
     # The name of this Danbooru.
     def app_name
-      "e621"
+      "e6AI"
     end
 
     def description
-      "Find good furry art, fast"
+      "e6AI"
     end
 
     def domain
-      "e621.net"
+      "e6ai.net"
     end
 
     # Force rating:s on this version of the site.
@@ -48,7 +48,7 @@ module Danbooru
     end
 
     def source_code_url
-      "https://github.com/e621ng/e621ng"
+      "https://github.com/e6ai/e6ai"
     end
 
     # Stripped of any special characters.
@@ -418,6 +418,18 @@ module Danbooru
     #Full tag configuration info for all tags
     def full_tag_config_info
       @full_tag_category_mapping ||= {
+        "director" => {
+          "category" => 1,
+          "short" => "dir",
+          "extra" => ["direct"],
+          "header" => 'Director',
+          "humanized" => {
+            "slice" => 0,
+            "regexmap" => //,
+            "exclusion" => [],
+            "formatstr" => "directed by %s"
+          },
+        },
         "general" => {
           "category" => 0,
           "short" => "gen",
@@ -444,44 +456,12 @@ module Danbooru
             "formatstr" => "%s"
           },
         },
-        "copyright" => {
-          "category" => 3,
-          "short" => "copy",
-          "extra" => ["co"],
-          "header" => 'Copyrights',
-          "humanized" => {
-            "slice" => 1,
-            "exclusion" => [],
-            "regexmap" => //,
-            "formatstr" => "(%s)"
-          },
-        },
-        "artist" => {
-          "category" => 1,
-          "short" => "art",
-          "extra" => [],
-          "header" => 'Artists',
-          "humanized" => {
-            "slice" => 0,
-            "exclusion" => %w(avoid_posting conditional_dnp epilepsy_warning sound_warning),
-            "regexmap" => //,
-            "formatstr" => "created by %s"
-          },
-        },
         "invalid" => {
           "category" => 6,
           "short" => "inv",
           "extra" => [],
           "header" => 'Invalid',
           "humanized" => nil,
-          "admin_only" => true,
-        },
-        "lore" => {
-          "category" => 8,
-          "short" => 'lor',
-          'extra' => [],
-          'header' => 'Lore',
-          'humanized' => nil,
           "admin_only" => true,
         },
         "meta" => {
@@ -499,17 +479,17 @@ module Danbooru
 
     #Sets the order of the humanized essential tag string (models/post.rb)
     def humanized_tag_category_list
-      @humanized_tag_category_list ||= ["character","copyright","artist"]
+      @humanized_tag_category_list ||= ["director", "character"]
     end
 
     #Sets the order of the split tag header list (presenters/tag_set_presenter.rb)
     def split_tag_header_list
-      @split_tag_header_list ||= ["invalid","artist","copyright","character","species","general","meta","lore"]
+      @split_tag_header_list ||= ["invalid","director","character","species","general","meta"]
     end
 
     #Sets the order of the categorized tag string (presenters/post_presenter.rb)
     def categorized_tag_list
-      @categorized_tag_list ||= ["invalid","artist","copyright","character","species","meta","general","lore"]
+      @categorized_tag_list ||= ["invalid","director","character","species","meta","general"]
     end
 
 #END TAG

@@ -1,7 +1,7 @@
 require "dotenv"
 
 # Set your full path to application.
-app_path = "/home/e621/e621ng"
+app_path = "/home/e621ng/e621ng"
 
 # Should be "production" by default, otherwise use other env
 rails_env = ENV.fetch("RAILS_ENV", "production")
@@ -15,7 +15,7 @@ timeout 180
 listen ENV.fetch("UNICORN_LISTEN_ADDRESS"), tcp_nopush: true, backlog: 2048
 
 # Spawn unicorn master worker for user apps (group: apps)
-user "e621", "e621"
+user "e621ng", "e621ng"
 
 # Fill path to your app
 working_directory app_path

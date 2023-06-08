@@ -132,11 +132,7 @@ class TagSetPresenter < Presenter
 
     html = %{<li class="category-#{tag.category}">}
 
-    if category == Tag.categories.artist
-      html << %{<a class="wiki-link" rel="nofollow" href="/artists/show_or_new?name=#{u(name)}">?</a> }
-    else
-      html << %{<a class="wiki-link" rel="nofollow" href="/wiki_pages/show_or_new?title=#{u(name)}">?</a> }
-    end
+    html << %{<a class="wiki-link" rel="nofollow" href="/wiki_pages/show_or_new?title=#{u(name)}">?</a> }
 
     if current_query.present?
       html << %{<a rel="nofollow" href="/posts?tags=#{u(current_query)}+#{u(name)}" class="search-inc-tag">+</a> }
@@ -165,7 +161,7 @@ class TagSetPresenter < Presenter
   end
 
   def tag_link(tag, link_text = tag.name)
-    itemprop = 'itemprop="author"' if tag.category == Tag.categories.artist
+    itemprop = ""
     %(<a rel="nofollow" class="search-tag" #{itemprop} href="/posts?tags=#{u(tag.name)}">#{h(link_text)}</a> )
   end
 end

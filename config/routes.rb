@@ -89,21 +89,6 @@ Rails.application.routes.draw do
       post :remove_by_ids
     end
   end
-
-  resources :artists do
-    member do
-      put :revert
-    end
-    collection do
-      get :show_or_new
-    end
-  end
-  resources :artist_urls, only: [:index]
-  resources :artist_versions, :only => [:index] do
-    collection do
-      get :search
-    end
-  end
   resources :bans
   resources :bulk_update_requests do
     member do
@@ -298,13 +283,6 @@ Rails.application.routes.draw do
       get :diff
     end
   end
-  resources :blips do
-    member do
-      post :hide
-      post :unhide
-      post :warning
-    end
-  end
   resources :post_report_reasons
   resources :post_sets do
     collection do
@@ -341,13 +319,6 @@ Rails.application.routes.draw do
   resources :fposts, :controller => "forum_posts"
 
   # legacy aliases
-  get "/artist" => redirect {|params, req| "/artists?page=#{req.params[:page]}&search[name]=#{CGI::escape(req.params[:name].to_s)}"}
-  get "/artist/index" => redirect {|params, req| "/artists?page=#{req.params[:page]}"}
-  get "/artist/show/:id" => redirect("/artists/%{id}")
-  get "/artist/show" => redirect {|params, req| "/artists?name=#{CGI::escape(req.params[:name].to_s)}"}
-  get "/artist/history/:id" => redirect("/artist_versions?search[artist_id]=%{id}")
-  get "/artist/recent_changes" => redirect("/artist_versions")
-
   get "/comment" => redirect {|params, req| "/comments?page=#{req.params[:page]}"}
   get "/comment/index" => redirect {|params, req| "/comments?page=#{req.params[:page]}"}
   get "/comment/show/:id" => redirect("/comments/%{id}")
@@ -433,8 +404,6 @@ Rails.application.routes.draw do
   get "/static/takedown" => "static#takedown", as: "takedown_static"
   get "/static/terms_of_service" => "static#terms_of_service", :as => "terms_of_service"
   get "/static/contact" => "static#contact", :as => "contact"
-  get "/static/discord" => "static#discord", as: "discord_get"
-  post "/static/discord" => "static#discord", as: "discord_post"
   get "/static/toggle_mobile_mode" => "static#disable_mobile_mode", as: "disable_mobile_mode"
   get "/static/theme" => "static#theme", as: "theme"
   get "/meta_searches/tags" => "meta_searches#tags", :as => "meta_searches_tags"

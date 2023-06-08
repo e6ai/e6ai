@@ -41,12 +41,12 @@ class RelatedTagCalculatorTest < ActiveSupport::TestCase
 
     should "calculate typed related tags for a tag" do
       posts = []
-      posts << create(:post, tag_string: "aaa bbb art:ccc copy:ddd")
-      posts << create(:post, tag_string: "aaa bbb art:ccc")
+      posts << create(:post, tag_string: "aaa bbb dir:ccc char:ddd")
+      posts << create(:post, tag_string: "aaa bbb dir:ccc")
       posts << create(:post, tag_string: "aaa bbb")
 
-      assert_equal({"ccc" => 2}, RelatedTagCalculator.calculate_from_sample("aaa", 10, Tag.categories.artist))
-      assert_equal({"ddd" => 1}, RelatedTagCalculator.calculate_from_sample("aaa", 10, Tag.categories.copyright))
+      assert_equal({"ccc" => 2}, RelatedTagCalculator.calculate_from_sample("aaa", 10, Tag.categories.director))
+      assert_equal({"ddd" => 1}, RelatedTagCalculator.calculate_from_sample("aaa", 10, Tag.categories.character))
     end
 
     should "convert a hash into string format" do

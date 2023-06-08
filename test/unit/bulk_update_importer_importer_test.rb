@@ -9,14 +9,14 @@ class BulkUpdateRequestImporterTest < ActiveSupport::TestCase
     context "category command" do
       setup do
         @tag = Tag.find_or_create_by_name("hello")
-        @list = "category hello -> artist\n"
+        @list = "category hello -> director\n"
         @importer = BulkUpdateRequestImporter.new(@list, nil)
       end
 
       should "work" do
         @importer.process!
         @tag.reload
-        assert_equal(Tag.categories.value_for("artist"), @tag.category)
+        assert_equal(Tag.categories.value_for("director"), @tag.category)
       end
     end
 
@@ -80,17 +80,6 @@ class BulkUpdateRequestImporterTest < ActiveSupport::TestCase
           @importer.process!
         end
       end
-    end
-
-    should "rename an aliased tag's artist entry and wiki page" do
-      tag1 = create(:tag, name: "aaa", category: 1)
-      tag2 = create(:tag, name: "bbb")
-      artist = create(:artist, name: "aaa", notes: "testing")
-      @importer = BulkUpdateRequestImporter.new("create alias aaa -> bbb", "")
-      @importer.process!
-      artist.reload
-      assert_equal("bbb", artist.name)
-      assert_equal("testing", artist.notes)
     end
 
     context "remove alias and remove implication commands" do
