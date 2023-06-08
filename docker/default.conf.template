@@ -45,5 +45,5 @@ server {
 }
 
 upstream app_server {
-  server e621:9000;
+  server e6ai:9000;
 }

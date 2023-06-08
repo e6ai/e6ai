@@ -12,7 +12,7 @@ runs:
       with:
         cache-from: type=gha
         load: true
-        tags: e621
+        tags: e6ai
 
     - name: Set docker run command
       run: echo "DOCKER_RUN=docker-compose run -e CI=true" >> "$GITHUB_ENV"

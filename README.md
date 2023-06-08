@@ -24,11 +24,11 @@ To mitigate this you can install a WSL distribution and clone the project inside
 1. Uncomment the `COMPOSE_PROFILES` variable if you wish to use solargraph. Doesn't work on Windows without WSL.
 1. Run the following commands:
     ```
-    docker compose run --rm -e SEED_POST_COUNT=100 e621 /app/bin/setup
+    docker compose run --rm -e SEED_POST_COUNT=100 e6ai /app/bin/setup
     docker compose up
     ```
     After running the commands once only `docker compose up` is needed to bring up the containers.
-1. To confirm the installation worked, open the web browser of your choice and enter `http://localhost:3000` into the address bar and see if the website loads correctly. An admin account has been created automatically, the username and password are `admin` and `e621test` respectively.
+1. To confirm the installation worked, open the web browser of your choice and enter `http://localhost:3001` into the address bar and see if the website loads correctly. An admin account has been created automatically, the username and password are `admin` and `e621test` respectively.
 
 Note: When gems or js packages are updated you need to execute `docker compose build` to reflect them in the container.
 
@@ -51,8 +51,6 @@ You're most likely using Windows. Give this a shot, it tells Git to stop trackin
 `docker compose run --rm tests` to execute the test suite.
 
 `docker compose run --rm rubocop` to run the linter. You will see a truckload of violations but CI will ignore these.
-
-The postgres server accepts outside connections which you can use to access it with a local client. Use `localhost:34517` to connect to a database named `e621_development` with the user `e621`. Leave the password blank, anything will work.
 
 ## Production Setup
 

@@ -24,7 +24,7 @@ jobs:
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: e621
+          tags: e6ai
 
   rubocop:
     runs-on: ubuntu-latest
