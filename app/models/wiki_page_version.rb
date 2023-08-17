@@ -16,9 +16,7 @@ class WikiPageVersion < ApplicationRecord
     def search(params)
       q = super
 
-      if params[:updater_id].present?
-        q = q.for_user(params[:updater_id].to_i)
-      end
+      q = q.where_user(:updater_id, :updater, params)
 
       if params[:wiki_page_id].present?
         q = q.where("wiki_page_id = ?", params[:wiki_page_id].to_i)
@@ -33,7 +31,7 @@ class WikiPageVersion < ApplicationRecord
         q = q.where("updater_ip_addr <<= ?", params[:ip_addr])
       end
 
-      q.apply_default_order(params)
+      q.apply_basic_order(params)
     end
   end
 

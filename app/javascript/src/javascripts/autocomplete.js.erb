@@ -257,7 +257,7 @@ Autocomplete.render_item = function(list, item) {
 
   if (item.antecedent) {
     var antecedent = item.antecedent.replace(/_/g, " ");
-    var arrow = $("<span/>").html(" &rarr; ").addClass("autocomplete-arrow");
+    var arrow = $("<span/>").text(" → ").addClass("autocomplete-arrow");
     var antecedent_element = $("<span/>").text(antecedent).addClass("autocomplete-antecedent");
     $link.prepend([
       antecedent_element,
@@ -394,7 +394,7 @@ Autocomplete.user_source = function(term, resp, prefix) {
         return {
           id: user.id,
           type: "user",
-          label: user.name.replace(/_/, " "),
+          label: user.name.replace(/_/g, " "),
           value: prefix + user.name,
           level: user.level_string
         };

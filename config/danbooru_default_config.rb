@@ -320,11 +320,9 @@ module Danbooru
     end
 
     def discord_site
-      "http://localhost:8000"
     end
 
     def discord_secret
-      "abc123"
     end
 
     # Maximum size of an upload. If you change this, you must also change
@@ -748,6 +746,10 @@ module Danbooru
     def enable_visitor_metrics?
       false
     end
+
+    def janitor_reports_discord_webhook_url
+      nil
+    end
   end
 
   class EnvironmentConfiguration
@@ -762,13 +764,13 @@ module Danbooru
       var
     end
 
-    def method_missing(method, *args)
+    def method_missing(method, *)
       var = ENV["DANBOORU_#{method.to_s.upcase.chomp("?")}"]
 
       if var.present?
         env_to_boolean(method, var)
       else
-        custom_configuration.send(method, *args)
+        custom_configuration.send(method, *)
       end
     end
   end

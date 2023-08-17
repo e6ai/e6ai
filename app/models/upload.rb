@@ -88,13 +88,7 @@ class Upload < ApplicationRecord
     def search(params)
       q = super
 
-      if params[:uploader_id].present?
-        q = q.attribute_matches(:uploader_id, params[:uploader_id])
-      end
-
-      if params[:uploader_name].present?
-        q = q.where(uploader_id: User.name_to_id(params[:uploader_name]))
-      end
+      q = q.where_user(:uploader_id, :uploader, params)
 
       if params[:source].present?
         q = q.where(source: params[:source])
@@ -138,7 +132,7 @@ class Upload < ApplicationRecord
         q = q.where("uploads.tag_string LIKE ? ESCAPE E'\\\\'", params[:tag_string].to_escaped_for_sql_like)
       end
 
-      q.apply_default_order(params)
+      q.apply_basic_order(params)
     end
   end
 
@@ -156,6 +150,9 @@ class Upload < ApplicationRecord
   include DirectURLMethods
 
   def uploader_is_not_limited
+    # Uploads created when approving a replacemnet should always go through
+    return if replacement_id.present?
+
     uploadable = uploader.can_upload_with_reason
     if uploadable != true
       self.errors.add(:uploader, User.upload_reason_string(uploadable))

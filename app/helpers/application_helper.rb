@@ -28,8 +28,8 @@ module ApplicationHelper
     li_link_to(text, url, id_prefix: "nav-", class: klass, **options)
   end
 
-  def subnav_link_to(text, url, **options)
-    li_link_to(text, url, id_prefix: "subnav-", **options)
+  def subnav_link_to(text, url, **)
+    li_link_to(text, url, id_prefix: "subnav-", **)
   end
 
   def li_link_to(text, url, id_prefix: "", **options)
@@ -38,8 +38,8 @@ module ApplicationHelper
     tag.li(link_to(text, url, id: "#{id}-link", **options), id: id, class: klass)
   end
 
-  def dtext_ragel(text, **options)
-    parsed = DText.parse(text, **options)
+  def dtext_ragel(text, **)
+    parsed = DText.parse(text, **)
     return raw "" if parsed.nil?
     deferred_post_ids.merge(parsed[1]) if parsed[1].present?
     raw parsed[0]
@@ -73,8 +73,7 @@ module ApplicationHelper
 
   def time_tag(content, time)
     datetime = time.strftime("%Y-%m-%dT%H:%M%:z")
-
-    content_tag(:time, content || datetime, :datetime => datetime, :title => time.to_formatted_s)
+    tag.time(content || datetime, datetime: datetime, title: time.to_fs)
   end
 
   def time_ago_in_words_tagged(time, compact: false)

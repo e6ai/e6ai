@@ -428,19 +428,11 @@ class PostTest < ActiveSupport::TestCase
           @post.reload
         end
 
-        should "no longer be pending with resolve_flags: false" do
-          @post.approve!(resolve_flags: false)
+        should "no longer be pending" do
+          @post.approve!
           assert(@post.errors.empty?, @post.errors.full_messages.join(", "))
           @post.reload
           assert_equal(true, @post.is_flagged?)
-          assert_equal(false, @post.is_pending?)
-        end
-
-        should "no longer be flagged or pending with resolve_flags: true" do
-          @post.approve!(resolve_flags: true)
-          assert(@post.errors.empty?, @post.errors.full_messages.join(", "))
-          @post.reload
-          assert_equal(false, @post.is_flagged?)
           assert_equal(false, @post.is_pending?)
         end
       end
@@ -2193,13 +2185,16 @@ class PostTest < ActiveSupport::TestCase
 
       context "and then reverted to an early version" do
         setup do
-          @post.revert_to(@post.versions[1])
+          @version = @post.versions[1]
+          @post.revert_to!(@version)
+          @post.reload
         end
 
         should "correctly revert all fields" do
           assert_equal("aaa bbb ccc ddd", @post.tag_string)
           assert_equal("", @post.source)
           assert_equal("q", @post.rating)
+          assert_equal("Revert to version #{@version.version}", @post.versions.last.reason)
         end
       end
 

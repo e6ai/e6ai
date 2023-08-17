@@ -307,12 +307,8 @@ class Post < ApplicationRecord
       !is_pending? && !is_deleted? && created_at.after?(PostPruner::DELETION_WINDOW.days.ago)
     end
 
-    def approve!(approver = CurrentUser.user, resolve_flags: false)
+    def approve!(approver = CurrentUser.user)
       return if self.approver != nil
-
-      if resolve_flags && flags.unresolved.any?
-        unflag!
-      end
 
       if uploader == approver
         update(is_pending: false)
@@ -1306,6 +1302,7 @@ class Post < ApplicationRecord
       self.source = target.source
       self.parent_id = target.parent_id
       self.description = target.description
+      self.edit_reason = "Revert to version #{target.version}"
     end
 
     def revert_to!(target)

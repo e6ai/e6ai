@@ -1,4 +1,4 @@
-<% if ENV["CI"] %>
+<% unless ENV["IGNORE_RUBOCOP_TODO"] %>
 inherit_from: .rubocop_todo.yml
 <% end %>
 
@@ -13,6 +13,8 @@ require:
 
 AllCops:
   NewCops: enable
+  SuggestExtensions:
+    rubocop-factory_bot: false
 
 Bundler/OrderedGems:
   Enabled: false
@@ -100,6 +102,9 @@ Rails/WhereEquals:
 
 Rails/WhereExists:
   EnforcedStyle: where
+
+Rails/WhereNotWithMultipleConditions:
+  Enabled: false
 
 Style/ConditionalAssignment:
   Enabled: false

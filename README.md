@@ -50,7 +50,7 @@ You're most likely using Windows. Give this a shot, it tells Git to stop trackin
 
 `docker compose run --rm tests` to execute the test suite.
 
-`docker compose run --rm rubocop` to run the linter. You will see a truckload of violations but CI will ignore these.
+`docker compose run --rm rubocop` to run the linter.
 
 ## Production Setup
 

@@ -151,13 +151,8 @@ class TagRelationship < ApplicationRecord
         q = q.join_consequent.where("consequent_tag.category": params[:consequent_tag_category].split(",").first(100))
       end
 
-      if params[:creator_name].present?
-        q = q.where("creator_id = ?", User.name_to_id(params[:creator_name]))
-      end
-
-      if params[:approver_name].present?
-        q = q.where("approver_id = ?", User.name_to_id(params[:approver_name]))
-      end
+      q = q.where_user(:creator_id, :creator, params)
+      q = q.where_user(:approver_id, :approver, params)
 
       case params[:order]
       when "created_at"
@@ -169,7 +164,7 @@ class TagRelationship < ApplicationRecord
       when "tag_count"
         q = q.join_consequent.order("consequent_tag.post_count desc, antecedent_name asc, consequent_name asc")
       else
-        q = q.apply_default_order(params)
+        q = q.apply_basic_order(params)
       end
 
       q

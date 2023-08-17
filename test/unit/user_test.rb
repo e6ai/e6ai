@@ -41,9 +41,9 @@ class UserTest < ActiveSupport::TestCase
     end
 
     should "limit post uploads" do
-      assert(!@user.can_upload?)
+      assert_equal(:REJ_UPLOAD_NEWBIE, @user.can_upload_with_reason)
       @user.update_column(:created_at, 15.days.ago)
-      assert(@user.can_upload?)
+      assert_equal(true, @user.can_upload_with_reason)
       assert_equal(10, @user.upload_limit)
 
       9.times do
@@ -52,10 +52,10 @@ class UserTest < ActiveSupport::TestCase
 
       @user = User.find(@user.id)
       assert_equal(1, @user.upload_limit)
-      assert(@user.can_upload?)
+      assert_equal(true, @user.can_upload_with_reason)
       create(:post, uploader: @user, is_pending: true)
       @user = User.find(@user.id)
-      assert(!@user.can_upload?)
+      assert_equal(:REJ_UPLOAD_LIMIT, @user.can_upload_with_reason)
     end
 
     should "limit comment votes" do
@@ -301,6 +301,12 @@ class UserTest < ActiveSupport::TestCase
         assert_equal([user2.id, user1.id], User.search(name_matches: "foo*").map(&:id))
         assert_equal([user2.id], User.search(name_matches: "foo\*bar").map(&:id))
         assert_equal([user3.id], User.search(name_matches: "bar\*baz").map(&:id))
+      end
+    end
+
+    context "when fixing counts" do
+      should "not raise" do
+        assert_nothing_raised { @user.refresh_counts! }
       end
     end
   end

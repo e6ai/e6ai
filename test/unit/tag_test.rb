@@ -17,6 +17,10 @@ class TagTest < ActiveSupport::TestCase
       assert_equal(Tag.categories.director, Tag.category_for("!@ab"))
     end
 
+    should "return general for a tag that doesn't exist" do
+      assert_equal(Tag.categories.general, Tag.category_for("missing"))
+    end
+
     should "fetch for multiple tags" do
       create(:director_tag, name: "aaa")
       create(:character_tag, name: "bbb")

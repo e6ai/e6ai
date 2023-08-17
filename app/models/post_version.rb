@@ -1,4 +1,5 @@
 class PostVersion < ApplicationRecord
+  class UndoError < StandardError; end
   extend Memoist
 
   belongs_to :post
@@ -15,11 +16,6 @@ class PostVersion < ApplicationRecord
       else
         none
       end
-    end
-
-    def for_user_name(name)
-      user_id = User.name_to_id(name)
-      for_user(user_id)
     end
 
     def build_query(params)
@@ -335,6 +331,8 @@ class PostVersion < ApplicationRecord
   end
 
   def undo
+    raise UndoError, "Version 1 is not undoable" unless undoable?
+
     if description_changed
       post.description = previous.description
     end
@@ -369,6 +367,8 @@ class PostVersion < ApplicationRecord
         post.tag_string = "#{post.tag_string} #{tag}".strip
       end
     end
+
+    post.edit_reason = "Undo of version #{version}"
   end
 
   def undo!
@@ -376,12 +376,8 @@ class PostVersion < ApplicationRecord
     post.save!
   end
 
-  def can_undo?(user)
-    version > 1 && user.is_member?
-  end
-
-  def can_revert_to?(user)
-    user.is_member?
+  def undoable?
+    version > 1
   end
 
   def method_attributes

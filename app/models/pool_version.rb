@@ -16,13 +16,7 @@ class PoolVersion < ApplicationRecord
     def search(params)
       q = super
 
-      if params[:updater_id].present?
-        q = q.where(updater_id: params[:updater_id].split(",").map(&:to_i))
-      end
-
-      if params[:updater_name].present?
-        q = q.where("updater_id = ?", User.name_to_id(params[:updater_name]))
-      end
+      q = q.where_user(:updater_id, :updater, params)
 
       if params[:pool_id].present?
         q = q.where(pool_id: params[:pool_id].split(",").map(&:to_i))
@@ -32,7 +26,7 @@ class PoolVersion < ApplicationRecord
         q = q.where("updater_ip_addr <<= ?", params[:ip_addr])
       end
 
-      q.apply_default_order(params)
+      q.apply_basic_order(params)
     end
   end
 

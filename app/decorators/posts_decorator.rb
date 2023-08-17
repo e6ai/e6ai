@@ -69,9 +69,9 @@ class PostsDecorator < ApplicationDecorator
     status_flags << 'U' if post.is_pending?
     status_flags << 'F' if post.is_flagged?
 
-    post_score_icon = "#{"&uarr;" if post.score > 0}#{"&darr;" if post.score < 0}#{"&varr;" if post.score == 0}"
-    score = t.tag.span("#{post_score_icon}#{post.score}".html_safe, class: "post-score-score " + score_class(post.score))
-    favs =  t.tag.span("&hearts;#{post.fav_count}".html_safe, class: 'post-score-faves')
+    post_score_icon = "#{'↑' if post.score > 0}#{'↓' if post.score < 0}#{'↕' if post.score == 0}"
+    score = t.tag.span("#{post_score_icon}#{post.score}", class: "post-score-score #{score_class(post.score)}")
+    favs = t.tag.span("♥#{post.fav_count}", class: "post-score-faves")
     comments = t.tag.span "C#{post.visible_comment_count(CurrentUser)}", class: 'post-score-comments'
     rating =  t.tag.span(post.rating.upcase, class: "post-score-rating")
     status = t.tag.span(status_flags.join(''), class: 'post-score-extras')
@@ -140,15 +140,12 @@ class PostsDecorator < ApplicationDecorator
 
     pool = options[:pool]
 
-    width = post.image_width
-    height = post.image_height
-
     similarity = options[:similarity]&.round
 
     size = options[:size] ? post.file_size : nil
 
     img_contents = t.link_to t.polymorphic_path(link_target, link_params) do
-      t.content_tag(:picture) do
+      t.tag.picture do
         t.concat t.tag.source media: "(max-width: 800px)", srcset: cropped_url
         t.concat t.tag.source media: "(min-width: 800px)", srcset: preview_url
         t.concat t.tag.img class: "has-cropped-#{has_cropped}", src: preview_url, title: tooltip, alt: alt_text
@@ -161,7 +158,7 @@ class PostsDecorator < ApplicationDecorator
                     else
                       "".html_safe
                     end
-    t.content_tag(:article, nil, article_attrs) do
+    t.tag.article(**article_attrs) do
       img_contents + desc_contents
     end
   end

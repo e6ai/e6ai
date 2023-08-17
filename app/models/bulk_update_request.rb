@@ -40,21 +40,8 @@ class BulkUpdateRequest < ApplicationRecord
     def search(params)
       q = super
 
-      if params[:user_name].present?
-        q = q.where(user_id: User.name_to_id(params[:user_name]))
-      end
-
-      if params[:user_id].present?
-        q = q.where(user_id: params[:user_id].split(",").map(&:to_i))
-      end
-
-      if params[:approver_name].present?
-        q = q.where(approver_id: User.name_to_id(params[:approver_name]))
-      end
-
-      if params[:approver_id].present?
-        q = q.where(approver_id: params[:approver_id].split(",").map(&:to_i))
-      end
+      q = q.where_user(:user_id, :user, params)
+      q = q.where_user(:approver_id, :approver, params)
 
       if params[:forum_topic_id].present?
         q = q.where(forum_topic_id: params[:forum_topic_id].split(",").map(&:to_i))
@@ -73,16 +60,12 @@ class BulkUpdateRequest < ApplicationRecord
 
       params[:order] ||= "status_desc"
       case params[:order]
-      when "id_desc"
-        q = q.order(id: :desc)
-      when "id_asc"
-        q = q.order(id: :asc)
       when "updated_at_desc"
         q = q.order(updated_at: :desc)
       when "updated_at_asc"
         q = q.order(updated_at: :asc)
       else
-        q = q.apply_default_order(params)
+        q = q.apply_basic_order(params)
       end
 
       q

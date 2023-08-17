@@ -23,12 +23,12 @@ class PostDisapproval < ApplicationRecord
       def search(params)
         q = super
 
+        q = q.where_user(:user_id, :creator, params)
+
         q = q.attribute_matches(:post_id, params[:post_id])
-        q = q.attribute_matches(:user_id, params[:user_id])
         q = q.attribute_matches(:message, params[:message])
 
         q = q.post_tags_match(params[:post_tags_match]) if params[:post_tags_match].present?
-        q = q.where(user_id: User.search(name_matches: params[:creator_name])) if params[:creator_name].present?
         q = q.where(reason: params[:reason]) if params[:reason].present?
 
         q = q.with_message if params[:has_message].to_s.truthy?
@@ -38,10 +38,10 @@ class PostDisapproval < ApplicationRecord
         when "post_id", "post_id_desc"
           q = q.order(post_id: :desc, id: :desc)
         else
-          q = q.apply_default_order(params)
+          q = q.apply_basic_order(params)
         end
 
-        q.apply_default_order(params)
+        q
       end
     end
   end
