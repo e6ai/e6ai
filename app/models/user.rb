@@ -593,13 +593,7 @@ class User < ApplicationRecord
     end
 
     def favorite_limit
-      if is_contributor?
-        200_000
-      elsif is_privileged?
-        125_000
-      else
-        80_000
-      end
+      Danbooru.config.legacy_favorite_limit.fetch(id, 80_000)
     end
 
     def api_regen_multiplier
@@ -609,7 +603,7 @@ class User < ApplicationRecord
     def api_burst_limit
       # can make this many api calls at once before being bound by
       # api_regen_multiplier refilling your pool
-      if is_contributor?
+      if is_former_staff?
         120
       elsif is_privileged?
         90
@@ -623,7 +617,7 @@ class User < ApplicationRecord
     end
 
     def statement_timeout
-      if is_contributor?
+      if is_former_staff?
         9_000
       elsif is_privileged?
         6_000

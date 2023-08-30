@@ -67,12 +67,18 @@ module Danbooru
           "Blocked" => 10,
           "Member" => 20,
           "Privileged" => 30,
-          "Contributor" => 33,
           "Former Staff" => 34,
           "Janitor" => 35,
           "Moderator" => 40,
           "Admin" => 50
       }
+    end
+
+    # Prevent new users from going above 80k while allowing those currently above
+    # it to continue adding new favorites with the old limit.
+    # { 123 => 200_000 }
+    def legacy_favorite_limit
+      {}
     end
 
     # Set the default level, permissions, and other settings for new users here.
@@ -410,87 +416,6 @@ module Danbooru
       # Backup files to /mnt/backup on the local filesystem.
       # StorageManager::Local.new(base_dir: "/mnt/backup", hierarchical: false)
     end
-
-#TAG CONFIGURATION
-
-    #Full tag configuration info for all tags
-    def full_tag_config_info
-      @full_tag_category_mapping ||= {
-        "director" => {
-          "category" => 1,
-          "short" => "dir",
-          "extra" => ["direct"],
-          "header" => 'Director',
-          "humanized" => {
-            "slice" => 0,
-            "regexmap" => //,
-            "exclusion" => [],
-            "formatstr" => "directed by %s"
-          },
-        },
-        "general" => {
-          "category" => 0,
-          "short" => "gen",
-          "extra" => [],
-          "header" => 'General',
-          "humanized" => nil,
-        },
-        "species" => {
-          "category" => 5,
-          "short" => "spec",
-          "extra" => [],
-          "header" => 'Species',
-          "humanized" => nil,
-        },
-        "character" => {
-          "category" => 4,
-          "short" => "char",
-          "extra" => ["ch", "oc"],
-          "header" => 'Characters',
-          "humanized" => {
-            "slice" => 5,
-            "exclusion" => [],
-            "regexmap" => /^(.+?)(?:_\(.+\))?$/,
-            "formatstr" => "%s"
-          },
-        },
-        "invalid" => {
-          "category" => 6,
-          "short" => "inv",
-          "extra" => [],
-          "header" => 'Invalid',
-          "humanized" => nil,
-          "admin_only" => true,
-        },
-        "meta" => {
-          "category" => 7,
-          "short" => "meta",
-          "extra" => [],
-          "header" => 'Meta',
-          "humanized" => nil,
-          "admin_only" => true,
-        }
-      }
-    end
-
-#TAG ORDERS
-
-    #Sets the order of the humanized essential tag string (models/post.rb)
-    def humanized_tag_category_list
-      @humanized_tag_category_list ||= ["director", "character"]
-    end
-
-    #Sets the order of the split tag header list (presenters/tag_set_presenter.rb)
-    def split_tag_header_list
-      @split_tag_header_list ||= ["invalid","director","character","species","general","meta"]
-    end
-
-    #Sets the order of the categorized tag string (presenters/post_presenter.rb)
-    def categorized_tag_list
-      @categorized_tag_list ||= ["invalid","director","character","species","meta","general"]
-    end
-
-#END TAG
 
     # If enabled, users must verify their email addresses.
     def enable_email_verification?
