@@ -37,6 +37,10 @@ end
 BCrypt::Engine.send(:remove_const, :DEFAULT_COST)
 BCrypt::Engine::DEFAULT_COST = BCrypt::Engine::MIN_COST
 
+# Clear the elastic indicies completly
+Post.__elasticsearch__.create_index!(force: true)
+PostVersion.__elasticsearch__.create_index!(force: true)
+
 class ActiveSupport::TestCase
   include ActionDispatch::TestProcess::FixtureFile
   include FactoryBot::Syntax::Methods
@@ -67,6 +71,23 @@ class ActiveSupport::TestCase
 
   def with_inline_jobs(&)
     Sidekiq::Testing.inline!(&)
+  end
+
+  # TODO: Remove with upgrade to Rails 7.1
+  def stub_const(mod, constant, new_value)
+    old_value = mod.const_get(constant, false)
+    mod.send(:remove_const, constant)
+    mod.const_set(constant, new_value)
+    yield
+  ensure
+    mod.send(:remove_const, constant)
+    mod.const_set(constant, old_value)
+  end
+
+  def reset_post_index
+    # This seems slightly faster than deleting and recreating the index
+    Post.__elasticsearch__.client.delete_by_query(index: Post.index_name, q: "*", body: {})
+    Post.__elasticsearch__.refresh_index!
   end
 end
 

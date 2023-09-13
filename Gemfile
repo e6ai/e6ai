@@ -31,7 +31,6 @@ gem 'request_store'
 
 gem 'elasticsearch', '7.13.0'
 gem 'elasticsearch-model'
-gem 'elasticsearch-rails'
 
 gem 'mailgun-ruby'
 gem 'resolv'

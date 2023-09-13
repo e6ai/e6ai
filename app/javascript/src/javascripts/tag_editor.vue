@@ -33,7 +33,7 @@
   import Utility from "./utility.js";
 
   function tagSorter(a, b) {
-    return a[0] > b[0] ? 1 : -1;
+    return a.name > b.name ? 1 : -1;
   }
 
   export default {

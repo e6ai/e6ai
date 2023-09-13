@@ -133,9 +133,9 @@ services:
   solargraph:
     image: e6ai
     entrypoint: solargraph socket -h 0.0.0.0
-    working_dir: $PWD
+    working_dir: ${PWD-}
     volumes:
-      - .:$PWD
+      - .:${PWD-}
     environment:
       IGNORE_RUBOCOP_TODO: "1"
     ports:

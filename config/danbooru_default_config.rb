@@ -96,6 +96,10 @@ module Danbooru
       []
     end
 
+    def safeblocked_tags
+      []
+    end
+
     # This allows using statically linked copies of ffmpeg in non default locations. Not universally supported across
     # the codebase at this time.
     def ffmpeg_path
@@ -323,6 +327,10 @@ module Danbooru
 
     def wiki_page_max_size
       250_000
+    end
+
+    def user_feedback_max_size
+      20_000
     end
 
     def discord_site
@@ -644,6 +652,11 @@ module Danbooru
 
     def ads_enabled?
       false
+    end
+
+    # These tags will be sent to the revive server to do filtering on
+    def ads_keyword_tags
+      []
     end
 
     def ads_zone_desktop

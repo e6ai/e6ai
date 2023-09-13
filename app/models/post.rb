@@ -55,6 +55,9 @@ class Post < ApplicationRecord
   attr_accessor :old_tag_string, :old_parent_id, :old_source, :old_rating,
                 :do_not_version_changes, :tag_string_diff, :source_diff, :edit_reason
 
+  # FIXME: Remove this
+  alias_attribute :is_comment_locked, :is_comment_disabled
+
   has_many :versions, -> {order("post_versions.id ASC")}, :class_name => "PostVersion", :dependent => :destroy
 
   IMAGE_TYPES = %i[original large preview crop]
@@ -247,7 +250,7 @@ class Post < ApplicationRecord
       return true if is_video?
       return false if is_gif?
       return false if is_flash?
-      return false if has_tag?("animated_gif|animated_png")
+      return false if has_tag?("animated_gif", "animated_png")
       is_image? && image_width.present? && image_width > Danbooru.config.large_image_width
     end
 
@@ -817,8 +820,16 @@ class Post < ApplicationRecord
       end
     end
 
-    def has_tag?(tag)
-      !!(tag_string =~ /(?:^| )(?:#{tag})(?:$| )/)
+    def has_tag?(*)
+      TagQuery.has_tag?(tag_array, *)
+    end
+
+    def fetch_tags(*)
+      TagQuery.fetch_tags(tag_array, *)
+    end
+
+    def ad_tag_string
+      TagQuery.ad_tag_string(tag_array)
     end
 
     def add_tag(tag)
@@ -1012,9 +1023,9 @@ class Post < ApplicationRecord
   end
 
   module CountMethods
-    def fast_count(tags = "")
+    def fast_count(tags = "", enable_safe_mode: CurrentUser.safe_mode?)
       tags = tags.to_s
-      tags += " rating:s" if CurrentUser.safe_mode?
+      tags += " rating:s" if enable_safe_mode
       tags += " -status:deleted" unless TagQuery.has_metatag?(tags, "status", "-status")
       tags = TagQuery.normalize(tags)
 
@@ -1418,9 +1429,7 @@ class Post < ApplicationRecord
     end
 
     def sample(query, sample_size)
-      CurrentUser.without_safe_mode do
-        tag_match("#{query} order:random", free_tags_count: 1).limit(sample_size).records
-      end
+      tag_match_system("#{query} order:random", free_tags_count: 1).limit(sample_size).records
     end
 
     # unflattens the tag_string into one tag per row.
@@ -1460,12 +1469,22 @@ class Post < ApplicationRecord
       where("string_to_array(posts.tag_string, ' ') @> ARRAY[?]", tag)
     end
 
-    def tag_match(query, resolve_aliases: true, free_tags_count: 0)
-      ElasticPostQueryBuilder.new(query, resolve_aliases: resolve_aliases, free_tags_count: free_tags_count).build
+    def tag_match_system(query, free_tags_count: 0)
+      tag_match(query, free_tags_count: free_tags_count, enable_safe_mode: false, always_show_deleted: true)
+    end
+
+    def tag_match(query, resolve_aliases: true, free_tags_count: 0, enable_safe_mode: CurrentUser.safe_mode?, always_show_deleted: false)
+      ElasticPostQueryBuilder.new(
+        query,
+        resolve_aliases: resolve_aliases,
+        free_tags_count: free_tags_count,
+        enable_safe_mode: enable_safe_mode,
+        always_show_deleted: always_show_deleted,
+      ).search
     end
 
     def tag_match_sql(query)
-      PostQueryBuilder.new(query).build
+      PostQueryBuilder.new(query).search
     end
   end
 
@@ -1509,8 +1528,8 @@ class Post < ApplicationRecord
         action = is_note_locked? ? :note_locked : :note_unlocked
         PostEvent.add(id, CurrentUser.user, action)
       end
-      if saved_change_to_is_comment_disabled?
-        action = is_comment_disabled? ? :comment_disabled : :comment_enabled
+      if saved_change_to_is_comment_locked?
+        action = is_comment_locked? ? :comment_locked : :comment_unlocked
         PostEvent.add(id, CurrentUser.user, action)
       end
     end
@@ -1630,7 +1649,7 @@ class Post < ApplicationRecord
 
   def safeblocked?
     return true if Danbooru.config.safe_mode? && rating != "s"
-    CurrentUser.safe_mode? && (rating != "s" || has_tag?("toddlercon|rape|bestiality|beastiality|lolita|loli|shota|pussy|penis|genitals"))
+    CurrentUser.safe_mode? && (rating != "s" || has_tag?(*Danbooru.config.safeblocked_tags))
   end
 
   def deleteblocked?
@@ -1675,7 +1694,7 @@ class Post < ApplicationRecord
     add_tag("partially_translated") if params["partially_translated"].to_s.truthy?
     remove_tag("partially_translated") if params["partially_translated"].to_s.falsy?
 
-    if has_tag?("translation_check") || has_tag?("partially_translated")
+    if has_tag?("translation_check", "partially_translated")
       add_tag("translation_request")
       remove_tag("translated")
     else
@@ -1696,7 +1715,7 @@ class Post < ApplicationRecord
     false
   end
 
-  def visible_comment_count(user)
-    user.is_moderator? || !is_comment_disabled ? comment_count : 0
+  def visible_comment_count(_user)
+    comment_count
   end
 end
