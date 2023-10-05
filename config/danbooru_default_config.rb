@@ -184,12 +184,16 @@ module Danbooru
       3_000
     end
 
-    def dmail_limit
-      20
-    end
-
     def dmail_minute_limit
       1
+    end
+
+    def dmail_limit
+      10
+    end
+
+    def dmail_day_limit
+      50
     end
 
     def tag_suggestion_limit
@@ -623,8 +627,7 @@ module Danbooru
     def iqdb_server
     end
 
-    def elasticsearch_host
-      '127.0.0.1'
+    def opensearch_host
     end
 
     # Use a recaptcha on the signup page to protect against spambots creating new accounts.

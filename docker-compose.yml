@@ -1,16 +1,18 @@
 version: "3"
 
 x-environment: &common-env
-  DANBOORU_HOSTNAME: http://localhost:3001
+  DANBOORU_HOSTNAME: http://localhost:${EXPOSED_SERVER_PORT:-3001}
   DANBOORU_REDIS_URL: redis://redis
-  DANBOORU_ELASTICSEARCH_HOST: elastic
+  DANBOORU_OPENSEARCH_HOST: opensearch
   DANBOORU_MEMCACHED_SERVERS: memcached
   # These are just development secrets, do not use them in production
+  DANBOORU_PROTECTED_FILE_SECRET: 6686a6413d90c43d5e82403ef271ec25d13cc24e3bfcdd094e73d1eff22a3567
+  DANBOORU_REPLACEMENT_FILE_SECRET: b35bc54cdc0d0436fc5867c7ef88f9b10a37ae20a06b37e67614fe60019d7bb1
   SECRET_TOKEN: 1c58518a891eff4520cadc59afa9e378a9325f1247544ff258096e497f095f45
   SESSION_SECRET_KEY: 44b4f44e9f253c406cbe727d403d500c1cecff943e4d2aea8f5447f28846fffe
 
 x-depends-on: &common-depends-on
-  elastic:
+  opensearch:
     condition: service_healthy
   memcached:
     condition: service_started
@@ -62,13 +64,13 @@ services:
       - public_packs:/app/public/packs
       - ./docker/default.conf.template:/etc/nginx/templates/default.conf.template
     environment:
-      NGINX_HOST: localhost
-      NGINX_PORT: 3001
+      <<: *common-env
+      NGINX_PORT: ${EXPOSED_SERVER_PORT:-3001}
     depends_on:
       - autocompleted
       - e6ai
     ports:
-      - "3001:3001"
+      - "${EXPOSED_SERVER_PORT:-3001}:${EXPOSED_SERVER_PORT:-3001}"
     
   postgres:
     image: postgres:15-alpine
@@ -88,19 +90,20 @@ services:
   memcached:
     image: memcached:1.5.22-alpine
 
-  elastic:
-    image: elasticsearch:7.14.2
+  opensearch:
+    image: opensearchproject/opensearch:2.9.0
     environment:
       - discovery.type=single-node
-      - xpack.security.enabled=false
       - logger.level=WARN
-      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - DISABLE_SECURITY_PLUGIN=true
+      - DISABLE_INSTALL_DEMO_CONFIG=true
+      - OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g
     volumes:
-      - elastic_data:/usr/share/elasticsearch/data
+      - opensearch_data:/usr/share/opensearch/data
     healthcheck:
       interval: 10s
       timeout: 2s
-      test: nc -z elastic 9200
+      test: curl "opensearch:9200/_cluster/health?wait_for_status=yellow&timeout=2s"
 
   # Useful for development
 
@@ -145,7 +148,7 @@ services:
 
 volumes:
   post_data:
-  elastic_data:
+  opensearch_data:
   db_data:
   redis_data_v2:
   node_modules:

@@ -24,7 +24,7 @@ Shoulda::Matchers.configure do |config|
 end
 
 WebMock.disable_net_connect!(allow: [
-  Danbooru.config.elasticsearch_host,
+  Danbooru.config.opensearch_host,
 ])
 
 FactoryBot::SyntaxRunner.class_eval do
@@ -37,16 +37,9 @@ end
 BCrypt::Engine.send(:remove_const, :DEFAULT_COST)
 BCrypt::Engine::DEFAULT_COST = BCrypt::Engine::MIN_COST
 
-begin
-  # Clear the elastic indicies completly
-  Post.__elasticsearch__.create_index!(force: true)
-  PostVersion.__elasticsearch__.create_index!(force: true)
-rescue NoMethodError
-  # HACK: The downgraded version of the elasticsearch gem in combination with the
-  # rails integration errors when trying to delete a non-existant index
-  Post.__elasticsearch__.create_index!
-  PostVersion.__elasticsearch__.create_index!
-end
+# Clear the opensearch indicies completly
+Post.document_store.create_index!(delete_existing: true)
+PostVersion.document_store.create_index!(delete_existing: true)
 
 class ActiveSupport::TestCase
   include ActionDispatch::TestProcess::FixtureFile
@@ -93,8 +86,8 @@ class ActiveSupport::TestCase
 
   def reset_post_index
     # This seems slightly faster than deleting and recreating the index
-    Post.__elasticsearch__.client.delete_by_query(index: Post.index_name, q: "*", body: {})
-    Post.__elasticsearch__.refresh_index!
+    Post.document_store.delete_by_query(query: "*", body: {})
+    Post.document_store.refresh_index!
   end
 end
 
