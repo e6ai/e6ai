@@ -338,6 +338,7 @@ module Danbooru
     end
 
     def discord_site
+      "https://discord.gg/furrydiffusion"
     end
 
     def discord_secret
