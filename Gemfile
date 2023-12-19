@@ -13,7 +13,6 @@ gem 'draper'
 gem 'streamio-ffmpeg'
 gem 'responders'
 gem 'dtext_rb', :git => "https://github.com/e621ng/dtext_rb.git", branch: "master", :require => "dtext"
-gem 'memoist'
 gem 'bootsnap'
 gem 'addressable'
 gem 'httparty'
@@ -35,7 +34,6 @@ gem "rugged"
 gem 'opensearch-ruby'
 
 gem 'mailgun-ruby'
-gem 'resolv'
 
 group :production do
   gem 'unicorn'

@@ -48,7 +48,7 @@ services:
     tty: true
 
   autocompleted:
-    image: ghcr.io/e621ng/autocompleted:54b516eded7b6641d6e958b0700eb6a887502dc1
+    image: ghcr.io/e621ng/autocompleted:8807bc8658f594cd0de04de1c272c3a2f917fc48
     command: /app/autocompleted
     environment:
       SERVER_ADDR: autocompleted:8118
