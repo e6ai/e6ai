@@ -36,15 +36,19 @@ class Comment < ApplicationRecord
 
     def hidden(user)
       if user.is_moderator?
-        where("score < ? and is_sticky = false", user.comment_threshold)
+        where("not(score >= ? or is_sticky = true)", user.comment_threshold)
+      elsif user.is_janitor?
+        where("not((score >= ? or is_sticky = true) and (is_sticky = true or is_hidden = false or creator_id = ?))", user.comment_threshold, user.id)
       else
-        where("(score < ? and is_sticky = false) or (is_hidden = true and creator_id != ?)", user.comment_threshold, user.id)
+        where("not((score >= ? or is_sticky = true) and (is_hidden = false or creator_id = ?))", user.comment_threshold, user.id)
       end
     end
 
     def visible(user)
       if user.is_moderator?
         where("score >= ? or is_sticky = true", user.comment_threshold)
+      elsif user.is_janitor?
+        where("(score >= ? or is_sticky = true) and (is_sticky = true or is_hidden = false or creator_id = ?)", user.comment_threshold, user.id)
       else
         where("(score >= ? or is_sticky = true) and (is_hidden = false or creator_id = ?)", user.comment_threshold, user.id)
       end
@@ -198,14 +202,14 @@ class Comment < ApplicationRecord
 
   def visible_to?(user)
     return true if user.is_moderator?
+    return true if user.is_janitor? && is_sticky?
     return true if is_hidden? == false
     creator_id == user.id # Can always see your own comments, even if hidden.
   end
 
   def should_see?(user)
-    return true if user.is_moderator?
-    return true unless is_hidden?
-    (creator_id == user.id) && user.show_hidden_comments?
+    return true if creator_id == user.id && is_hidden? && user.show_hidden_comments?
+    visible_to?(user)
   end
 
   def method_attributes

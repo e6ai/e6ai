@@ -105,8 +105,7 @@ private
   end
 
   def index_by_comment
-    @comments = Comment
-    @comments = @comments.undeleted unless CurrentUser.is_moderator?
+    @comments = Comment.visible(CurrentUser.user)
     @comments = @comments.search(search_params).paginate(params[:page], :limit => params[:limit], :search_count => params[:search])
     @comment_votes = CommentVote.for_comments_and_user(@comments.map(&:id), CurrentUser.id)
     respond_with(@comments)
@@ -134,7 +133,8 @@ private
   def comment_params(context)
     permitted_params = %i[body]
     permitted_params += %i[do_not_bump_post post_id] if context == :create
-    permitted_params += %i[is_sticky is_hidden] if CurrentUser.is_moderator?
+    permitted_params += %i[is_sticky] if CurrentUser.is_janitor?
+    permitted_params += %i[is_hidden] if CurrentUser.is_moderator?
 
     params.fetch(:comment, {}).permit(permitted_params)
   end
