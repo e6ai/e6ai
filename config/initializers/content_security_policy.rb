@@ -17,7 +17,7 @@ Rails.application.configure do
     policy.font_src    :self
     policy.img_src     :self, :data, 'static1.e6ai.net', 'ads.dragonfru.it'
     policy.child_src   :none
-    policy.form_action :self
+    policy.form_action :self, "discord.com"
     # Specify URI for violation reports
     # policy.report_uri "/csp-violation-report-endpoint"
   end
