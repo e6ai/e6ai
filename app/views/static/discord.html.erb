@@ -3,9 +3,7 @@
     There is a discord server called "Furry Diffusion" where you can chat with other e6ai users.
     <br>This server is not owned or operated by e6ai staff. Please keep site discussion to the #e6ai-discussion channel.
   </p>
-  <%= form_tag(discord_post_path) do %>
-    <%= submit_tag 'Join the server.' %>
-  <% end %>
+  <%= link_to "Join the server.", Danbooru.config.discord_site %>
 </div>
 
 <% content_for(:page_title) do %>
