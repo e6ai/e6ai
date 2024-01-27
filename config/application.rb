@@ -25,6 +25,18 @@ module Danbooru
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
+
+    # Remove if load_defaults 7.1
+    config.add_autoload_paths_to_load_path = false
+
+    # https://github.com/rails/rails/issues/50897
+    config.active_record.raise_on_assign_to_attr_readonly = false
+
+    # Please, add to the `ignore` list any other `lib` subdirectories that do
+    # not contain `.rb` files, or that should not be reloaded or eager loaded.
+    # Common ones are `templates`, `generators`, or `middleware`, for example.
+    # config.autoload_lib(ignore: %w(assets tasks))
+
     config.active_record.schema_format = :sql
     config.log_tags = [->(req) {"PID:#{Process.pid}"}]
     config.action_controller.action_on_unpermitted_parameters = :raise
