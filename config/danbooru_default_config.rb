@@ -1,4 +1,4 @@
-require 'socket'
+# frozen_string_literal: true
 
 module Danbooru
   class Configuration
@@ -663,10 +663,6 @@ module Danbooru
 
     def image_rescales
       []
-    end
-
-    def readonly_mode?
-      false
     end
 
     def enable_visitor_metrics?
