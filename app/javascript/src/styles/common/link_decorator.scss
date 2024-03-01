@@ -1,9 +1,6 @@
-span.link-decoration {
-  vertical-align: sub;
-  display: inline-block;
-  width: 16px;
-  height: 16px;
+.link-decoration {
+  vertical-align: middle;
+  min-height: 16px;
+  height: 1em;
   margin-right: 4px; 
-  line-height: 0;
-  background-size: 16px 16px;
 }

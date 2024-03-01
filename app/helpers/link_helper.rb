@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module LinkHelper
-  NONE = "empty"
   DECORATABLE_DOMAINS = [
     "e621.net",
     #
@@ -12,7 +11,7 @@ module LinkHelper
     # Art sites
     "artfight.net",
     "artstation.com",
-    "archiveofourown.com",
+    "archiveofourown.org",
     "aryion.com",
     "derpibooru.org",
     "deviantart.com",
@@ -31,16 +30,19 @@ module LinkHelper
     "toyhou.se",
     "tumblr.com",
     "newgrounds.com",
+    "yiff.life",
     "weasyl.com",
     "webtoons.com",
     #
     # Social media
     "aethy.com",
-    "baraag.net",
     "bsky.app",
+    "blogspot.com",
     "cohost.org",
     "facebook.com",
     "instagram.com",
+    "mastodon.social",
+    "nijie.info",
     "pawoo.net",
     "plurk.com",
     "privatter.net",
@@ -83,6 +85,7 @@ module LinkHelper
     "danbooru.donmai.us",
     "desuarchive.org",
     "e-hentai.org",
+    "furbooru.org",
     "gelbooru.com",
     "rule34.paheal.net",
     "rule34.xxx",
@@ -91,37 +94,54 @@ module LinkHelper
     # Other
     "curiouscat.me",
     "discord.com",
+    "fandom.com",
+    "f-list.net",
     "steamcommunity.com",
     "t.me",
     "trello.com",
     "web.archive.org",
+    "wordpress.com",
+    "wikimedia.org",
   ].freeze
 
   DECORATABLE_ALIASES = {
     # alt names
+    "archiveofourown.com" => "archiveofourown.org",
+    "curiouscat.live" => "curiouscat.me",
     "e926.net" => "e621.net",
+    "exhentai.org" => "e-hentai.org",
     "discord.gg" => "discord.com",
+    "pillowfort.io" => "pillowfort.social",
     "pixiv.me" => "pixiv.net",
+    "subscribestar.com" => "subscribestar.adult",
+    "wikia.com" => "fandom.com",
     "x.com" => "twitter.com",
+    "youtu.be" => "youtube.com",
 
     # same icon
+    "baraag.net" => "mastodon.social",
     "cloudfront.net" => "amazonaws.com",
-    "mastodon.art" => "baraag.net",
-    "meow.social" => "baraag.net",
+    "mastodon.art" => "mastodon.social",
+    "meow.social" => "mastodon.social",
     "sta.sh" => "deviantart.com",
 
     # image servers
     "4cdn.org" => "4chan.org",
+    "cohostcdn.org" => "cohost.org",
     "discordapp.com" => "discord.com",
     "derpicdn.net" => "derpibooru.org",
     "deviantart.net" => "deviantart.com",
     "dropboxusercontent.com" => "dropbox.com",
     "facdn.net" => "furaffinity.net",
     "fbcdn.net" => "facebook.com",
+    "furrycdn.org" => "furbooru.org",
     "ib.metapix.net" => "inkbunny.net",
     "ngfiles.com" => "newgrounds.com",
+    "patreonusercontent.com" => "patreon.com",
     "pximg.net" => "pixiv.net",
     "redd.it" => "reddit.com",
+    "sofurryfiles.com" => "sofurry.com",
+    "static.wikia.nocookie.net" => "fandom.com",
     "twimg.com" => "twitter.com",
     "ungrounded.net" => "newgrounds.com",
     "wixmp.com" => "deviantart.com",
@@ -135,23 +155,29 @@ module LinkHelper
 
   def favicon_for_link(path)
     hostname = hostname_for_link(path)
-    image_url = asset_pack_path("static/#{hostname}.png")
-    tag.span(
-      class: "link-decoration",
-      style: "background-image: url(#{image_url})",
-      data: {
-        hostname: hostname,
-      },
-    )
+    if hostname
+      tag.img(
+        class: "link-decoration",
+        src: asset_pack_path("static/#{hostname}.png"),
+        data: {
+          hostname: hostname,
+        },
+      )
+    else
+      tag.i(
+        class: "fa-solid fa-globe link-decoration",
+        data: { hostname: "none" },
+      )
+    end
   end
 
   def hostname_for_link(path)
     begin
       uri = URI.parse(path)
     rescue URI::InvalidURIError
-      return NONE
+      return nil
     end
-    return NONE unless uri.host
+    return nil unless uri.host
 
     hostname = uri.host.delete_prefix("www.")
 
@@ -165,9 +191,7 @@ module LinkHelper
     if hostname.count(".") > 1
       _removed, remaining_hostname = hostname.split(".", 2)
       return remaining_hostname if DECORATABLE_DOMAINS.include?(remaining_hostname)
-      return DECORATABLE_ALIASES[remaining_hostname] if DECORATABLE_ALIASES[remaining_hostname]
+      DECORATABLE_ALIASES[remaining_hostname]
     end
-
-    NONE
   end
 end
