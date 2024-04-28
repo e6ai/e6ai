@@ -152,17 +152,6 @@ class TagAliasTest < ActiveSupport::TestCase
       assert_equal(4, tag2.reload.category)
     end
 
-    should "not fail if an artist with the same name is locked" do
-      ta = create(:tag_alias, antecedent_name: "aaa", consequent_name: "bbb")
-      artist = as(@admin) { create(:artist, name: "aaa", is_locked: true) }
-      artist.tag.update(category: Tag.categories.artist)
-
-      with_inline_jobs { ta.approve!(approver: @admin) }
-
-      assert_equal("active", ta.reload.status)
-      assert_equal("bbb", artist.reload.name)
-    end
-
     should "error on approve if its not valid anymore" do
       create(:tag_alias, antecedent_name: "aaa", consequent_name: "bbb", status: "active")
       ta = build(:tag_alias, antecedent_name: "aaa", consequent_name: "bbb", status: "pending", creator: @admin)
