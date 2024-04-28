@@ -121,6 +121,15 @@ class TagImplicationTest < ActiveSupport::TestCase
       assert_includes(ti.errors[:base], "Consequent tag must not be aliased to another tag")
     end
 
+    should "allow rejecting if active aliases exist" do
+      create(:tag_alias, antecedent_name: "aaa", consequent_name: "bbb")
+      ti = build(:tag_implication, antecedent_name: "aaa", consequent_name: "bbb", status: "pending", creator: @user)
+      ti.save(validate: false)
+
+      ti.reject!
+      assert_equal("deleted", ti.reload.status)
+    end
+
     should "calculate all its descendants" do
       ti1 = create(:tag_implication, antecedent_name: "bbb", consequent_name: "ccc")
       assert_equal(%w[ccc], ti1.descendant_names)
@@ -229,6 +238,14 @@ class TagImplicationTest < ActiveSupport::TestCase
       with_inline_jobs { ti.approve!(approver: @user) }
 
       assert_match "error", ti.reload.status
+    end
+
+    should "ignore tag count limits on approve" do
+      Danbooru.config.stubs(:max_tags_per_post).returns(5)
+      ti = create(:tag_implication, antecedent_name: "5", consequent_name: "6", status: "pending")
+      post = create(:post, tag_string: "1 2 3 4 5")
+      with_inline_jobs { ti.approve!(approver: @user) }
+      assert_equal("1 2 3 4 5 6", post.reload.tag_string)
     end
 
     context "with an associated forum topic" do

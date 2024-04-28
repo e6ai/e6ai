@@ -136,7 +136,7 @@ module PostIndex
         SQL
         note_sql = <<-SQL
           SELECT post_id, body FROM notes
-          WHERE post_id IN (#{post_ids})
+          WHERE post_id IN (#{post_ids}) AND is_active = true
         SQL
         deletion_sql = <<-SQL
           SELECT pf.post_id, pf.creator_id, LOWER(pf.reason) as reason FROM
@@ -237,8 +237,8 @@ module PostIndex
 
       file_size:    file_size,
       parent:       parent_id,
-      pools:        options[:pools]      || ::Pool.where("post_ids @> '{?}'", id).pluck(:id),
-      sets:         options[:sets]       || ::PostSet.where("post_ids @> '{?}'", id).pluck(:id),
+      pools:        options[:pools]      || ::Pool.where("? = ANY(post_ids)", id).pluck(:id),
+      sets:         options[:sets]       || ::PostSet.where("? = ANY(post_ids)", id).pluck(:id),
       commenters:   options[:commenters] || ::Comment.undeleted.where(post_id: id).pluck(:creator_id),
       noters:       options[:noters]     || ::Note.active.where(post_id: id).pluck(:creator_id),
       faves:        options[:faves]      || ::Favorite.where(post_id: id).pluck(:user_id),

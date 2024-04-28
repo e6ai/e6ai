@@ -87,4 +87,5 @@ class TagCategory
   CATEGORIZED_LIST = %w[invalid director character species meta general].freeze
 
   SHORT_NAME_REGEX = SHORT_NAME_LIST.join("|").freeze
+  ALL_NAMES_REGEX = MAPPING.keys.join("|").freeze
 end

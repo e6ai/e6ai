@@ -17,7 +17,7 @@ class PostTest < ActiveSupport::TestCase
     context "Expunging a post" do
       # That belonged in a museum!
       setup do
-        @upload = UploadService.new(attributes_for(:jpg_upload)).start!
+        @upload = UploadService.new(attributes_for(:jpg_upload).merge({ uploader: @user })).start!
         @post = @upload.post
         FavoriteManager.add!(user: @post.uploader, post: @post)
       end
@@ -44,14 +44,14 @@ class PostTest < ActiveSupport::TestCase
         end
       end
 
-      should_eventually "decrement the user's note update count" do
+      should "decrement the user's note update count" do
         create(:note, post: @post)
         assert_difference(["@post.uploader.reload.note_update_count"], -1) do
           @post.expunge!
         end
       end
 
-      should_eventually "decrement the user's post update count" do
+      should "decrement the user's post update count" do
         assert_difference(["@post.uploader.reload.post_update_count"], -1) do
           @post.expunge!
         end
@@ -1241,6 +1241,32 @@ class PostTest < ActiveSupport::TestCase
         should "warn when an upload doesn't have enough tags" do
           post = create(:post, tag_string: "tagme")
           assert_match(/Uploads must have at least \d+ general tags/, post.warnings.full_messages.join)
+        end
+
+        should "error if the tagcount is above the limit" do
+          Danbooru.config.stubs(:max_tags_per_post).returns(5)
+          post = create(:post, tag_string: "1 2 3 4 5")
+          post.add_tag("6")
+          post.save
+          assert_match(/tag count exceeds maximum/, post.errors.full_messages.join)
+        end
+
+        should "error if the tagcount via implications is above the limit" do
+          Danbooru.config.stubs(:max_tags_per_post).returns(2)
+          create(:tag_implication, antecedent_name: "2", consequent_name: "3")
+          post = create(:post, tag_string: "1")
+          post.add_tag("2")
+          post.save
+          assert_match(/tag count exceeds maximum/, post.errors.full_messages.join)
+        end
+
+        should "allow removing tags when the post is above the limit" do
+          Danbooru.config.stubs(:max_tags_per_post).returns(2)
+          post = build(:post, tag_string: "1 2 3")
+          post.save(validate: false)
+          post.remove_tag("3")
+          post.save
+          assert_no_match(/tag count exceeds maximum/, post.errors.full_messages.join)
         end
       end
     end

@@ -5,8 +5,6 @@ x-environment: &common-env
   DANBOORU_REDIS_URL: redis://redis
   DANBOORU_OPENSEARCH_HOST: opensearch
   DANBOORU_MEMCACHED_SERVERS: memcached
-  NEW_RELIC_AGENT_ENABLED: ${NEW_RELIC_AGENT_ENABLED:-false}
-  NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY:-}
   # These are just development secrets, do not use them in production
   DANBOORU_PROTECTED_FILE_SECRET: 6686a6413d90c43d5e82403ef271ec25d13cc24e3bfcdd094e73d1eff22a3567
   DANBOORU_REPLACEMENT_FILE_SECRET: b35bc54cdc0d0436fc5867c7ef88f9b10a37ae20a06b37e67614fe60019d7bb1
@@ -14,6 +12,7 @@ x-environment: &common-env
   SESSION_SECRET_KEY: 44b4f44e9f253c406cbe727d403d500c1cecff943e4d2aea8f5447f28846fffe
   # Hide annoying output from libvips on corrupt files
   VIPS_WARNING: "0"
+  DD_TRACE_STARTUP_LOGS: false
 
 x-depends-on: &common-depends-on
   opensearch:
@@ -42,6 +41,9 @@ services:
     environment:
       <<: *common-env
       RAILS_ENV: development
+      DD_AGENT_HOST: datadog-agent
+      DD_SERVICE: ${DD_SERVICE:-}
+      DD_ENV: ${DD_ENV:-}
     depends_on:
       <<: *common-depends-on
       autocompleted:
