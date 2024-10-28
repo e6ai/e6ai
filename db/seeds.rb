@@ -55,7 +55,7 @@ end
 
 def setup_upload_whitelist
   UploadWhitelist.create do |entry|
-    entry.pattern = "https://static1.e621.net/*"
+    entry.pattern = "https://static1.e6ai.net/*"
   end
 end
 

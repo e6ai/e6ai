@@ -42,7 +42,7 @@ DEFAULT_PASSWORD = ENV.fetch("PASSWORD", "qwerty")
 CurrentUser.user = User.system
 
 def api_request(path)
-  response = Faraday.get("https://e621.net#{path}", nil, user_agent: "e621ng/seeding")
+  response = Faraday.get("https://e6ai.net#{path}", nil, user_agent: "e621ng/seeding")
   JSON.parse(response.body)
 end
 
@@ -59,7 +59,7 @@ def populate_users(number, password: DEFAULT_PASSWORD)
       user.name = user_name
       user.password = password
       user.password_confirmation = password
-      user.email = "#{user_name}@e621.local"
+      user.email = "#{user_name}@e6ai.local"
       user.level = User::Levels::MEMBER
       user.created_at = Faker::Date.between(from: "2007-02-10", to: 2.weeks.ago)
 
@@ -103,7 +103,7 @@ def populate_posts(number, users: [], batch_size: 320)
 
   # Generate posts in batches of 200 (by default)
   number.times.each_slice(batch_size).map(&:size).each do |count|
-    posts = api_request("/posts.json?tags=rating:s+order:random+score:>250+-grandfathered_content&limit=#{count}")["posts"]
+    posts = api_request("/posts.json?tags=rating:s+order:random+score:>0+-grandfathered_content&limit=#{count}")["posts"]
 
     posts.each do |post|
       post["tags"].each do |category, tags|
