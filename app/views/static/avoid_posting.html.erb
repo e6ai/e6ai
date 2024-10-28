@@ -3,12 +3,9 @@
 
     <div class="dtext-container">
       <%= format_text(@page.body, allow_color: true) %>
-      <%= format_avoid_posting_list %>
     </div>
   </div>
 </div>
-
-<%= render "avoid_postings/secondary_links" %>
 
 <% content_for(:page_title) do %>
   Avoid Posting List

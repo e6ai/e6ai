@@ -18,7 +18,7 @@ class StaticController < ApplicationController
   end
 
   def avoid_posting
-    @page = format_wiki_page("e621:avoid_posting_notice")
+    @page = format_wiki_page("avoid_posting")
   end
 
   def not_found

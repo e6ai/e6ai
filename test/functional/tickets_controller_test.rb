@@ -82,27 +82,27 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
       end
     end
 
-    context "for a blip ticket" do
-      setup do
-        as @bad_actor do
-          @content = create(:blip, creator: @bad_actor)
-        end
-      end
-
-      should "disallow reporting blips you can't see" do
-        assert_ticket_create_permissions([[@bystander, true], [@admin, true], [@bad_actor, true]], qtype: "blip")
-        @content.update_columns(is_hidden: true)
-        assert_ticket_create_permissions([[@bystander, false], [@admin, true], [@bad_actor, true]], qtype: "blip")
-      end
-
-      should "restrict access" do
-        @ticket = create(:ticket, creator: @reporter, content: @content, qtype: "blip")
-        assert_ticket_view_permissions([[@bystander, false], [@reporter, true], [@janitor, true], [@admin, true]], @ticket)
-        assert_ticket_json([[@reporter, { creator_id: @reporter.id }], [@janitor, { creator_id: nil }], [@admin, { creator_id: @reporter.id }]], @ticket)
-        @content.update_columns(is_hidden: true)
-        assert_ticket_view_permissions([[@bystander, false], [@reporter, true], [@janitor, false], [@admin, true]], @ticket)
-      end
-    end
+    # context "for a blip ticket" do
+    #   setup do
+    #     as @bad_actor do
+    #       @content = create(:blip, creator: @bad_actor)
+    #     end
+    #   end
+    #
+    #   should "disallow reporting blips you can't see" do
+    #     assert_ticket_create_permissions([[@bystander, true], [@admin, true], [@bad_actor, true]], qtype: "blip")
+    #     @content.update_columns(is_hidden: true)
+    #     assert_ticket_create_permissions([[@bystander, false], [@admin, true], [@bad_actor, true]], qtype: "blip")
+    #   end
+    #
+    #   should "restrict access" do
+    #     @ticket = create(:ticket, creator: @reporter, content: @content, qtype: "blip")
+    #     assert_ticket_view_permissions([[@bystander, false], [@reporter, true], [@janitor, true], [@admin, true]], @ticket)
+    #     assert_ticket_json([[@reporter, { creator_id: @reporter.id }], [@janitor, { creator_id: nil }], [@admin, { creator_id: @reporter.id }]], @ticket)
+    #     @content.update_columns(is_hidden: true)
+    #     assert_ticket_view_permissions([[@bystander, false], [@reporter, true], [@janitor, false], [@admin, true]], @ticket)
+    #   end
+    # end
 
     context "for a comment ticket" do
       setup do

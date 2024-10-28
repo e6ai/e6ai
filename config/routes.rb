@@ -76,15 +76,15 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :avoid_postings, constraints: id_name_constraint do
-    member do
-      put :delete
-      put :undelete
-    end
+  # resources :avoid_postings, constraints: id_name_constraint do
+  #   member do
+  #     put :delete
+  #     put :undelete
+  #   end
+  #
+  # end
 
-  end
-
-  resources :avoid_posting_versions, only: %i[index]
+  # resources :avoid_posting_versions, only: %i[index]
 
   resources :tickets, except: %i[destroy] do
     member do
@@ -103,6 +103,7 @@ Rails.application.routes.draw do
       post :remove_by_ids
     end
   end
+
   resources :bans
   resources :bulk_update_requests do
     member do
