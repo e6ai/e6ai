@@ -1963,6 +1963,24 @@ class PostTest < ActiveSupport::TestCase
       end
     end
 
+    should "return posts for verified artists" do
+      assert_tag_match([], "artverified:true")
+      assert_tag_match([], "artverified:false")
+      artist = create(:artist, linked_user: @user)
+      post = create(:post, tag_string: artist.name, uploader: @user)
+      assert_tag_match([], "artverified:false")
+      assert_tag_match([post], "artverified:true")
+    end
+
+    should "return posts for verified artists after update" do
+      assert_tag_match([], "artverified:true")
+      assert_tag_match([], "artverified:false")
+      post = create(:post, tag_string: "artist:test", uploader: @user)
+      with_inline_jobs { create(:artist, name: "test", linked_user: @user) }
+      assert_tag_match([], "artverified:false")
+      assert_tag_match([post], "artverified:true")
+    end
+
     should "return posts for replacements" do
       assert_tag_match([], "pending_replacements:true")
       assert_tag_match([], "pending_replacements:false")
@@ -2251,6 +2269,119 @@ class PostTest < ActiveSupport::TestCase
       should "rescale notes" do
         note = @dst.notes.active.first
         assert_equal([20, 20, 20, 20], [note.x, note.y, note.width, note.height])
+      end
+    end
+  end
+
+  context "Metatags:" do
+    context "set:" do
+      setup do
+        @set = create(:post_set, creator: @user)
+        @post = create(:post)
+      end
+
+      context "with an id" do
+        should "work" do
+          @post.update(tag_string_diff: "set:#{@set.id}")
+          assert_equal([@post.id], @set.reload.post_ids)
+          assert_equal("set:#{@set.id}", @post.pool_string)
+        end
+
+        should "gracefully fail if the set is full" do
+          Danbooru.config.stubs(:set_post_limit).returns(0)
+          @post.update(tag_string_diff: "set:#{@set.id}")
+          assert_equal(["Sets can only have up to 0 posts each"], @post.errors.full_messages)
+          assert_equal([], @set.reload.post_ids)
+          assert_equal("", @post.pool_string)
+        end
+      end
+
+      context "with a shortname" do
+        should "work" do
+          @post.update(tag_string_diff: "set:#{@set.shortname}")
+          assert_equal([@post.id], @set.reload.post_ids)
+          assert_equal("set:#{@set.id}", @post.pool_string)
+        end
+
+        should "gracefully fail if the set is full" do
+          Danbooru.config.stubs(:set_post_limit).returns(0)
+          @post.update(tag_string_diff: "set:#{@set.shortname}")
+          assert_equal(["Sets can only have up to 0 posts each"], @post.errors.full_messages)
+          assert_equal([], @set.reload.post_ids)
+          assert_equal("", @post.pool_string)
+        end
+      end
+    end
+
+    context "pool:" do
+      setup do
+        @pool = create(:pool)
+        @pool2 = create(:pool, name: "Test_Pool")
+        @post = create(:post)
+      end
+
+      context "with an id" do
+        should "work" do
+          @post.update(tag_string_diff: "pool:#{@pool.id}")
+          assert_equal([@post.id], @pool.reload.post_ids)
+          assert_equal("pool:#{@pool.id}", @post.pool_string)
+        end
+
+        should "gracefully fail if the pool is full" do
+          Danbooru.config.stubs(:pool_post_limit).returns(0)
+          @post.update(tag_string_diff: "pool:#{@pool.id}")
+          assert_equal(["Pools can only have up to 0 posts each"], @post.errors.full_messages)
+          assert_equal([], @pool.reload.post_ids)
+          assert_equal("", @post.pool_string)
+        end
+      end
+
+      context "with a name" do
+        should "work" do
+          @post.update(tag_string_diff: "pool:#{@pool.name}")
+          assert_equal([@post.id], @pool.reload.post_ids)
+          assert_equal("pool:#{@pool.id}", @post.pool_string)
+        end
+
+        should "work with capital letters" do
+          @post.update(tag_string_diff: "pool:#{@pool2.name}")
+          assert_equal([@post.id], @pool2.reload.post_ids)
+          assert_equal("pool:#{@pool2.id}", @post.pool_string)
+        end
+
+        should "gracefully fail if the pool is full" do
+          Danbooru.config.stubs(:pool_post_limit).returns(0)
+          @post.update(tag_string_diff: "pool:#{@pool.name}")
+          assert_equal(["Pools can only have up to 0 posts each"], @post.errors.full_messages)
+          assert_equal([], @pool.reload.post_ids)
+          assert_equal("", @post.pool_string)
+        end
+      end
+    end
+
+    context "newpool:" do
+      setup do
+        @post = create(:post)
+      end
+
+      should "work" do
+        assert_difference("Pool.count", 1) do
+          @post.update(tag_string_diff: "newpool:test")
+        end
+        @pool = Pool.last
+        assert_equal([@post.id], @pool.reload.post_ids)
+        assert_equal("pool:#{@pool.id}", @post.pool_string)
+        assert_equal("test", @pool.name)
+      end
+
+      should "work with capital letters" do
+        assert_difference("Pool.count", 1) do
+          @post.update(tag_string_diff: "newpool:Test2_Pool")
+        end
+        @pool = Pool.last
+        assert_equal([@post.id], @pool.reload.post_ids)
+        assert_equal("pool:#{@pool.id}", @post.pool_string)
+        assert_equal("Test2_Pool", @pool.name)
       end
     end
   end

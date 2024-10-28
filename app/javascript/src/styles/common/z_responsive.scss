@@ -20,12 +20,12 @@
   }
 
   body.resp {
-    div#c-posts {
-      div#a-show {
-        .pool-nav, .search-seq-nav, .set-nav {
-          li {
-            height: 2rem;
-          }
+    #c-posts #a-show {
+      .nav-block li {
+        padding: 0 0.5em;
+        
+        .first span, .last span {
+          display: none;
         }
       }
     }
@@ -86,8 +86,6 @@
     }
 
     div#page {
-      padding-left: 0;
-      padding-right: 0;
 
       > div /* div#c-$controller */
       {
@@ -141,10 +139,6 @@
     /* Make the quick search box in the navbar full width. */
     header#top menu form input {
       width: auto;
-    }
-
-    h1 {
-      display: none;
     }
 
     form {
@@ -205,8 +199,9 @@
 
     #posts #posts-container {
       width: 100%;
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1vw;
       align-items: center;
       justify-content: space-evenly;
     }
@@ -217,7 +212,8 @@
       text-align: center;
       vertical-align: middle;
       display: inline-block;
-      width: 31vw;
+      width: 100%;
+      container-type: inline-size;
 
       a {
         margin: 0 auto;
@@ -225,7 +221,7 @@
 
       img {
         max-height: 150px;
-        max-width: 31vw;
+        max-width: 100cqw;
       }
 
       .desc {
@@ -235,13 +231,11 @@
 
     .user-disable-cropped-false {
       article.post-preview {
-        width: 31vw;
-
         img {
           height: auto;
           max-height: none;
           max-width: none;
-          width: 31vw;
+          width: 100cqw;
 
           &.has-cropped-false {
             object-fit: cover;
@@ -310,17 +304,6 @@
       }
     }
 
-    h1 {
-      display: block;
-      font-size: 2em;
-      margin: 1em 0 0 0;
-    }
-
-    h2 {
-      font-size: 0.825em;
-      margin: 1em 0 0 0;
-    }
-
     header {
       text-align: center;
       line-height: 2em;
@@ -329,9 +312,12 @@
         display: inline; //Needed for menu button
       }
     }
-
-    div#page {
-      margin: 0;
+  }
+}
+@media screen and (max-width: 800px) and (horizontal-viewport-segments: 2) {
+  body.resp {
+    #posts #posts-container {
+      grid-template-columns: repeat(4, 1fr);
     }
   }
 }
@@ -339,9 +325,6 @@
 @media screen and (max-width: 660px) {
   body.resp {
     #c-forum-topics, #c-forum-posts {
-      #a-show {
-        padding: 1em 0.5em;
-      }
 
       .creator {
         display: none;

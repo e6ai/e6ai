@@ -319,6 +319,10 @@ class User < ApplicationRecord
       is_bd_staff
     end
 
+    def is_staff?
+      is_janitor?
+    end
+
     def is_approver?
       can_approve_posts?
     end
@@ -371,7 +375,7 @@ class User < ApplicationRecord
 
   module BlacklistMethods
     def normalize_blacklisted_tags
-      self.blacklisted_tags = TagAlias.to_aliased_query(blacklisted_tags.downcase) if blacklisted_tags.present?
+      self.blacklisted_tags = TagAlias.to_aliased_query(blacklisted_tags, comments: true) if blacklisted_tags.present?
     end
 
     def is_blacklisting_user?(user)
@@ -385,7 +389,7 @@ class User < ApplicationRecord
   module ForumMethods
     def has_forum_been_updated?
       return false unless is_member?
-      max_updated_at = ForumTopic.permitted.active.order(updated_at: :desc).first&.updated_at
+      max_updated_at = ForumTopic.visible(self).order(updated_at: :desc).first&.updated_at
       return false if max_updated_at.nil?
       return true if last_forum_read_at.nil?
       return max_updated_at > last_forum_read_at
@@ -508,10 +512,14 @@ class User < ApplicationRecord
     end
 
     def can_view_staff_notes?
-      is_janitor?
+      is_staff?
     end
 
     def can_handle_takedowns?
+      is_bd_staff?
+    end
+
+    def can_edit_avoid_posting_entries?
       is_bd_staff?
     end
 
@@ -718,15 +726,19 @@ class User < ApplicationRecord
     end
 
     def positive_feedback_count
-      feedback.positive.count
+      feedback.active.positive.count
     end
 
     def neutral_feedback_count
-      feedback.neutral.count
+      feedback.active.neutral.count
     end
 
     def negative_feedback_count
-      feedback.negative.count
+      feedback.active.negative.count
+    end
+
+    def deleted_feedback_count
+      feedback.deleted.count
     end
 
     def post_replacement_rejected_count
