@@ -1751,7 +1751,7 @@ class Post < ApplicationRecord
   end
 
   def artist_tags
-    tags.select { |t| t.category == Tag.categories.artist }
+    tags.select { |t| t.category == Tag.categories.director }
   end
 
   def uploader_linked_artists
@@ -1767,6 +1767,6 @@ class Post < ApplicationRecord
   end
 
   def avoid_posting_artists
-    AvoidPosting.active.joins(:artist).where("artists.name": artist_tags.map(&:name))
+    []
   end
 end
