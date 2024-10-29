@@ -40,11 +40,10 @@
     <%= link_to "Delete", confirm_delete_moderator_post_post_path(id: post.id), class: "button btn-neutral btn-important" %>
     |
     <%= link_to "Artistic", "#", class: "delete-with-reason-link button btn-neutral", data: { prompt: "artistic standards", reason: "Does not meet minimum quality standards (Artistic)", post_id: post.id } %> &bull;
+    <%= link_to "Young", "#", class: "delete-with-reason-link button btn-neutral", data: { prompt: "young characters in explicit situations", reason: "Irrelevant to site (Suggestive / Explicit Young content)", post_id: post.id } %> &bull;
+    <%= link_to "Zoo", "#", class: "delete-with-reason-link button btn-neutral", data: { prompt: "realistic feral content", reason: "Irrelevant to site (Zoo)", post_id: post.id } %> &bull;
     <%= link_to "Human", "#", class: "delete-with-reason-link button btn-neutral", data: { prompt: "being human only", reason: "Irrelevant to site (Human only)", post_id: post.id } %> &bull;
-    <%= link_to "Young Characters", "#", class: "delete-with-reason-link button btn-neutral", data: { prompt: "young characters in explicit situations", reason: "Irrelevant to site (Suggestive / Explicit Young content)", post_id: post.id } %> &bull;
-    <%= link_to "Photo/Scan", "#", class: "delete-with-reason-link button btn-neutral", data: { prompt: "being a photo/scan", reason: "Does not meet minimum quality standards (Bad digitization of traditional media)", post_id: post.id } %> &bull;
-    <%= link_to "Bad Edit", "#", class: "delete-with-reason-link button btn-neutral", data: { prompt: "being a bad edit", reason: "Does not meet minimum quality standards (Trivial or low quality edit)", post_id: post.id } %> &bull;
-    <%= link_to "Screencap", "#", class: "delete-with-reason-link button btn-neutral", data: { prompt: "being a screencap", reason: "Irrelevant to site (Screencap)", post_id: post.id } %> &bull;
+    <%= link_to "Corrupt File", "#", class: "delete-with-reason-link button btn-neutral", data: { prompt: "being broken or corrupted", reason: "Broken/corrupted file", post_id: post.id } %> &bull;
     <%= link_to "Advert", "#", class: "delete-with-reason-link button btn-neutral", data: { prompt: "being an advertisement", reason: "Advertisement", post_id: post.id } %>
 
   </div>
