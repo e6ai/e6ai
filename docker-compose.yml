@@ -137,7 +137,7 @@ services:
       - rubocop
 
   linter:
-    image: e621
+    image: e6ai
     volumes:
       - .:/app
       - node_modules:/app/node_modules
