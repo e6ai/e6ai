@@ -508,6 +508,7 @@ module Danbooru
         "Underage artist",
         "",
         "Does not meet minimum quality standards (Artistic)",
+        "Does not meet minimum quality standards (Anatomical anomalies)",
         "Does not meet minimum quality standards (Resolution)",
         "Does not meet minimum quality standards (Compression)",
         "Does not meet minimum quality standards (Trivial or low quality edit)",
