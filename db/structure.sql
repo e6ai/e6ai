@@ -1685,7 +1685,7 @@ CREATE TABLE public.posts (
     duration numeric,
     is_comment_disabled boolean DEFAULT false NOT NULL,
     is_comment_locked boolean DEFAULT false NOT NULL,
-    tag_count_contributor integer DEFAULT 0 NOT NULL
+    tag_count_franchise integer DEFAULT 0 NOT NULL
 );
 
 
