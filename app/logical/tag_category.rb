@@ -78,6 +78,12 @@ class TagCategory
       "regexmap" => //,
       "formatstr" => "directed by %s",
     },
+    "franchise" => {
+      "slice" => 1,
+      "exclusion" => [],
+      "regexmap" => //,
+      "formatstr" => "(%s)",
+    },
     "character" => {
       "slice" => 5,
       "exclusion" => [],
