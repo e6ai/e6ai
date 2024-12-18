@@ -10,6 +10,8 @@
         <div class="related-tag-functions">
             Related:
             <a href="#" @click.prevent="findRelated()">Tags</a> |
+            <a href="#" @click.prevent="findRelated(1)">Directors</a> |
+            <a href="#" @click.prevent="findRelated(3)">Franchises</a> |
             <a href="#" @click.prevent="findRelated(4)">Characters</a> |
             <a href="#" @click.prevent="findRelated(5)">Species</a> |
             <a href="#" @click.prevent="findRelated(7)">Metatags</a> |

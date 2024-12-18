@@ -390,7 +390,7 @@
       // Import tags from query parameters
       const fillTags = function() {
         const queryList = ["tags-artist", "tags-character", "tags-species", "tags-content"];
-        
+
         if(params.has("tags"))
           self.importTags(params.get("tags"), "other");
 
