@@ -2,6 +2,5 @@
 <%= decorated_nav_link_to("Pools", "fas fa-book", gallery_pools_path) %>
 <%= decorated_nav_link_to("Sets", "fas fa-clone", post_sets_path) %>
 <%= decorated_nav_link_to("Tags", "fas fa-tags", tags_path) %>
-<%= decorated_nav_link_to("Blips", "fas fa-bullhorn", blips_path) %>
 <%= decorated_nav_link_to("Comments", "fas fa-comment-alt", comments_path(group_by: "post")) %>
 <%= decorated_nav_link_to("Forum", "fas fa-chalkboard", forum_topics_path, class: (CurrentUser.has_forum_been_updated? ? "forum-updated" : nil)) %>
