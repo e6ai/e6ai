@@ -15,14 +15,16 @@ nav.navigation {
   .nav-logo {
     grid-area: logo;
 
+    background-color: themed("color-background");
+
     a.nav-logo-link {
       display: flex;
 
-      height: 3rem;
-      width: 3rem;
-      margin: 0.5rem;
+      height: 3.25rem;
+      width: 3.25rem;
+      margin: 0.25rem;
   
-      background-image: url("main-logo.png");
+      background-image: url("main-logo.svg");
       background-repeat: no-repeat;
       background-size: contain;
       background-position-y: center;
@@ -39,6 +41,7 @@ nav.navigation {
 
     font-size: 1.15rem;
     padding-right: 0.5em;
+    background-color: themed("color-background");
 
     & > a {
       display: flex;
@@ -185,6 +188,13 @@ nav.navigation {
 }
 
 
+// Sticky header
+body[data-th-sheader="true"] nav.navigation {
+  position: sticky;
+  top: 0;
+}
+
+
 // Mobile toggle
 body.nav-toggled {
   padding-top: 4rem;
@@ -205,10 +215,6 @@ body.nav-toggled {
     // Allow scrolling when the menu is too long
     overflow-y: scroll;
 
-    .nav-logo, .nav-controls {
-      background-color: themed("color-background");
-    }
-
     .nav-primary, .nav-secondary, .nav-offset {
       display: flex;
     }
@@ -226,15 +232,18 @@ nav.navigation, body.nav-toggled nav.navigation {
       "logo primary   help      tools    "
       "logo secondary secondary secondary"
     ;
-    grid-template-columns: min-content min-content 1fr min-content;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: min-content min-content minmax(0, 1fr) min-content;
+    grid-template-rows: 1.75em 1.75em;
 
-    padding: 0 1em 1em;
+    padding: 0 1em 0.5em;
     box-sizing: border-box;
     height: unset;
 
+    background: var(--color-background);
+    overflow-y: hidden; // overrides mobile hack allowing the menu scrolling
+
     .nav-logo {
-      a.nav-logo-link { margin: 0.5em 0.25em 0 0; }
+      a.nav-logo-link { margin: 0.25rem 0.5rem 0 0; }
     }
 
     .nav-offset, .nav-controls { display: none; }
@@ -312,13 +321,20 @@ nav.navigation, body.nav-toggled nav.navigation {
     }
 
     .nav-tools {
-      li a {
-        span { display: none; }
-        i { color: themed("color-link"); }
-        &:hover i { color: themed("color-link-hover"); }
+      li {
+        a {
+          i { color: themed("color-link"); }
+          &:hover i { color: themed("color-link-hover"); }
+        }
+
+        &.nav-tools-themes, &.nav-tools-settings {
+          a span { display: none; }
+        }
       }
     }
     .nav-help {
+      overflow: hidden;
+
       li.current a {
         background-color: themed("color-foreground");
         i { display: none; }
@@ -330,6 +346,8 @@ nav.navigation, body.nav-toggled nav.navigation {
 // Tweak for the secondary menu on desktop
 body.c-static.a-home {
   @include window-larger-than(800px) {
-    menu.nav-secondary { background: transparent; }
+    nav.navigation, menu.nav-logo, menu.nav-secondary {
+      background: unset;
+    }
   }
 }
