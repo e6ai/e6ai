@@ -14,7 +14,7 @@ body.c-static.a-home {
   // Common
   .home-section {
     // Frosted glass effect
-    background-color: rgba(15, 15, 15, 0.35);
+    background-color: rgba(75, 75, 75, 0.35);
     backdrop-filter: blur(8px);
 
     padding: 1rem;
@@ -59,10 +59,11 @@ body.c-static.a-home {
     a {
       flex: 1;
       text-align: center;
-      background: #25477b;
+      background: var(--color-section-lighten-5);
+      color: white;
       padding: 0.5rem;
       border-radius: 3px;
-      &:hover { background: #2b538e; }
+      &:hover { background: var(--color-section-lighten-10); }
 
       i { color: var(--color-link-active); }
     }
@@ -71,7 +72,7 @@ body.c-static.a-home {
 
   // Footer
   .home-footer-top {
-    background-color: rgba(15, 15, 15, 0.35);
+    background-color: rgba(75, 75, 75, 0.35);
     backdrop-filter: blur(8px);
     margin: 3rem 0 0;
     padding: 1rem;
@@ -87,15 +88,16 @@ body.c-static.a-home {
     }
 
     a#mascot-swap {
-      background: #25477b;
+      background: var(--color-section-lighten-5);
+      color: white;
       padding: 0.25rem 0.5rem;
       border-radius: 3px;
-      &:hover { background: #2b538e; }
+      &:hover { background: var(--color-section-lighten-10); }
     }
   }
 
   .home-footer-bottom {
-    background: #1f3c67;
+    background: var(--color-section);
     text-align: center;
 
     margin: 0;
