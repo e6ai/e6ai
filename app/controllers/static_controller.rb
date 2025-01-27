@@ -21,10 +21,6 @@ class StaticController < ApplicationController
     @page = format_wiki_page("avoid_posting")
   end
 
-  def subscribestar
-    @page = format_wiki_page("e621:subscribestar")
-  end
-
   def not_found
     render "static/404", formats: [:html], status: 404
   end
