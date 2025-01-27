@@ -30,8 +30,6 @@
       }
     }
 
-    #search-box { display: none; }
-
     .mobile-search {
       display: block;
       margin: $padding-050 $padding-050 $padding-150;
@@ -107,27 +105,6 @@
 
     header {
       position: relative;
-    }
-
-    #page-footer {
-      display: revert;
-      text-align: center;
-
-      .left {
-        padding-right: revert;
-      }
-    
-      .right {
-        padding-left: revert;
-      }
-
-      .right::before {
-        content: "–";
-      }
-
-      .logo-container {
-        display: none;
-      }
     }
 
     /* Make the quick search box in the navbar full width. */

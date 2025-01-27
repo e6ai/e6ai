@@ -5,7 +5,7 @@ nav.navigation {
   grid-template-rows: min-content auto min-content min-content;
 
   width: 100%; // otherwise narrow when fixed
-  z-index: 10; // otherwise post labels layered above
+  z-index: 20; // otherwise post labels layered above
 
   pointer-events: none; // allow clicking through offset
   & > menu { pointer-events: auto; }
@@ -113,7 +113,10 @@ nav.navigation {
         height: 0.25em;
       }
 
-      form input[type="text"] { width: 100%; }
+      form input[type="text"] {
+        width: 100%;
+        box-sizing: border-box;
+      }
     }
   }
 
@@ -169,19 +172,28 @@ nav.navigation {
     li {
       padding: 0;
 
-      &.nav-help-discord { grid-column: 1 / -1; }
+      &.nav-help-discord,
+      &.nav-help-subscribestar {
+        grid-column: 1 / -1;
+      }
 
       & > a {
-        display: block;
+        display: flex;
 
         background: themed("color-section-darken-5");
         border-radius: 6px;
         
         font-size: 125%;
         padding: 0.5rem 1rem;
-        text-align: center;
 
-        i { color: themed("color-link-active"); }
+        justify-content: center;
+        align-items: center;
+        gap: 0.25em;
+
+        img {
+          height: 1.25em;
+          margin: -0.5em 0;
+        }
       }
     }
   }
@@ -221,6 +233,9 @@ body.nav-toggled {
     .nav-tools, .nav-help {
       display: grid;
     }
+    .nav-primary, .nav-tools, .nav-help {
+      box-shadow: -1px 0 5px -1px var(--color-background);
+    }
   }
 }
 
@@ -233,7 +248,7 @@ nav.navigation, body.nav-toggled nav.navigation {
       "logo secondary secondary secondary"
     ;
     grid-template-columns: min-content min-content minmax(0, 1fr) min-content;
-    grid-template-rows: 1.75em 1.75em;
+    grid-template-rows: 1.75em 2em;
 
     padding: 0 1em 0.5em;
     box-sizing: border-box;
@@ -276,7 +291,6 @@ nav.navigation, body.nav-toggled nav.navigation {
     .nav-secondary {
       display: flex;
       flex-flow: row;
-      align-items: center;
 
       padding: 0 0.25em;
       font-size: 1.05em;
@@ -286,7 +300,11 @@ nav.navigation, body.nav-toggled nav.navigation {
       overflow: hidden;
 
       li {
+        display: flex;
+
         a {
+          align-content: center;
+
           border-bottom: 0;
           padding: 0 0.75em;
           white-space: nowrap;
@@ -295,7 +313,16 @@ nav.navigation, body.nav-toggled nav.navigation {
         &.divider {
           display: flex;
           align-items: center;
+          height: 100%;
+
           &::after { content: "|"; }
+        }
+
+        form {
+          display: flex;
+          align-items: center;
+
+          input[type="text"] { min-width: 10em; }
         }
       }
     }
@@ -337,13 +364,14 @@ nav.navigation, body.nav-toggled nav.navigation {
       }
     }
     .nav-help {
-      overflow: hidden;
+      li a img { display: none; }
 
       li.current a {
         background-color: themed("color-foreground");
-        i { display: none; }
       }
     }
+
+    .nav-primary, .nav-tools, .nav-help { box-shadow: unset; }
   }
 }
 
