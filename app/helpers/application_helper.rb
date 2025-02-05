@@ -24,7 +24,7 @@ module ApplicationHelper
 
     tag.li(id: id, class: klass) do
       link_to(url, id: "#{id}-link", **options) do
-        concat tag.i(class: icon)
+        concat svg_icon(icon)
         concat " "
         concat tag.span(text)
       end
@@ -186,6 +186,21 @@ module ApplicationHelper
     deferred_post_ids.add(post_id)
     tag.div class: "post-thumb placeholder", id: "tp-#{post_id}", data: { id: post_id } do
       tag.img class: "thumb-img placeholder", src: "/images/thumb-preview.png", height: 150, width: 150
+    end
+  end
+
+  def simple_avatar(user, **options)
+    return "" if user.nil?
+    post_id = user.avatar_id
+    deferred_post_ids.add(post_id) if post_id
+
+    klass = options.delete(:class)
+    named = options.delete(:named)
+    tag.a href: user_path(user), class: "simple-avatar #{klass}", data: { id: post_id, name: user.name } do
+      tag.span(class: "simple-avatar-button") do
+        concat tag.span(user.pretty_name, class: "simple-avatar-name") if named
+        concat tag.span(class: "simple-avatar-image", data: { name: user.name[0].capitalize })
+      end
     end
   end
 
