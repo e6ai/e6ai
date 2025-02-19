@@ -456,8 +456,8 @@ module Danbooru
         },
         {
           name: "young_human",
-          reason: "Young [[human]]-[[humanoid|like]] character in an explicit situation",
-          text: "Posts featuring human and human-like characters depicted in a sexual or explicit nude way, are not acceptable on this site.",
+          reason: "Young character in an explicit situation",
+          text: "Any explicit content featuring characters that are underage, or appear underage, is not acceptable on this site.",
         },
         {
           name: "dnp_artist",
