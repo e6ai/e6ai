@@ -21,12 +21,7 @@
       <% end %>
 
       <div id="wiki-page-body" class="dtext-container">
-        <% if wiki_content.visible? %>
-          <%= format_text(wiki_content.body, allow_color: true, max_thumbs: 75) %>
-        <% else %>
-          <p>This user has requested removal of their information.</p>
-        <% end %>
-
+        <%= format_text(wiki_content.body, allow_color: true, max_thumbs: 75) %>
         <%= wiki_page_alias_and_implication_list(wiki_content) %>
       </div>
 

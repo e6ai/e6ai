@@ -124,7 +124,7 @@ class WikiPagesControllerTest < ActionDispatch::IntegrationTest
 
         should "not work for disallowed prefixes" do
           assert_no_difference("WikiPage.count") do
-            post_auth wiki_pages_path, @user, params: { wiki_page: { title: "lore:abc", body: "abc" } }
+            post_auth wiki_pages_path, @user, params: { wiki_page: { title: "invalid:abc", body: "abc" } }
           end
         end
 
@@ -148,7 +148,7 @@ class WikiPagesControllerTest < ActionDispatch::IntegrationTest
 
         should "not work for disallowed categories" do
           assert_no_difference("WikiPage.count") do
-            post_auth wiki_pages_path, @user, params: { wiki_page: { title: "abc", body: "abc", category_id: Tag.categories.lore } }
+            post_auth wiki_pages_path, @user, params: { wiki_page: { title: "abc", body: "abc", category_id: Tag.categories.invalid } }
           end
         end
 
@@ -198,7 +198,7 @@ class WikiPagesControllerTest < ActionDispatch::IntegrationTest
         end
 
         should "not work for disallowed categories" do
-          put_auth wiki_page_path(@wiki_page), @user, params: { wiki_page: { category_id: Tag.categories.lore } }
+          put_auth wiki_page_path(@wiki_page), @user, params: { wiki_page: { category_id: Tag.categories.invalid } }
           @wiki_page.reload
           assert_equal(Tag.categories.general, @wiki_page.category_id)
         end

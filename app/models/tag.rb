@@ -396,11 +396,11 @@ class Tag < ApplicationRecord
   end
 
   def user_can_create_tag?
-    if name =~ /\A.*_\(lore\)\z/ && !CurrentUser.user.is_admin?
-      errors.add(:base, "Can not create lore tags unless admin")
-      errors.add(:name, "is invalid")
-      return false
-    end
+    # if name =~ /\A.*_\(lore\)\z/ && !CurrentUser.user.is_admin?
+    #   errors.add(:base, "Can not create lore tags unless admin")
+    #   errors.add(:name, "is invalid")
+    #   return false
+    # end
     true
   end
 
