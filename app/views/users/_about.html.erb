@@ -1,8 +1,0 @@
-<div class="about-section">
-  <% if user.profile_about.present? %>
-    <div class="profile-about-entry" id="about-info">
-      <h3>About</h3>
-      <div class="content dtext-container"><%= format_text(user.profile_about, allow_color: true) %></div>
-    </div>
-  <% end %>
-</div>
