@@ -86,7 +86,7 @@ body.c-static.a-home {
       justify-content: center;
       gap: 0.25rem;
 
-      background: #25477b;
+      background: #404040;
       font-size: 0.9rem;
       line-height: 1rem;
       font-family: "Roboto", Verdana, Geneva, sans-serif;
@@ -96,7 +96,7 @@ body.c-static.a-home {
       padding: 0.5rem;
       @include st-radius;
       
-      &:hover { background: #2b538e; }
+      &:hover { background: #4d4d4d; }
 
       svg {
         height: 1.25rem;
@@ -135,7 +135,7 @@ body.c-static.a-home {
       justify-content: center;
       gap: 0.25rem;
 
-      background: #25477b;
+      background: #404040;
       font-size: 0.85rem;
       line-height: 1rem;
       font-family: "Roboto", Verdana, Geneva, sans-serif;
@@ -144,7 +144,7 @@ body.c-static.a-home {
       padding: 0.25rem 0.5rem;
       @include st-radius;
       
-      &:hover { background: #2b538e; }
+      &:hover { background: #4d4d4d; }
     }
   }
 
