@@ -7,7 +7,7 @@
   <a
     class="tag-list-wiki"
     rel="nofollow"
-    href="<%= (tag.category == Tag.categories.artist ? "/artists/show_or_new?name=" : "/wiki_pages/show_or_new?title=") + tag.name %>"
+    href="/wiki_pages/show_or_new?title=<%= tag.name %>"
   >?</a>
 
   <% if query.present? %>
@@ -24,7 +24,7 @@
   <a
     rel="nofollow"
     class="tag-list-search"
-    <%= "itemprop=author" if tag.category == Tag.categories.artist %>
+    <%= "itemprop=author" if tag.category == Tag.categories.director %>
     href="<%= posts_path(tags: tag.name) %>"
   >
     <span>
