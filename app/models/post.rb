@@ -6,7 +6,8 @@ class Post < ApplicationRecord
   class TimeoutError < Exception ; end
 
   # Tags to copy when copying notes.
-  NOTE_COPY_TAGS = %w[translated partially_translated translation_check translation_request]
+  NOTE_COPY_TAGS = %w[translated partially_translated translation_check translation_request].freeze
+  NON_ARTIST_TAGS = %w[avoid_posting conditional_dnp epilepsy_warning sound_warning].freeze
 
   before_validation :initialize_uploader, :on => :create
   before_validation :merge_old_changes
@@ -898,8 +899,56 @@ class Post < ApplicationRecord
       return unless parent_id.present?
       parent.tag_string += " #{tag_string}"
     end
-  end
 
+    ## DB!
+    # List of post tags, grouped by their category.
+    # Sends a db request to look up the tag data.
+    def categorized_tags
+      @categorized_tags ||= begin
+        tag_data = Tag.where(name: tag_array).select(:name, :post_count, :category).index_by(&:name)
+        ordered = tag_array.map do |name|
+          tag_data[name] || Tag.new(name: name).freeze
+        end
+
+        ordered.group_by(&:category_name)
+      end
+    end
+
+    ##
+    # List of tags for the specified category name
+    # Supports both category names and IDs
+    def tags_for_category(category)
+      if category.is_a? Integer
+        category = TagCategory::REVERSE_MAPPING[category]
+      else
+        category = category.downcase
+      end
+      categorized_tags[category] || []
+    end
+
+    ##
+    # List of artist tags for the post
+    # Excludes non-artist tags like avoid_posting or sound_warning
+    def artist_tags
+      @artist_tags ||= tags_for_category(Tag.categories.director).filter do |tag|
+        NON_ARTIST_TAGS.exclude?(tag.name)
+      end
+    end
+
+    ## DB!
+    # Fetches the data for the artist tags to find any that have the linked artists matching the uploader
+    # Sends a db request to look up the artist data.
+    def uploader_linked_artists
+      []
+    end
+
+    ## DB!
+    # Fetches the avoid posting data for the post's artist tags.
+    # Sends a db request to lookup avoid posting data.
+    def avoid_posting_artists
+      []
+    end
+  end
 
   module FavoriteMethods
     def clean_fav_string!
@@ -1646,9 +1695,9 @@ class Post < ApplicationRecord
 
     def has_artist_tag
       return if !new_record?
-      return if tags.any? { |t| t.category == Tag.categories.artist }
+      return if tags.any? { |t| t.category == Tag.categories.director }
 
-      self.warnings.add(:base, 'Artist tag is required. "Click here":/help/tags#catchange if you need help changing the category of an tag. Ask on the forum if you need naming help')
+      self.warnings.add(:base, 'Director tag is required. "Click here":/help/tags#catchange if you need help changing the category of an tag. Ask on the forum if you need naming help')
     end
 
     def has_enough_tags
@@ -1731,6 +1780,9 @@ class Post < ApplicationRecord
     @post_sets = nil
     @tag_categories = nil
     @typed_tags = nil
+    @categorized_tags = nil
+    @artist_tags = nil
+    @uploader_linked_artists = nil
     self
   end
 
@@ -1752,14 +1804,6 @@ class Post < ApplicationRecord
     save
   end
 
-  def artist_tags
-    tags.select { |t| t.category == Tag.categories.director }
-  end
-
-  def uploader_linked_artists
-    []
-  end
-
   def flaggable_for_guidelines?
     !has_tag?("grandfathered_content") && created_at.after?("2015-01-01")
   end
@@ -1770,9 +1814,5 @@ class Post < ApplicationRecord
     else
       comments.visible(user).count
     end
-  end
-
-  def avoid_posting_artists
-    []
   end
 end

@@ -1,8 +1,13 @@
+// Common
+@import "common/common";
+
 // Main themes
 @import "index/index";
 @include window-larger-than(50rem) {
   @import "index/index.desktop";
 }
+
+@import "show/show";
 
 // Features
 @import "index/partials/mode_menu";

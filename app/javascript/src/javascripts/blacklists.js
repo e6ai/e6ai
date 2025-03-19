@@ -1,5 +1,6 @@
 import Filter from "./models/Filter";
 import PostCache from "./models/PostCache";
+import User from "./models/User";
 import Utility from "./utility";
 import Page from "./utility/page";
 import LStorage from "./utility/storage";
@@ -7,6 +8,7 @@ import LStorage from "./utility/storage";
 let Blacklist = {};
 
 Blacklist.isAnonymous = false;
+Blacklist.isPostsShow = false;
 Blacklist.filters = {};
 
 Blacklist.hiddenPosts = new Set();
@@ -47,29 +49,9 @@ Blacklist.init_blacklist_editor = function () {
 
   $("#blacklist-save").on("click", function () {
     const blacklist_content = $("#blacklist-edit").val();
-    const blacklist_json = JSON.stringify(blacklist_content.split(/\n\r?/));
-    if (Blacklist.isAnonymous) {
-      LStorage.Blacklist.AnonymousBlacklist = blacklist_json;
-    } else {
-      $.ajax("/users/" + Utility.meta("current-user-id") + ".json", {
-        method: "PUT",
-        data: {
-          "user[blacklisted_tags]": blacklist_content,
-        },
-      }).done(function () {
-        Utility.notice("Blacklist updated");
-      }).fail(function () {
-        Utility.error("Failed to update blacklist");
-      });
-    }
-
-    $("#blacklist-edit-dialog").dialog("close");
-    $("meta[name=blacklisted-tags]").attr("content", blacklist_json);
-
-    // Start from scratch
-    Blacklist.regenerate_filters();
-    Blacklist.add_posts(PostCache.sample());
-    Blacklist.update_visibility();
+    const blacklist_json = blacklist_content.split(/\n\r?/);
+    User.blacklist.tags = blacklist_json;
+    User.saveBlacklist();
   });
 
   $("#blacklist-edit-link").on("click", function (event) {
@@ -85,6 +67,9 @@ Blacklist.init_reveal_on_click = function () {
   if (!$("#c-posts #a-show").length) return;
   $("#image-container").on("click", (event) => {
     $(event.currentTarget).removeClass("blacklisted");
+
+    $("#note-container").css("visibility", "visible");
+    Danbooru.Note.Box.scale_all();
   });
 };
 
@@ -93,15 +78,7 @@ Blacklist.regenerate_filters = function () {
   Blacklist.filters = {};
 
   // Attempt to create filters from text
-  let blacklistText;
-  try {
-    blacklistText = JSON.parse(Utility.meta("blacklisted-tags") || "[]");
-  } catch (error) {
-    console.error(error);
-    blacklistText = [];
-  }
-
-  for (let entry of blacklistText) {
+  for (let entry of User.blacklist.tags) {
     const line = Filter.create(entry);
     if (line) Blacklist.filters[line.text] = line;
   }
@@ -156,6 +133,27 @@ Blacklist.init_blacklist_toggles = function () {
   });
 };
 
+Blacklist.init_quick_blacklist = function () {
+  for (const one of User.blacklist.tags) {
+    if (one.includes(" ")) continue;
+    $(`li.tag-list-item[data-name='${one}`).addClass("blacklisted");
+  }
+
+  $(".tag-list-actions button").on("click", (event) => {
+    const target = $(event.currentTarget);
+    const tag = target.data("tag");
+    if (!tag) return;
+
+    if (User.blacklist.tags.includes(tag)) {
+      User.removeBlacklistedTag(tag);
+      target.parents(".tag-list-item").removeClass("blacklisted");
+    } else {
+      User.addBlacklistedTag(tag);
+      target.parents(".tag-list-item").addClass("blacklisted");
+    }
+  });
+};
+
 /**
  * Register posts in the system, and calculate which filters apply to them
  * @param {JQuery<HTMLElement> | JQuery<HTMLElement>[]} $posts Posts to register
@@ -200,6 +198,17 @@ Blacklist.update_visibility = function () {
     PostCache.apply(postID, ($element) => {
       $element.removeClass("blacklisted").trigger("blk:show");
     });
+
+  // Toggle notes on the posts#show page
+  if (!Blacklist.isPostsShow) return;
+
+  const container = $("#image-container");
+  if (container.hasClass("blacklisted")) {
+    $("#note-container").css("visibility", "hidden");
+  } else {
+    $("#note-container").css("visibility", "visible");
+    Danbooru.Note.Box.scale_all();
+  }
 };
 
 /**
@@ -220,6 +229,8 @@ Blacklist.update_styles = function () {
 };
 
 $(() => {
+  Blacklist.isPostsShow = $("#image-container").length > 0;
+
   Blacklist.init_anonymous_blacklist();
   Blacklist.init_blacklist_editor();
   Blacklist.init_reveal_on_click();
@@ -232,6 +243,7 @@ $(() => {
 
   Blacklist.init_comment_blacklist();
   Blacklist.init_blacklist_toggles();
+  Blacklist.init_quick_blacklist();
 
   // Pause videos when blacklisting
   // This seems extraordinarily uncommon, so it's here

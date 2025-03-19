@@ -41,12 +41,11 @@ class UsersController < ApplicationController
   end
 
   def upload_limit
-    @presenter = UserPresenter.new(CurrentUser.user)
-    pieces = CurrentUser.upload_limit_pieces
-    @approved_count = pieces[:approved]
-    @deleted_count = pieces[:deleted]
-    @pending_count = pieces[:pending]
-    respond_with(CurrentUser.user)
+    @user = User.find(User.name_or_id_to_id_forced(params[:id]))
+    @presenter = UserPresenter.new(@user)
+
+    @page = WikiPage.titled("e621:upload_limit").presence || WikiPage.new(body: "Wiki page \"#{name}\" not found.")
+    respond_with(@user, methods: @user.full_attributes)
   end
 
   def show
@@ -95,8 +94,6 @@ class UsersController < ApplicationController
     @user.update(user_params(:update))
     if @user.errors.any?
       flash[:notice] = @user.errors.full_messages.join("; ")
-    else
-      flash[:notice] = "Settings updated"
     end
     respond_with(@user) do |format|
       format.html { redirect_back fallback_location: edit_user_path(@user) }
@@ -127,6 +124,7 @@ class UsersController < ApplicationController
       enable_auto_complete
       disable_cropped_thumbnails
       enable_safe_mode disable_responsive_mode
+      forum_notification_dot
     ]
 
     permitted_params += [dmail_filter_attributes: %i[id words]]

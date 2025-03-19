@@ -465,7 +465,6 @@ Layout/SpaceInsideBlockBraces:
     - 'app/models/tag_alias.rb'
     - 'app/models/tag_relationship.rb'
     - 'app/models/takedown.rb'
-    - 'app/models/ticket.rb'
     - 'app/models/user.rb'
     - 'app/models/wiki_page.rb'
     - 'app/presenters/tag_set_presenter.rb'
@@ -533,7 +532,6 @@ Layout/SpaceInsideHashLiteralBraces:
     - 'app/models/post_version.rb'
     - 'app/models/tag_alias.rb'
     - 'app/models/tag_implication.rb'
-    - 'app/models/ticket.rb'
     - 'app/models/upload_whitelist.rb'
     - 'app/models/user.rb'
     - 'app/models/wiki_page.rb'
@@ -575,9 +573,6 @@ Layout/SpaceInsideHashLiteralBraces:
     - 'app/views/post_set_maintainers/_invite_links.html.erb'
     - 'app/views/post_sets/maintainers.html.erb'
     - 'app/views/posts/partials/index/_posts.html.erb'
-    - 'app/views/posts/partials/show/_information.html.erb'
-    - 'app/views/posts/partials/show/_notices.html.erb'
-    - 'app/views/posts/partials/show/_options.html.erb'
     - 'app/views/tag_relationships/_add_form.html.erb'
     - 'app/views/tags/index.html.erb'
     - 'app/views/takedowns/_editor.html.erb'
@@ -835,8 +830,6 @@ Lint/SymbolConversion:
     - 'app/views/post_replacements/index.html.erb'
     - 'app/views/posts/index.html.erb'
     - 'app/views/posts/partials/index/_related.html.erb'
-    - 'app/views/posts/partials/show/_notices.html.erb'
-    - 'app/views/posts/partials/show/_options.html.erb'
     - 'app/views/posts/show.html.erb'
     - 'app/views/static/home.html.erb'
     - 'app/views/takedowns/_editor.html.erb'
@@ -888,7 +881,6 @@ Lint/UnusedMethodArgument:
     - 'app/logical/storage_manager.rb'
     - 'app/models/application_record.rb'
     - 'app/models/post.rb'
-    - 'app/models/ticket.rb'
     - 'app/presenters/post_presenter.rb'
     - 'app/presenters/user_presenter.rb'
 
@@ -1004,7 +996,6 @@ Naming/MethodParameterName:
     - 'app/models/bulk_update_request.rb'
     - 'app/models/tag.rb'
     - 'app/models/tag_relationship.rb'
-    - 'app/models/ticket.rb'
     - 'app/presenters/presenter.rb'
 
 # Offense count: 11
@@ -1107,7 +1098,6 @@ Rails/ActiveRecordCallbacksOrder:
     - 'app/models/news_update.rb'
     - 'app/models/pool.rb'
     - 'app/models/post_set.rb'
-    - 'app/models/ticket.rb'
     - 'app/models/user.rb'
     - 'app/models/wiki_page.rb'
 
@@ -1449,7 +1439,6 @@ Style/BarePercentLiterals:
 Style/BlockComments:
   Exclude:
     - 'app/logical/storage_manager/match.rb'
-    - 'app/models/ticket.rb'
     - 'app/presenters/tag_set_presenter.rb'
 
 # Offense count: 1
@@ -1732,11 +1721,6 @@ Style/HashSyntax:
     - 'app/views/posts/partials/index/_blacklist.html.erb'
     - 'app/views/posts/partials/index/_edit.html.erb'
     - 'app/views/posts/partials/index/_related.html.erb'
-    - 'app/views/posts/partials/show/_edit.html.erb'
-    - 'app/views/posts/partials/show/_information.html.erb'
-    - 'app/views/posts/partials/show/_nav_links.html.erb'
-    - 'app/views/posts/partials/show/_options.html.erb'
-    - 'app/views/posts/partials/show/_search_seq.html.erb'
     - 'app/views/posts/show.html.erb'
     - 'app/views/related_tags/show.html.erb'
     - 'app/views/sessions/new.html.erb'
@@ -1939,7 +1923,6 @@ Style/NegatedIf:
     - 'app/models/post_replacement.rb'
     - 'app/models/upload.rb'
     - 'app/models/user_password_reset_nonce.rb'
-    - 'app/views/posts/partials/show/_options.html.erb'
 
 # Offense count: 5
 # This cop supports safe autocorrection (--autocorrect).
@@ -2437,7 +2420,6 @@ Style/StringLiterals:
     - 'app/models/post_set_maintainer.rb'
     - 'app/models/tag_alias.rb'
     - 'app/models/takedown.rb'
-    - 'app/models/ticket.rb'
     - 'app/models/upload_whitelist.rb'
     - 'app/models/user.rb'
     - 'app/models/wiki_page.rb'
@@ -2465,9 +2447,6 @@ Style/StringLiterals:
     - 'app/views/post_sets/post_list.erb'
     - 'app/views/posts/index.html.erb'
     - 'app/views/posts/partials/index/_posts.html.erb'
-    - 'app/views/posts/partials/show/_embedded.html.erb'
-    - 'app/views/posts/partials/show/_notices.html.erb'
-    - 'app/views/posts/partials/show/_options.html.erb'
     - 'app/views/posts/show.html.erb'
     - 'app/views/static/discord.html.erb'
     - 'app/views/static/home.html.erb'
@@ -2666,7 +2645,6 @@ Style/TrailingCommaInHashLiteral:
     - 'app/models/post.rb'
     - 'app/models/post_replacement.rb'
     - 'app/models/post_version.rb'
-    - 'app/models/ticket.rb'
     - 'app/models/user.rb'
     - 'app/presenters/post_presenter.rb'
     - 'app/serializers/post_serializer.rb'
