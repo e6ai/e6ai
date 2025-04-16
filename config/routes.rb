@@ -258,6 +258,8 @@ Rails.application.routes.draw do
   resources :post_versions, :only => [:index] do
     member do
       put :undo
+      put :hide
+      put :unhide
     end
   end
   resource :related_tag, :only => [:show, :update]
