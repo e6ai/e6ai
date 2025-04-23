@@ -295,6 +295,7 @@ Rails.application.routes.draw do
     member do
       get :upload_limit
       get :toggle_uploads
+      get :fix_counts
     end
 
     collection do
