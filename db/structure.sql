@@ -1688,6 +1688,7 @@ CREATE TABLE public.posts (
     is_comment_disabled boolean DEFAULT false NOT NULL,
     is_comment_locked boolean DEFAULT false NOT NULL,
     tag_count_franchise integer DEFAULT 0 NOT NULL
+    video_samples jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -4723,6 +4724,7 @@ SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
 ('20250512221037'),
+('20250501203333'),
 ('20250430193448'),
 ('20250429022022'),
 ('20250423141854'),
