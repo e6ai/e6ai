@@ -7,7 +7,7 @@ body {
 
   &[data-th-logo="default"] {
     a.nav-logo-link { background-image: url("logo/default.svg"); }
-    &[data-th-main="bloodlust"] a.nav-logo-link { background-image: url("logo/default_bloodlust.svg"); }
-    &[data-th-main="pony"] a.nav-logo-link { background-image: url("logo/default_pony.svg"); }
+    // &[data-th-main="bloodlust"] a.nav-logo-link { background-image: url("logo/default_bloodlust.svg"); }
+    // &[data-th-main="pony"] a.nav-logo-link { background-image: url("logo/default_pony.svg"); }
   }
 }
