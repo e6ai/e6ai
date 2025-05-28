@@ -11,7 +11,7 @@ Rails.application.configure do
     policy.default_src :self
     policy.script_src  :self, "ads.dragonfru.it", "https://www.google.com/recaptcha/", "https://www.gstatic.com/recaptcha/", "https://www.recaptcha.net/", "https://assets.freespeechcoalition.com"
     policy.style_src   :self, :unsafe_inline
-    policy.connect_src :self, "ads.dragonfru.it", "umami.dragonfru.it", "static1.e6ai.net", "api.freespeechcoalition.com"
+    policy.connect_src :self, "ads.dragonfru.it", "plausible.dragonfru.it", "static1.e6ai.net", "api.freespeechcoalition.com"
     policy.object_src  :self, "static1.e6ai.net"
     policy.media_src   :self, "static1.e6ai.net"
     policy.frame_ancestors :none
