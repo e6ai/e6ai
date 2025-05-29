@@ -93,9 +93,9 @@ class TagCategory
   }.freeze
 
   CATEGORIES = %w[general species character franchise director invalid meta].freeze
-  CATEGORY_IDS = CANONICAL_MAPPING.values
+  CATEGORY_IDS = CANONICAL_MAPPING.values.freeze
 
-  SHORT_NAME_LIST = SHORT_NAME_MAPPING.keys
+  SHORT_NAME_LIST = SHORT_NAME_MAPPING.keys.freeze
   HUMANIZED_LIST = %w[character franchise director].freeze
   SPLIT_HEADER_LIST = %w[invalid director franchise character species general meta].freeze
   CATEGORIZED_LIST = %w[invalid director franchise character species meta general].freeze
