@@ -1683,7 +1683,6 @@ CREATE TABLE public.posts (
     comment_count integer DEFAULT 0 NOT NULL,
     change_seq bigint NOT NULL,
     bg_color character varying,
-    generated_samples character varying[],
     duration numeric,
     is_comment_disabled boolean DEFAULT false NOT NULL,
     is_comment_locked boolean DEFAULT false NOT NULL,
@@ -4723,6 +4722,7 @@ ALTER TABLE ONLY public.staff_notes
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250604020028'),
 ('20250512221037'),
 ('20250501203333'),
 ('20250430193448'),
