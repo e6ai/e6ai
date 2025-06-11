@@ -251,6 +251,7 @@ class Post < ApplicationRecord
 
       @video_sample_list ||= begin
         sample_data = {
+          has: false,
           original: {
             codec: nil,
             fps: 0,
@@ -264,6 +265,7 @@ class Post < ApplicationRecord
           sample_data[:original] = video_samples["original"]
 
           sample_data[:variants] = {}
+          sample_data[:has] = true if video_samples["variants"].present?
           video_samples["variants"].each do |name, video|
             sample_data[:variants][name] = video
             sample_data[:variants][name][:codec] = name == "mp4" ? "avc1.4D401E" : "vp9"
@@ -325,6 +327,7 @@ class Post < ApplicationRecord
         variants: {},
         samples: {},
       })
+      reload
     end
 
     def regenerate_image_samples!
@@ -1920,6 +1923,7 @@ class Post < ApplicationRecord
     @categorized_tags = nil
     @artist_tags = nil
     @uploader_linked_artists = nil
+    @video_sample_list = nil
     self
   end
 
