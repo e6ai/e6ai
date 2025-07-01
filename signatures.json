@@ -1,3 +1,12 @@
 {
-  "signedContributors": []
+  "signedContributors": [
+    {
+      "name": "Kebolder",
+      "id": 65150735,
+      "comment_id": 3025646711,
+      "created_at": "2025-07-01T21:54:14Z",
+      "repoId": 648985878,
+      "pullRequestNo": 2
+    }
+  ]
 }
