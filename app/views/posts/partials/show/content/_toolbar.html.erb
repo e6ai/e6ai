@@ -1,31 +1,74 @@
+
+<section id="ptbr-wrapper">
+
 <% if CurrentUser.is_member? %>
-  <div class="image-vote-buttons">
-    <%= post_vote_block(@post, @post.own_vote, buttons: true) %>
+  <div
+    class="ptbr-vote"
+    data-score="<%= @post.score %>"
+    data-up="<%= @post.up_score %>"
+    data-down="<%= @post.down_score %>"
+    data-state="<%= post_score_state(@post) %>"
+    data-vote="<%= @post.own_vote.nil? ? 0 : @post.own_vote.score %>"
+  >
+    <button
+      class="st-button kinetic ptbr-vote-button"
+      data-action="1"
+      processing="false"
+    ><%= svg_icon(:chevron_up) %></button>
+    <span
+      class="ptbr-score"
+      title="↑ <%= @post.up_score %> <%= @post.down_score %> ↓"
+      >
+      <%= @post.score %>
+    </span>
+    <button
+      class="st-button kinetic ptbr-vote-button"
+      data-action="-1"
+      processing="false"
+    ><%= svg_icon(:chevron_down) %></button>
   </div>
-  <%= tag.div(class: "fav-buttons fav-buttons-#{@post.is_favorited?}") do %>
-    <%= button_tag id: "add-fav-button", class: "button btn-success", data: { pid: @post.id, shortcut: "f" } do %>
-      <%= tag.i(class: "fa-regular fa-star") %>
-      <span>Favorite</span>
-    <% end %>
-    <%= button_tag id: "remove-fav-button", class: "button btn-danger", data: { pid: @post.id, shortcut: "shift+f" } do %>
-      <%= tag.i(class: "fa-solid fa-star") %>
-      <span>Unfavorite</span>
-    <% end %>
-  <% end %>
+
+  <div class="ptbr-favorite">
+    <button
+      class="st-button kinetic ptbr-favorite-button anim"
+      data-shortcut="f"
+      favorited="<%= @post.is_favorited? %>"
+      processing="false"
+    >
+      <%= svg_icon(:star) %>
+    </button>
+  </div>
+<% else %>
+  <div
+    class="ptbr-vote"
+    data-score="<%= @post.score %>"
+    data-up="<%= @post.up_score %>"
+    data-down="<%= @post.down_score %>"
+    data-state="<%= post_score_state(@post) %>"
+  >
+    <span
+      class="ptbr-score anonymous"
+      title="↑ <%= @post.up_score %> <%= @post.down_score %> ↓"
+      >
+      <%= @post.score %>
+    </span>
+  </div>
 <% end %>
 
 <% if @post.visible? %>
-  <div id="image-download-link">
-    <%= link_to @post.file_url, class: "button btn-warn" do %>
-      <%= tag.i(class: "fa-solid fa-right-to-bracket fa-rotate-90") %>
-      <span>Download</span>
-    <% end %>
+  <div class="ptbr-fullscreen">
+    <a
+      href="<%= @post.file_url %>"
+      class="st-button kinetic ptbr-fullscreen-button"
+    >
+      <%= svg_icon(:download) %>
+    </a>
   </div>
 <% end %>
 
 <% if !@post.force_original_size? %>
-  <div>
-    <select id="image-resize-selector" class="button btn-neutral">
+  <div class="ptbr-resize">
+    <select id="image-resize-selector" class="st-button">
       <option value="original">Original</option>
       <option value="fit">Fit (Horizontal)</option>
       <option value="fitv">Fit (Vertical)</option>
@@ -39,3 +82,14 @@
   </select>
   </div>
 <% end %>
+
+<% if @post.has_notes? %>
+  <div class="ptbr-notes">
+    <button
+      class="st-button kinetic ptbr-notes-button"
+      enabled="true"
+    ></button>
+  </div>
+<% end %>
+
+</section>

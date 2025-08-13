@@ -1,12 +1,13 @@
 import Utility from "./utility";
 import Post from "./posts";
-import Favorite from "./favorites";
+import Favorite from "./models/Favorite";
 import PostSet from "./post_sets";
 import TagScript from "./tag_script";
-import { SendQueue } from "./send_queue";
 import Rails from "@rails/ujs";
 import Shortcuts from "./shortcuts";
 import LStorage from "./utility/storage";
+import TaskQueue from "./utility/task_queue";
+import PostVote from "./models/PostVote";
 
 let PostModeMenu = {};
 
@@ -113,7 +114,7 @@ PostModeMenu.tag_script_apply_all = function (event) {
 PostModeMenu.update_sets_menu = function () {
   let target = $("#set-id");
   target.off("change");
-  SendQueue.add(function () {
+  TaskQueue.add(() => {
     $.ajax({
       type: "GET",
       url: "/post_sets/for_select.json",
@@ -133,7 +134,7 @@ PostModeMenu.update_sets_menu = function () {
         target.append(group);
       });
     });
-  });
+  }, { name: "PostModeMenu.update_sets_menu" });
 };
 
 PostModeMenu.change = function () {
@@ -179,15 +180,27 @@ PostModeMenu.click = function (e) {
   var post_id = $(e.currentTarget).data("id");
 
   if (s === "add-fav") {
-    Favorite.create(post_id);
+    Post.notice_update("inc");
+    Favorite.create(post_id)
+      .then(() => { $(window).trigger("danbooru:notice", "Favorite added"); })
+      .finally(() => { Post.notice_update("dec"); });
   } else if (s === "remove-fav") {
-    Favorite.destroy(post_id);
+    Post.notice_update("inc");
+    Favorite.destroy(post_id)
+      .then(() => { $(window).trigger("danbooru:notice", "Favorite removed"); })
+      .finally(() => { Post.notice_update("dec"); });
   } else if (s === "edit") {
     PostModeMenu.open_edit(post_id);
   } else if (s === "vote-down") {
-    Post.vote(post_id, -1, true);
+    Post.notice_update("inc");
+    PostVote.vote(post_id, -1, true)
+      .then(() => { $(window).trigger("danbooru:notice", "Vote saved"); })
+      .finally(() => { Post.notice_update("dec"); });
   } else if (s === "vote-up") {
-    Post.vote(post_id, 1, true);
+    Post.notice_update("inc");
+    PostVote.vote(post_id, 1, true)
+      .then(() => { $(window).trigger("danbooru:notice", "Vote saved"); })
+      .finally(() => { Post.notice_update("dec"); });
   } else if (s === "add-to-set") {
     PostSet.add_post($("#set-id").val(), post_id);
   } else if (s === "remove-from-set") {
