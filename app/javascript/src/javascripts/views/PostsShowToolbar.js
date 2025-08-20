@@ -36,9 +36,7 @@ export default class PostsShowToolbar {
     });
 
     // Initialize fullscreen menu toggle
-    $(".ptbr-fullscreen").each((_index, element) => {
-      this.initFullscreenMenuToggle($(element));
-    });
+    this.initOverflowMenu();
   }
 
 
@@ -67,8 +65,18 @@ export default class PostsShowToolbar {
   }
 
   initVotingHotkeys () {
-    Hotkeys.register("upvote", () => { PostsShowToolbar.vote(1); });
-    Hotkeys.register("downvote", () => { PostsShowToolbar.vote(-1); });
+    Hotkeys.register("upvote", () => {
+      Utility.notice("Updating post...");
+      PostsShowToolbar.vote(1).then(() => {
+        Utility.notice("Post upvoted.");
+      });
+    });
+    Hotkeys.register("downvote", () => {
+      Utility.notice("Updating post...");
+      PostsShowToolbar.vote(-1).then(() => {
+        Utility.notice("Post downvoted.");
+      });
+    });
   }
 
   static async vote (direction) {
@@ -109,19 +117,22 @@ export default class PostsShowToolbar {
     const imageEl = $("#image-container");
 
     Hotkeys.register("favorite", () => {
+      Utility.notice("Updating post...");
       if (imageEl.attr("data-is-favorited") == "true")
-        PostsShowToolbar.deleteFavorite();
-      else PostsShowToolbar.addFavorite();
+        PostsShowToolbar.deleteFavorite().then(() => Utility.notice("Favorite removed."));
+      else PostsShowToolbar.addFavorite().then(() => Utility.notice("Favorite added."));
     });
 
     Hotkeys.register("favorite-add", () => {
       if (imageEl.attr("data-is-favorited") == "true") return;
-      PostsShowToolbar.addFavorite();
+      Utility.notice("Updating post...");
+      PostsShowToolbar.addFavorite().then(() => Utility.notice("Favorite added."));
     });
 
     Hotkeys.register("favorite-del", () => {
       if (imageEl.attr("data-is-favorited") == "false") return;
-      PostsShowToolbar.deleteFavorite();
+      Utility.notice("Updating post...");
+      PostsShowToolbar.deleteFavorite().then(() => Utility.notice("Favorite removed."));
     });
   }
 
@@ -156,10 +167,38 @@ export default class PostsShowToolbar {
   }
 
   // Fullscreen / download menu
-  initFullscreenMenuToggle (wrapper) {
-    const menu = wrapper.find(".ptbr-fullscreen-menu");
-    wrapper.find(".ptbr-fullscreen-toggle").on("click", () => {
+  initOverflowMenu () {
+    const menu = $(".ptbr-etc-menu");
+    $(".ptbr-etc-toggle").on("click", () => {
       menu.toggleClass("hidden");
+    });
+
+    const button = $(".ptbr-etc-download").on("click.e6.prepare", async (event) => {
+      event.preventDefault();
+
+      if (button.attr("pending") == "true") return;
+      button.attr("pending", "true");
+
+      const url = PostsShowToolbar.currentPost.file.url;
+      console.log("downloading", url);
+
+      fetch(url, {
+        mode: "cors",
+        credentials: "include",
+      })
+        .then(response => response.blob())
+        .then(blob => {
+          let blobUrl = window.URL.createObjectURL(blob);
+          button.attr({
+            href: blobUrl,
+            pending: "false",
+          }).off("click.e6.prepare");
+          button[0].click();
+        })
+        .catch(e => {
+          Utility.error("Failed to download post file.", e);
+          button.attr("pending", "false");
+        });
     });
   }
 }
