@@ -12,6 +12,10 @@ module Danbooru
       "e6AI"
     end
 
+    def server_name
+      nil
+    end
+
     def description
       "e6AI"
     end
