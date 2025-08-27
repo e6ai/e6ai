@@ -31,7 +31,7 @@ class TagCategory
     "Meta" => 7,
   }.freeze
 
-  MEMBER_EDITABLE_CATEGORIES = %w[General Artist Contributor Copyright Character Species].freeze
+  MEMBER_EDITABLE_CATEGORIES = %w[General Director Franchise Character Species].freeze
   MEMBER_EDITABLE_MAPPING = CANONICAL_MAPPING.select { |k, _| MEMBER_EDITABLE_CATEGORIES.include?(k) }.freeze
 
   REVERSE_MAPPING = {
