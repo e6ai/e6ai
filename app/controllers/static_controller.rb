@@ -2,23 +2,28 @@
 
 class StaticController < ApplicationController
   def privacy
-    @page = format_wiki_page("e621:privacy_policy")
+    @page_name = "e621:privacy_policy"
+    @page = format_wiki_page(@page_name)
   end
 
   def terms_of_service
-    @page = format_wiki_page("e621:terms_of_service")
+    @page_name = "e621:terms_of_service"
+    @page = format_wiki_page(@page_name)
   end
 
   def contact
-    @page = format_wiki_page("e621:contact")
+    @page_name = "e621:contact"
+    @page = format_wiki_page(@page_name)
   end
 
   def takedown
-    @page = format_wiki_page("e621:takedown")
+    @page_name = "e621:takedown"
+    @page = format_wiki_page(@page_name)
   end
 
   def avoid_posting
-    @page = format_wiki_page("avoid_posting")
+    @page_name = "avoid_posting"
+    @page = format_wiki_page(@page_name)
   end
 
   def furid
@@ -46,12 +51,10 @@ class StaticController < ApplicationController
       user = CurrentUser.user
       user.disable_responsive_mode = !user.disable_responsive_mode
       user.save
+    elsif cookies[:nmm]
+      cookies.delete(:nmm)
     else
-      if cookies[:nmm]
-        cookies.delete(:nmm)
-      else
-        cookies.permanent[:nmm] = '1'
-      end
+      cookies.permanent[:nmm] = "1"
     end
     redirect_back fallback_location: posts_path
   end

@@ -1210,7 +1210,7 @@ class PostTest < ActiveSupport::TestCase
           post_edited_by_user_b.old_source = ""
           post_edited_by_user_b.old_rating = "q"
           post_edited_by_user_b.parent_id = nil
-          post_edited_by_user_b.source = "http://example.com"
+          post_edited_by_user_b.source = "https://example.com"
           post_edited_by_user_b.rating = "q"
           post_edited_by_user_b.save
 
@@ -1803,7 +1803,7 @@ class PostTest < ActiveSupport::TestCase
     end
 
     should "return posts for a pixiv source search" do
-      url = "http://i1.pixiv.net/img123/img/artist-name/789.png"
+      url = "https://i1.pixiv.net/img123/img/artist-name/789.png"
       post = create(:post, source: url)
 
       assert_tag_match([post], "source:*.pixiv.net/img*/artist-name/*")
@@ -1866,9 +1866,9 @@ class PostTest < ActiveSupport::TestCase
           fav_count: n,
           file_size: 1.megabyte * n,
           # posts[0] is portrait, posts[1] is landscape. posts[1].mpixels > posts[0].mpixels.
-          image_height: 100*n*n,
-          image_width: 100*(3-n)*n,
-          tag_string: tags[n-1],
+          image_height: 100 * n * n,
+          image_width: 100 * (3 - n) * n,
+          tag_string: tags[n - 1],
         )
 
         create(:comment, post: p, do_not_bump_post: false)
@@ -1893,7 +1893,7 @@ class PostTest < ActiveSupport::TestCase
       assert_tag_match(posts.reverse, "order:arttags")
       assert_tag_match(posts.reverse, "order:chartags")
       assert_tag_match(posts.reverse, "order:copytags")
-      assert_tag_match(posts.reverse, "order:rank")
+      assert_tag_match(posts.reverse, "order:hot")
       assert_tag_match(posts.reverse, "order:note_count")
       assert_tag_match(posts.reverse, "order:note_count_desc")
       assert_tag_match(posts.reverse, "order:notes")
