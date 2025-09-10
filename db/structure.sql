@@ -1,3 +1,8 @@
+\restrict YHJsePkT76rddBcwZQqzeLhCHLmfeQu8l7jY9cAVOUbobXame6AEeww0Y4B1Pzr
+
+-- Dumped from database version 15.12
+-- Dumped by pg_dump version 15.14
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -1689,7 +1694,8 @@ CREATE TABLE public.posts (
     is_comment_disabled boolean DEFAULT false NOT NULL,
     is_comment_locked boolean DEFAULT false NOT NULL,
     tag_count_franchise integer DEFAULT 0 NOT NULL,
-    video_samples jsonb DEFAULT '{}'::jsonb NOT NULL
+    video_samples jsonb DEFAULT '{}'::jsonb NOT NULL,
+    tag_count_lore integer DEFAULT 0 NOT NULL
 );
 
 
@@ -4783,9 +4789,12 @@ ALTER TABLE ONLY public.staff_notes
 -- PostgreSQL database dump complete
 --
 
+\unrestrict YHJsePkT76rddBcwZQqzeLhCHLmfeQu8l7jY9cAVOUbobXame6AEeww0Y4B1Pzr
+
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250910013836'),
 ('20250831040648'),
 ('20250831015612'),
 ('20250830192056'),

@@ -33,6 +33,7 @@ module PostIndex
           tag_count_meta: { type: "integer" },
           tag_count_species: { type: "integer" },
           tag_count_invalid: { type: "integer" },
+          tag_count_lore: { type: "integer" },
           comment_count: { type: "integer" },
 
           file_size: { type: "integer" },
@@ -241,6 +242,7 @@ module PostIndex
       tag_count_meta:       tag_count_meta,
       tag_count_species:    tag_count_species,
       tag_count_invalid:    tag_count_invalid,
+      tag_count_lore:       tag_count_lore,
 
       comment_count: options[:comment_count] || comment_count,
       file_size:     file_size,
