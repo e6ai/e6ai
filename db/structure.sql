@@ -1689,7 +1689,8 @@ CREATE TABLE public.posts (
     is_comment_disabled boolean DEFAULT false NOT NULL,
     is_comment_locked boolean DEFAULT false NOT NULL,
     tag_count_franchise integer DEFAULT 0 NOT NULL,
-    video_samples jsonb DEFAULT '{}'::jsonb NOT NULL
+    video_samples jsonb DEFAULT '{}'::jsonb NOT NULL,
+    tag_count_lore integer DEFAULT 0 NOT NULL
 );
 
 
@@ -4786,6 +4787,7 @@ ALTER TABLE ONLY public.staff_notes
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250910013836'),
 ('20250831040648'),
 ('20250831015612'),
 ('20250830192056'),

@@ -19,6 +19,8 @@ class TagCategory
     "invalid" => 6,
     "inv" => 6,
     "meta" => 7,
+    "lore" => 8,
+    "lor" => 8,
   }.freeze
 
   CANONICAL_MAPPING = {
@@ -29,6 +31,7 @@ class TagCategory
     "Species" => 5,
     "Invalid" => 6,
     "Meta" => 7,
+    "Lore" => 8,
   }.freeze
 
   MEMBER_EDITABLE_CATEGORIES = %w[General Director Franchise Character Species].freeze
@@ -42,6 +45,7 @@ class TagCategory
     5 => "species",
     6 => "invalid",
     7 => "meta",
+    8 => "lore",
   }.freeze
 
   SHORT_NAME_MAPPING = {
@@ -52,6 +56,7 @@ class TagCategory
     "spec" => "species",
     "inv" => "invalid",
     "meta" => "meta",
+    "lor" => "lore",
   }.freeze
 
   HEADER_MAPPING = {
@@ -62,6 +67,7 @@ class TagCategory
     "species" => "Species",
     "invalid" => "Invalid",
     "meta" => "Meta",
+    "lore" => "Lore",
   }.freeze
 
   ADMIN_ONLY_MAPPING = {
@@ -72,6 +78,7 @@ class TagCategory
     "species" => false,
     "invalid" => true,
     "meta" => true,
+    "lore" => true,
   }.freeze
 
   HUMANIZED_MAPPING = {
@@ -95,13 +102,13 @@ class TagCategory
     },
   }.freeze
 
-  CATEGORIES = %w[general species character franchise director invalid meta].freeze
+  CATEGORIES = %w[general species character franchise director invalid lore meta].freeze
   CATEGORY_IDS = CANONICAL_MAPPING.values.freeze
 
   SHORT_NAME_LIST = SHORT_NAME_MAPPING.keys.freeze
   HUMANIZED_LIST = %w[character franchise director].freeze
-  SPLIT_HEADER_LIST = %w[invalid director franchise character species general meta].freeze
-  CATEGORIZED_LIST = %w[invalid director franchise character species meta general].freeze
+  SPLIT_HEADER_LIST = %w[invalid director franchise character species general meta lore].freeze
+  CATEGORIZED_LIST = %w[invalid director franchise character species meta general lore].freeze
 
   SHORT_NAME_REGEX = SHORT_NAME_LIST.join("|").freeze
   ALL_NAMES_REGEX = MAPPING.keys.join("|").freeze
