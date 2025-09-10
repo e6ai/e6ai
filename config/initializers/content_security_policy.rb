@@ -15,9 +15,9 @@ Rails.application.configure do
     policy.object_src  :self, "static1.e6ai.net"
     policy.media_src   :self, "static1.e6ai.net"
     policy.frame_ancestors :none
-    policy.frame_src   'https://www.google.com/recaptcha/', 'https://www.recaptcha.net/'
+    policy.frame_src   "https://www.google.com/recaptcha/", "https://www.recaptcha.net/"
     policy.font_src    :self
-    policy.img_src     :self, :data, 'static1.e6ai.net', 'ads.dragonfru.it'
+    policy.img_src     :self, :data, "static1.e6ai.net", "ads.dragonfru.it"
     policy.child_src   :none
     policy.form_action :self
     # Specify URI for violation reports
@@ -25,8 +25,8 @@ Rails.application.configure do
   end
 
   # Generate session nonces for permitted importmap and inline scripts
-  config.content_security_policy_nonce_generator = ->(request) { SecureRandom.base64(16) }
-  config.content_security_policy_nonce_directives = %w(script-src)
+  config.content_security_policy_nonce_generator = ->(_request) { SecureRandom.base64(16) }
+  config.content_security_policy_nonce_directives = %w[script-src]
 
   # Report violations without enforcing the policy.
   config.content_security_policy_report_only = false

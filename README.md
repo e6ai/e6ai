@@ -6,7 +6,7 @@
       <img src="https://img.shields.io/github/v/release/e6ai/e6ai?label=version&style=flat-square" alt="Releases" />
     </a><br />
     <a href="https://github.com/e6ai/e6ai/issues">
-      <img src="https://img.shields.io/github/issues/e6ai/e6ai?label=open issues&style=flat-square" alt="Issues" />
+      <img src="https://img.shields.io/github/issues/e6ai/e6ai?label=open%20issues&style=flat-square" alt="Issues" />
     </a><br />
     <a href="https://github.com/e6ai/e6ai/pulls">
       <img src="https://img.shields.io/github/issues-pr/e6ai/e6ai?style=flat-square" alt="Pull Requests" />
