@@ -475,7 +475,7 @@ module Danbooru
         {
           name: "uploading_guidelines",
           reason: "Does not meet the [[uploading_guidelines|uploading guidelines]]",
-          text: "This post fails to meet the site's standards, be it for artistic worth, image quality, relevancy, or something else.\nKeep in mind that your personal preferences have no bearing on this. If you find the content of a post objectionable, simply [[e621:blacklist|blacklist]] it.",
+          text: "This post fails to meet the site's standards, be it for artistic worth, image quality, relevancy, or something else.\nKeep in mind that your personal preferences have no bearing on this. If you find the content of a post objectionable, simply [[e6ai:blacklist|blacklist]] it.",
         },
         {
           name: "young_human",

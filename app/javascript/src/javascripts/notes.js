@@ -394,7 +394,7 @@ let Note = {
       $dialog.data("uiDialog")._title = function (title) {
         title.html(this.options.title); // Allow unescaped html in dialog title
       };
-      $dialog.dialog("option", "title", "Edit note #" + id + " (<a href=\"/wiki_pages/e621:notes\">view help</a>)");
+      $dialog.dialog("option", "title", "Edit note #" + id + " (<a href=\"/wiki_pages/e6ai:notes\">view help</a>)");
 
       $dialog.on("dialogclose.danbooru", function () {
         Note.editing = false;
