@@ -2,17 +2,17 @@
 
 class StaticController < ApplicationController
   def privacy
-    @page_name = "e621:privacy_policy"
+    @page_name = "e6ai:privacy_policy"
     @page = format_wiki_page(@page_name)
   end
 
   def terms_of_service
-    @page_name = "e621:terms_of_service"
+    @page_name = "e6ai:terms_of_service"
     @page = format_wiki_page(@page_name)
   end
 
   def contact
-    @page_name = "e621:contact"
+    @page_name = "e6ai:contact"
     @page = format_wiki_page(@page_name)
   end
 

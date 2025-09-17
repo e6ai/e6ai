@@ -50,7 +50,7 @@ module PostsHelper
       html << link_to(text, posts_path(:tags => "parent:#{post.parent_id}"))
     end
 
-    html << " (#{link_to("learn more", wiki_pages_path(:title => "e621:post_relationships"))}) "
+    html << " (#{link_to('learn more', wiki_pages_path(title: 'e6ai:post_relationships'))}) "
 
     html << link_to("show »", "#", id: "has-parent-relationship-preview-link")
 
@@ -64,7 +64,7 @@ module PostsHelper
     text = children_post_set.children.count == 1 ? "1 child" : "#{children_post_set.children.count} children"
     html << link_to(text, posts_path(:tags => "parent:#{post.id}"))
 
-    html << " (#{link_to("learn more", wiki_pages_path(:title => "e621:post_relationships"))}) "
+    html << " (#{link_to('learn more', wiki_pages_path(title: 'e6ai:post_relationships'))}) "
 
     html << link_to("show »", "#", id: "has-children-relationship-preview-link")
 
