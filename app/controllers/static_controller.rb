@@ -17,7 +17,7 @@ class StaticController < ApplicationController
   end
 
   def takedown
-    @page_name = "e621:takedown"
+    @page_name = "e6ai:takedown"
     @page = format_wiki_page(@page_name)
   end
 
