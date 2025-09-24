@@ -9,15 +9,15 @@
 Rails.application.configure do
   config.content_security_policy do |policy|
     policy.default_src :self
-    policy.script_src  :self, "ads.dragonfru.it", "https://www.google.com/recaptcha/", "https://www.gstatic.com/recaptcha/", "https://www.recaptcha.net/", "https://assets.freespeechcoalition.com"
+    policy.script_src  :self, "ads.e6ai.net", "https://www.google.com/recaptcha/", "https://www.gstatic.com/recaptcha/", "https://www.recaptcha.net/", "https://assets.freespeechcoalition.com", "https://plausible.dragonfru.it/"
     policy.style_src   :self, :unsafe_inline
-    policy.connect_src :self, "ads.dragonfru.it", "plausible.dragonfru.it", "static1.e6ai.net", "api.freespeechcoalition.com"
+    policy.connect_src :self, "ads.e6ai.net", "plausible.dragonfru.it", "static1.e6ai.net", "api.freespeechcoalition.com"
     policy.object_src  :self, "static1.e6ai.net"
     policy.media_src   :self, "static1.e6ai.net"
     policy.frame_ancestors :none
     policy.frame_src   "https://www.google.com/recaptcha/", "https://www.recaptcha.net/"
     policy.font_src    :self
-    policy.img_src     :self, :data, "static1.e6ai.net", "ads.dragonfru.it"
+    policy.img_src     :self, :data, "static1.e6ai.net", "ads.e6ai.net"
     policy.child_src   :none
     policy.form_action :self
     # Specify URI for violation reports
