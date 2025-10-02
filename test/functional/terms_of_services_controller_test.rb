@@ -8,7 +8,7 @@ class TermsOfServicesControllerTest < ActionDispatch::IntegrationTest
       @admin = create(:admin_user)
       @original_version = Setting.tos_version.to_i
       as(@admin) do
-        create(:wiki_page, title: "e621:terms_of_service", body: "Hello TOS")
+        create(:wiki_page, title: "e6ai:terms_of_service", body: "Hello TOS")
       end
       Cache.clear
     end
