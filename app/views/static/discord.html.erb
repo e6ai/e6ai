@@ -1,10 +1,18 @@
-<div class='content'>
-  <p>
-    There is a discord server called "Furry Diffusion" where you can chat with other e6ai users.
-    <br>This server is not owned or operated by e6ai staff. Please keep site discussion to the #e6ai-discussion channel.
-  </p>
-  <%= link_to "Join the server.", Danbooru.config.discord_site %>
-</div>
+<div id="c-static"><div id="a-discord">
+  <h1>Discord Server</h1>
+  <div class="dtext-container">
+    <%= format_text(@page.body, allow_color: true) %>
+  </div>
+  <div class="discord-form">
+    <%= link_to "Join the Server", Danbooru.config.discord_site, class: "st-button submit" %>
+  </div>
+</div></div>
+
+<% content_for(:secondary_links) do %>
+  <% if CurrentUser.is_staff? %>
+    <%= subnav_link_to "Wiki Page", show_or_new_wiki_pages_path(title: @page_name) %>
+  <% end %>
+<% end %>
 
 <% content_for(:page_title) do %>
   Discord Server
