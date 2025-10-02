@@ -21,10 +21,10 @@
     @include st-radius;
   }
 
-  form {
+  div.discord-form {
     margin: 1rem;
 
-    input[type="submit"] {
+    a {
       font-size: 1.5rem;
       line-height: 2rem;
       height: 3rem;
