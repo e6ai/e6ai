@@ -6,11 +6,6 @@ class StaticController < ApplicationController
     @page = format_wiki_page(@page_name)
   end
 
-  def terms_of_service
-    @page_name = "e6ai:terms_of_service"
-    @page = format_wiki_page(@page_name)
-  end
-
   def contact
     @page_name = "e6ai:contact"
     @page = format_wiki_page(@page_name)
@@ -62,6 +57,9 @@ class StaticController < ApplicationController
   def discord
     if request.post?
       redirect_to(Danbooru.config.discord_site, allow_other_host: true)
+    else
+      @page_name = "e6ai:discord"
+      @page = format_wiki_page(@page_name)
     end
   end
 
