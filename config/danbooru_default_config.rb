@@ -526,7 +526,7 @@ module Danbooru
     end
 
     def auto_flag_ai_posts?
-      true
+      false
     end
 
     def deletion_reasons
