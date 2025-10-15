@@ -31,6 +31,7 @@ class Post < ApplicationRecord
   validate :updater_can_change_rating
   before_save :update_tag_post_counts, if: :should_process_tags?
   before_save :set_tag_counts, if: :should_process_tags?
+  after_create :check_for_ai_content, if: -> { Danbooru.config.auto_flag_ai_posts? }
   after_save :create_post_events
   after_save :create_version
   after_save :update_parent_on_save
@@ -339,6 +340,20 @@ class Post < ApplicationRecord
       ImageSampler.generate_post_images(self)
       update_iqdb_async if has_preview?
     end
+
+    def check_for_ai_content
+      ai_score = is_ai_generated?(file_path)
+      if ai_score[:score] >= 50
+        PostFlag.create(
+          post: self,
+          reason_name: "uploading_guidelines",
+          note: "AI score: #{ai_score[:score]}\n#{ai_score[:reason]}",
+          creator_id: User.system.id,
+          creator_ip_addr: "192.168.0.1",
+        )
+      end
+      ai_score
+    end
   end
 
   module ImageMethods
@@ -383,7 +398,7 @@ class Post < ApplicationRecord
       @has_sample ||= begin
         if is_video?
           true
-        elsif is_gif? || is_flash? || has_tag?("animated_gif", "animated_png")
+        elsif is_gif? || is_flash? || has_tag?("animated_gif", "animated_png", "animated_webp")
           false
         elsif is_image? && image_width.present?
           dims = [image_width, image_height].compact
@@ -808,6 +823,7 @@ class Post < ApplicationRecord
       # TODO: Automatically add animated_* tags without re-testing them on every edit
       tags -= ["animated_gif"] unless is_gif?
       tags -= ["animated_png"] unless is_png?
+      tags -= ["animated_webp"] unless is_webp?
 
       tags
     end
@@ -1887,6 +1903,7 @@ class Post < ApplicationRecord
 
   include PostFileMethods
   include FileMethods
+  include AiMethods
   include ImageMethods
   include ApprovalMethods
   include SourceMethods

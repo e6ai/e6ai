@@ -36,6 +36,7 @@ Rails.application.routes.draw do
         put :enact
         put :uploads_min_level
         put :uploads_hide_pending
+        put :maintenance
       end
     end
   end
@@ -64,6 +65,7 @@ Rails.application.routes.draw do
           post :unban
           post :regenerate_thumbnails
           post :regenerate_videos
+          get :ai_check
         end
       end
     end
@@ -212,7 +214,9 @@ Rails.application.routes.draw do
     end
     resource :order, only: %i[edit], controller: "pool_orders"
   end
-  resource :pool_element, only: %i[create destroy]
+  resource :pool_element, only: %i[create destroy] do
+    get :recent, on: :collection
+  end
   resources :pool_versions, only: %i[index] do
     member do
       get :diff

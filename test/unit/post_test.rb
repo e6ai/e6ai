@@ -999,12 +999,15 @@ class PostTest < ActiveSupport::TestCase
         end
       end
 
-      context "tagged with animated_gif or animated_png" do
-        should "remove the tag if not a gif or png" do
+      context "tagged with animated_gif, animated_png or animated_webp" do
+        should "remove the tag if not a gif, png, or webp" do
           @post.update(tag_string: "tagme animated_gif")
           assert_equal("tagme", @post.tag_string)
 
           @post.update(tag_string: "tagme animated_png")
+          assert_equal("tagme", @post.tag_string)
+
+          @post.update(tag_string: "tagme animated_webp")
           assert_equal("tagme", @post.tag_string)
         end
       end
@@ -2353,7 +2356,7 @@ class PostTest < ActiveSupport::TestCase
         end
 
         should "gracefully fail if the set is full" do
-          Danbooru.config.stubs(:set_post_limit).returns(0)
+          Danbooru.config.stubs(:post_set_post_limit).returns(0)
           @post.update(tag_string_diff: "set:#{@set.id}")
           assert_equal(["Sets can only have up to 0 posts each"], @post.errors.full_messages)
           assert_equal([], @set.reload.post_ids)
@@ -2369,7 +2372,7 @@ class PostTest < ActiveSupport::TestCase
         end
 
         should "gracefully fail if the set is full" do
-          Danbooru.config.stubs(:set_post_limit).returns(0)
+          Danbooru.config.stubs(:post_set_post_limit).returns(0)
           @post.update(tag_string_diff: "set:#{@set.shortname}")
           assert_equal(["Sets can only have up to 0 posts each"], @post.errors.full_messages)
           assert_equal([], @set.reload.post_ids)

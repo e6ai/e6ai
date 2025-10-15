@@ -363,7 +363,7 @@ module Danbooru
       1_000
     end
 
-    def set_post_limit(_user) # rubocop:disable Naming/AccessorMethodName
+    def post_set_post_limit
       10_000
     end
 
@@ -387,6 +387,7 @@ module Danbooru
         "gif" => 20.megabytes,
         "webm" => 100.megabytes,
         "mp4" => 100.megabytes,
+        "webp" => 100.megabytes,
       }
     end
 
@@ -522,6 +523,10 @@ module Danbooru
           parent: true,
         },
       ]
+    end
+
+    def auto_flag_ai_posts?
+      true
     end
 
     def deletion_reasons
