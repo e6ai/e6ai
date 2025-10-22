@@ -7,7 +7,7 @@ class StaticController < ApplicationController
   end
 
   def code_of_conduct
-    @page_name = "e621:rules"
+    @page_name = "e6ai:rules"
     @page = format_wiki_page(@page_name)
   end
 
