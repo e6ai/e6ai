@@ -1125,13 +1125,31 @@ class Post < ApplicationRecord
     alias_method :is_favorited?, :favorited_by?
 
     def append_user_to_fav_string(user_id)
-      self.fav_string = (fav_string + " fav:#{user_id}").strip
-      clean_fav_string!
+      # Regex is faster for large fav_strings, array include? is faster for small fav_strings.
+      # Checking for presence is faster than explicit deduplication for both approaches.
+      if fav_count > 1000
+        unless fav_string =~ /(?:\A| )fav:#{user_id}(?:\Z| )/
+          self.fav_string = (fav_string + " fav:#{user_id}").strip
+          self.fav_count = fav_string.split.size
+        end
+      else
+        fav_array = fav_string.split
+        fav_tag = "fav:#{user_id}"
+
+        unless fav_array.include?(fav_tag)
+          fav_array << fav_tag
+          self.fav_string = fav_array.join(" ")
+          self.fav_count = fav_array.size
+        end
+      end
     end
 
     def delete_user_from_fav_string(user_id)
-      self.fav_string = fav_string.gsub(/(?:\A| )fav:#{user_id}(?:\Z| )/, " ").strip
-      clean_fav_string!
+      new_fav_string = fav_string.gsub(/(?:\A| )fav:#{user_id}(?:\Z| )/, " ").strip
+      if new_fav_string != fav_string
+        self.fav_string = new_fav_string
+        self.fav_count = new_fav_string.split.size
+      end
     end
 
     # users who favorited this post, ordered by users who favorited it first
@@ -1351,14 +1369,6 @@ class Post < ApplicationRecord
 
     def give_favorites_to_parent
       TransferFavoritesJob.perform_later(id, CurrentUser.id)
-    end
-
-    def give_favorites_to_parent!
-      return if parent.nil?
-
-      FavoriteManager.give_to_parent!(self)
-      PostEvent.add(id, CurrentUser.user, :favorites_moved, { parent_id: parent_id })
-      PostEvent.add(parent_id, CurrentUser.user, :favorites_received, { child_id: id })
     end
 
     def parent_exists?
@@ -1933,6 +1943,7 @@ class Post < ApplicationRecord
     _has_cropped
     hide_from_anonymous
     hide_from_search_engines
+    favorites_transfer_in_progress
   ].freeze
   has_bit_flags BOOLEAN_ATTRIBUTES
 
