@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     updateTagCount() {
-      Post.update_tag_count({ target: $("#post_tag_string") });
+      Post.update_tag_count();
     },
     toggleRelated() {
       this.expandRelated = !this.expandRelated;
@@ -107,7 +107,7 @@ export default {
         this.tags = groups.join('\n') + ' ';
       }
       nextTick(function () {
-        Post.update_tag_count({ target: $("#post_tag_string") });
+        Post.update_tag_count();
       })
     },
     findRelated(categoryId) {
