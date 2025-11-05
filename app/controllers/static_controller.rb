@@ -89,7 +89,7 @@ class StaticController < ApplicationController
         { key: :comments, title: "Comments" },
         { key: :forum, title: "Forum" },
         { key: :wiki, title: "Wiki" },
-        { key: :blips, title: "Blips" },
+        # { key: :blips, title: "Blips" },
       ],
       [
         { key: :users, title: "Users" },
@@ -160,7 +160,7 @@ class StaticController < ApplicationController
     add_link[:sets, "Listing", post_sets_path]
     add_link[:comments, "Listing", comments_path]
     add_link[:forum, "Listing", forum_topics_path]
-    add_link[:blips, "Listing", blips_path]
+    # add_link[:blips, "Listing", blips_path]
 
     add_link[:users, "Listing", users_path]
     add_link[:users, "Bans", bans_path]
@@ -223,7 +223,7 @@ class StaticController < ApplicationController
     add_link[:comments, "Help", help_page_path(id: "comments")]
     add_link[:forum, "Help", help_page_path(id: "forum")]
     add_link[:wiki, "Help", help_page_path(id: "wiki")]
-    add_link[:blips, "Help", help_page_path(id: "blips")]
+    # add_link[:blips, "Help", help_page_path(id: "blips")]
     add_link[:users, "Help", help_page_path(id: "accounts")]
     add_link[:tools, "Help Index", help_pages_path]
 
