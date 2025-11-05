@@ -79,7 +79,7 @@ class StaticController < ApplicationController
         { key: :tools, title: "Tools" },
       ],
       [
-        { key: :artists, title: "Artists" },
+        # { key: :artists, title: "Artists" },
         { key: :tags, title: "Tags" },
         { key: :notes, title: "Notes" },
         { key: :pools, title: "Pools" },
@@ -125,7 +125,7 @@ class StaticController < ApplicationController
 
     add_link[:tools, "News Updates", news_updates_path]
     add_link[:tools, "Mascots", mascots_path]
-    add_link[:tools, "FurID", furid_path]
+    # add_link[:tools, "FurID", furid_path]
     add_link[:tools, "Source Code", Danbooru.config.source_code_url]
     add_link[:tools, "Keyboard Shortcuts", keyboard_shortcuts_path]
     add_link[:tools, "API Documentation", help_page_path(id: "api")]
@@ -134,11 +134,11 @@ class StaticController < ApplicationController
     add_link[:tools, "Privacy Policy", privacy_policy_path]
     add_link[:tools, "Code of Conduct", code_of_conduct_path]
 
-    add_link[:artists, "Listing", artists_path]
-    add_link[:artists, "URLs", artist_urls_path]
-    add_link[:artists, "Avoid Posting Entries", avoid_postings_path]
-    add_link[:artists, "Avoid Posting List", avoid_posting_static_path]
-    add_link[:artists, "Changes", artist_versions_path]
+    # add_link[:artists, "Listing", artists_path]
+    # add_link[:artists, "URLs", artist_urls_path]
+    # add_link[:artists, "Avoid Posting Entries", avoid_postings_path]
+    # add_link[:artists, "Avoid Posting List", avoid_posting_static_path]
+    # add_link[:artists, "Changes", artist_versions_path]
 
     add_link[:tags, "Listing", tags_path]
     add_link[:tags, "Type Changes", tag_type_versions_path]
@@ -215,7 +215,7 @@ class StaticController < ApplicationController
     add_link[:users, "Staff Notes", staff_notes_path] if CurrentUser.can_view_staff_notes?
 
     add_link[:posts, "Help", help_page_path(id: "posts")]
-    add_link[:artists, "Help", help_page_path(id: "artists")]
+    # add_link[:artists, "Help", help_page_path(id: "artists")]
     add_link[:tags, "Help", help_page_path(id: "tags")]
     add_link[:notes, "Help", help_page_path(id: "notes")]
     add_link[:pools, "Help", help_page_path(id: "pools")]
