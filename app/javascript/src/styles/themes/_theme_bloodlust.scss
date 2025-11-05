@@ -5,7 +5,7 @@ $bloodlust-color-link-hover: #f68b00;
 $bloodlust-color-text-muted: #999999;
 $bloodlust-color-foreground: #222222;
 
-body[data-th-main="bloodlust"] {
+body {
   // Layout Colors
   --color-background:             #{$bloodlust-color-background};            // Main background (dark blue, large hexagons)
   --color-foreground:             #{$bloodlust-color-foreground};            // Foreground (lighter blue, small hexagons)
