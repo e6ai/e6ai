@@ -661,7 +661,7 @@ module Danbooru
     end
 
     def mail_from_addr
-      "E621.net <noreply@e621.net>"
+      "E6AI.net <noreply@e6ai.net>"
     end
 
     # disable this for tests
