@@ -1,7 +1,7 @@
 <mjml>
   <mj-head>
     <mj-attributes>
-      <mj-class name="container" background-color="#152f56" border-radius="4px" padding="16px 8px 8px 8px" />
+      <mj-class name="container" background-color="#333333" border-radius="4px" padding="16px 8px 8px 8px" />
       <mj-class name="hex-bg" background-url="<%= image_url("mailers/hex.png") %>" background-repeat="repeat-x" />
 
       <mj-class name="text" color="#ffffff" font-size="16px" line-height="20px" />
@@ -19,7 +19,7 @@
       }
     </mj-style>
   </mj-head>
-	<mj-body background-color="#020f23">
+	<mj-body background-color="#1F1F1F">
     <mj-section padding="16px">
       <mj-column>
         <mj-image
