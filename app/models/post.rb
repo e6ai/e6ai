@@ -371,7 +371,11 @@ class Post < ApplicationRecord
 
     ### Preview ###
     def has_preview?
-      is_image? || is_video?
+      return false unless is_image? || is_video?
+
+      # Some legacy files are corrupt and cannot be processed.
+      # They report dimensions of 1x1, although the actual dimensions are larger.
+      image_width.to_i > 1 && image_height.to_i > 1
     end
 
     def preview_dimensions(max_px = Danbooru.config.small_image_width)
@@ -462,7 +466,7 @@ class Post < ApplicationRecord
       # Prevent unapproving self approvals by someone else
       return false if approver.nil? && uploader != user
       # Allow unapproval when the post is not pending anymore and is not at risk of auto deletion
-      !is_pending? && !is_deleted? && created_at.after?(PostPruner::DELETION_WINDOW.days.ago)
+      !is_pending? && !is_deleted? && created_at.after?(Danbooru.config.unapproved_post_deletion_window.ago)
     end
 
     def approve!(approver = CurrentUser.user)
@@ -1333,6 +1337,8 @@ class Post < ApplicationRecord
   end
 
   module ParentMethods
+    extend ActiveSupport::Concern
+
     # A parent has many children. A child belongs to a parent.
     # A parent cannot have a parent.
     #
@@ -1345,6 +1351,21 @@ class Post < ApplicationRecord
     # After expunging a parent:
     # - Move favorites to the first child.
     # - Reparent all children to the first child.
+
+    class_methods do
+      def cleanup_stuck_favorite_transfer_flags!
+        transfer_flag = flag_value_for("favorites_transfer_in_progress")
+
+        stuck_posts = where("bit_flags & ? != 0", transfer_flag)
+        count = stuck_posts.count
+        return 0 if count == 0
+
+        Rails.logger.warn("Post.cleanup_stuck_favorite_transfer_flags: Found #{count} posts with stuck flags")
+        stuck_posts.update_all("bit_flags = bit_flags & ~#{transfer_flag}")
+
+        count
+      end
+    end
 
     def update_has_children_flag
       update(has_children: children.exists?, has_active_children: children.undeleted.exists?)

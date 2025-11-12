@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => "/sidekiq", constraints: AdminRouteConstraint.new, as: "sidekiq"
 
   namespace :admin do
-    resources :users, only: %i[edit update edit_blacklist update_blacklist alt_list] do
+    resources :users, only: %i[edit update] do
       member do
         get :edit_blacklist
         post :update_blacklist
@@ -29,7 +29,7 @@ Rails.application.routes.draw do
 
   namespace :security do
     root to: "dashboard#index"
-    resource :dashboard, only: %i[index]
+    resources :dashboard, only: %i[index]
     resources :lockdown, only: %i[index] do
       collection do
         put :panic
@@ -52,7 +52,7 @@ Rails.application.routes.draw do
     namespace :post do
       resource :approval, only: %i[create destroy]
       resources :disapprovals, only: %i[create index]
-      resources :posts, only: %i[delete undelete expunge confirm_delete] do
+      resources :posts, only: [] do
         member do
           get :confirm_delete
           post :expunge
@@ -140,7 +140,7 @@ Rails.application.routes.draw do
       post :warning
     end
   end
-  resources :comment_votes, only: %i[index delete lock] do
+  resources :comment_votes, only: %i[index] do
     collection do
       post :lock
       post :delete
@@ -249,7 +249,7 @@ Rails.application.routes.draw do
     end
     get :similar, to: "iqdb_queries#index"
   end
-  resources :post_votes, only: %i[index delete lock], as: :index_post_votes do
+  resources :post_votes, only: %i[index], as: :index_post_votes do
     collection do
       post :lock
       post :delete
@@ -333,7 +333,7 @@ Rails.application.routes.draw do
       get :show_or_new
     end
   end
-  resources :wiki_page_versions, only: %i[index show diff] do
+  resources :wiki_page_versions, only: %i[index show] do
     collection do
       get :diff
     end
@@ -474,6 +474,7 @@ Rails.application.routes.draw do
   get "/static/theme" => "static#theme", as: "theme"
   get "/static/avoid_posting" => "static#avoid_posting", as: "avoid_posting_static"
   get "/meta_searches/tags" => "meta_searches#tags", :as => "meta_searches_tags"
+  get "status" => "rails/health#show", as: :rails_health_check
 
   root to: "static#home"
 
