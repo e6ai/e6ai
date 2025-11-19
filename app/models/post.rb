@@ -940,7 +940,7 @@ class Post < ApplicationRecord
           end
 
         when /^set:(\d+)$/i
-          set = PostSet.find_by(id: $1.to_i)
+          set = PostSet.find_by(id: ParseValue.safe_id($1))
           if set&.can_edit_posts?(CurrentUser.user)
             set.add!(self)
             if set.errors.any?
@@ -949,7 +949,7 @@ class Post < ApplicationRecord
           end
 
         when /^-set:(\d+)$/i
-          set = PostSet.find_by(id: $1.to_i)
+          set = PostSet.find_by(id: ParseValue.safe_id($1))
           if set&.can_edit_posts?(CurrentUser.user)
             set.remove!(self)
             if set.errors.any?
@@ -1207,7 +1207,7 @@ class Post < ApplicationRecord
 
   module SetMethods
     def set_ids
-      pool_string.scan(/set\:(\d+)/).map {|set| set[0].to_i}
+      pool_string.scan(/set:(\d+)/).map { |set| ParseValue.safe_id(set[0]) }
     end
 
     def post_sets
@@ -1257,7 +1257,7 @@ class Post < ApplicationRecord
 
   module PoolMethods
     def pool_ids
-      pool_string.scan(/pool:(\d+)/).map { |pool| pool[0].to_i }
+      pool_string.scan(/pool:(\d+)/).map { |pool| ParseValue.safe_id(pool[0]) }
     end
 
     def pools
