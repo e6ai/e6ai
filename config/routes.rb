@@ -80,9 +80,12 @@ Rails.application.routes.draw do
       resource :deletion, only: %i[show destroy]
       resource :email_change, only: %i[new create]
       resource :dmail_filter, only: %i[edit update]
-      resource :api_key, only: %i[show update destroy] do
-        post :view
-      end
+    end
+  end
+
+  resources :api_keys, except: %i[edit update] do
+    member do
+      post :regenerate
     end
   end
 
@@ -303,6 +306,7 @@ Rails.application.routes.draw do
     member do
       get :upload_limit
       get :toggle_uploads
+      post :disable_uploads
       post :flush_favorites
       get :fix_counts
     end
@@ -312,6 +316,7 @@ Rails.application.routes.draw do
       get :search
       get :custom_style
       get :settings
+      get :me
 
       get :avatar_menu
     end
