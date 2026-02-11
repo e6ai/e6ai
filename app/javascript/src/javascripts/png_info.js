@@ -12,7 +12,6 @@ const PngInfo = {};
 // Maximum bytes to fetch (32KB should cover metadata chunks before IDAT)
 const MAX_FETCH_BYTES = 32 * 1024;
 
-
 // PNG signature: 0x89 P N G \r \n 0x1A \n
 const PNG_SIGNATURE = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
 
@@ -97,61 +96,36 @@ PngInfo.fetchMetadata = async function(url) {
 PngInfo.renderMetadata = function(chunks) {
   if (!chunks || chunks.length === 0) return null;
 
-  const details = document.createElement("details");
-  details.id = "png-info";
+  const $wrapper = $("<div>").addClass("ui-corner-all ui-state-highlight notice notice-resized");
+  const $details = $("<details>").attr("id", "png-info");
+  $details.append($("<summary>").text("Generation Info"));
 
-  const summary = document.createElement("summary");
-  summary.textContent = "Generation Info";
-  details.appendChild(summary);
-
-  const content = document.createElement("div");
-  content.className = "png-info-content";
+  const $content = $("<div>").addClass("png-info-content");
 
   chunks.forEach(chunk => {
-    const item = document.createElement("div");
-    item.className = "png-info-item";
-
-    const key = document.createElement("div");
-    key.className = "png-info-key";
-    key.textContent = chunk.keyword;
-    item.appendChild(key);
-
-    const value = document.createElement("code");
-    value.className = "png-info-value";
-    value.textContent = chunk.text;
-    item.appendChild(value);
-
-    content.appendChild(item);
+    const $item = $("<div>").addClass("png-info-item");
+    $item.append($("<div>").addClass("png-info-key").text(chunk.keyword));
+    $item.append($("<code>").addClass("png-info-value").text(chunk.text));
+    $content.append($item);
   });
 
-  details.appendChild(content);
-
-  const wrapper = document.createElement("div");
-  wrapper.className = "ui-corner-all ui-state-highlight notice notice-resized";
-  wrapper.appendChild(details);
-  return wrapper;
+  $details.append($content);
+  $wrapper.append($details);
+  return $wrapper;
 };
 
 /**
  * Get the original file URL (handle sample URL rewriting)
  */
 PngInfo.getOriginalUrl = function() {
-  const container = document.getElementById("image-container");
-  if (!container) return null;
+  const $container = $("#image-container");
+  if (!$container.length) return null;
 
-  // Data comes from two places:
-  // - Direct attributes: data-file-ext, data-size
-  // - JSON in data-post: { file: { url, ext, size } }
-  const fileExt = container.dataset.fileExt;
-  const fileSize = parseInt(container.dataset.size, 10);
+  const fileExt = $container.data("file-ext");
+  if (fileExt !== "png") return null;
 
-  if (fileExt !== "png") {
-    return null;
-  }
-
-  // Get URL from the post JSON data
   try {
-    const postData = JSON.parse(container.dataset.post);
+    const postData = $container.data("post");
     return postData.file?.url || null;
   } catch {
     return null;
@@ -162,7 +136,6 @@ PngInfo.getOriginalUrl = function() {
  * Initialize on post show pages
  */
 PngInfo.initialize = async function() {
-  // Only run on post show pages
   if (Page.Controller !== "posts" || Page.Action !== "show") {
     return;
   }
@@ -172,16 +145,13 @@ PngInfo.initialize = async function() {
 
   try {
     const chunks = await PngInfo.fetchMetadata(url);
-    const element = PngInfo.renderMetadata(chunks);
+    const $element = PngInfo.renderMetadata(chunks);
 
-    if (element) {
-      // Insert after the resize notice, or after the image container
-      const resizeNotice = document.getElementById("image-resize-notice");
-      const imageContainer = document.getElementById("image-container");
-      const anchor = resizeNotice || imageContainer;
-      if (anchor) {
-        anchor.after(element);
-      }
+    if ($element) {
+      const $anchor = $("#image-resize-notice").length
+        ? $("#image-resize-notice")
+        : $("#image-container");
+      $anchor.after($element);
     }
   } catch (err) {
     console.warn("PngInfo: Failed to extract metadata", err);
