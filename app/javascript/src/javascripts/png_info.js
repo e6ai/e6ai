@@ -97,9 +97,12 @@ PngInfo.fetchMetadata = async function(url) {
 PngInfo.renderMetadata = function(chunks) {
   if (!chunks || chunks.length === 0) return null;
 
-  const container = document.createElement("section");
-  container.id = "png-info";
-  container.innerHTML = `<h3>Generation Info</h3>`;
+  const details = document.createElement("details");
+  details.id = "png-info";
+
+  const summary = document.createElement("summary");
+  summary.textContent = "Generation Info";
+  details.appendChild(summary);
 
   const content = document.createElement("div");
   content.className = "png-info-content";
@@ -121,8 +124,12 @@ PngInfo.renderMetadata = function(chunks) {
     content.appendChild(item);
   });
 
-  container.appendChild(content);
-  return container;
+  details.appendChild(content);
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "ui-corner-all ui-state-highlight notice notice-resized";
+  wrapper.appendChild(details);
+  return wrapper;
 };
 
 /**
@@ -168,10 +175,12 @@ PngInfo.initialize = async function() {
     const element = PngInfo.renderMetadata(chunks);
 
     if (element) {
-      // Insert after #post-information
-      const infoSection = document.getElementById("post-information");
-      if (infoSection) {
-        infoSection.after(element);
+      // Insert after the resize notice, or after the image container
+      const resizeNotice = document.getElementById("image-resize-notice");
+      const imageContainer = document.getElementById("image-container");
+      const anchor = resizeNotice || imageContainer;
+      if (anchor) {
+        anchor.after(element);
       }
     }
   } catch (err) {
