@@ -41,6 +41,7 @@ import Takedown from "../src/javascripts/takedowns.js";
 import Theme from "../src/javascripts/themes.js";
 import Thumbnails from "../src/javascripts/thumbnails.js";
 import VoteManager from "../src/javascripts/vote_manager.js";
+import PngInfo from "../src/javascripts/png_info.js";
 
 function inError (msg) {
   $(window).trigger("danbooru:error", msg);
@@ -79,6 +80,7 @@ window.Danbooru = {
   Theme,
   Thumbnails,
   VoteManager,
+  PngInfo,
   error: inError,
   notice: inNotice,
 };
