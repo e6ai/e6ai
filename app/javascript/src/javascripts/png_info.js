@@ -66,7 +66,7 @@ PngInfo.parseChunks = function (buffer) {
  */
 PngInfo.decodeText = function (bytes) {
   try {
-    return new TextDecoder("utf-8").decode(bytes);
+    return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
   } catch {
     return new TextDecoder("latin1").decode(bytes);
   }
