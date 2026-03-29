@@ -78,8 +78,8 @@ PngInfo.decodeText = function (bytes) {
 PngInfo.fetchMetadata = async function (url) {
   const response = await fetch(url, {
     headers: {
-      "Range": `bytes=0-${MAX_FETCH_BYTES - 1}`
-    }
+      "Range": `bytes=0-${MAX_FETCH_BYTES - 1}`,
+    },
   });
 
   if (!response.ok) {
