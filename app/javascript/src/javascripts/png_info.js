@@ -82,7 +82,7 @@ PngInfo.fetchMetadata = async function (url) {
     }
   });
 
-  if (!response.ok && response.status !== 206) {
+  if (!response.ok) {
     throw new Error(`Failed to fetch: ${response.status}`);
   }
 
