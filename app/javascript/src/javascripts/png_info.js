@@ -19,7 +19,7 @@ const PNG_SIGNATURE = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
  * Parse PNG chunks from an ArrayBuffer
  * Stops when it hits IDAT (image data) since metadata comes before that
  */
-PngInfo.parseChunks = function(buffer) {
+PngInfo.parseChunks = function (buffer) {
   const view = new DataView(buffer);
   const chunks = [];
 
@@ -64,7 +64,7 @@ PngInfo.parseChunks = function(buffer) {
 /**
  * Decode bytes to string
  */
-PngInfo.decodeText = function(bytes) {
+PngInfo.decodeText = function (bytes) {
   try {
     return new TextDecoder("utf-8").decode(bytes);
   } catch {
@@ -75,7 +75,7 @@ PngInfo.decodeText = function(bytes) {
 /**
  * Fetch PNG metadata using Range request
  */
-PngInfo.fetchMetadata = async function(url) {
+PngInfo.fetchMetadata = async function (url) {
   const response = await fetch(url, {
     headers: {
       "Range": `bytes=0-${MAX_FETCH_BYTES - 1}`
@@ -93,7 +93,7 @@ PngInfo.fetchMetadata = async function(url) {
 /**
  * Render metadata chunks to HTML
  */
-PngInfo.renderMetadata = function(chunks) {
+PngInfo.renderMetadata = function (chunks) {
   if (!chunks || chunks.length === 0) return null;
 
   const $wrapper = $("<div>").addClass("ui-corner-all ui-state-highlight notice notice-resized");
@@ -117,7 +117,7 @@ PngInfo.renderMetadata = function(chunks) {
 /**
  * Get the original file URL (handle sample URL rewriting)
  */
-PngInfo.getOriginalUrl = function() {
+PngInfo.getOriginalUrl = function () {
   const $container = $("#image-container");
   if (!$container.length) return null;
 
@@ -135,7 +135,7 @@ PngInfo.getOriginalUrl = function() {
 /**
  * Initialize on post show pages
  */
-PngInfo.initialize = async function() {
+PngInfo.initialize = async function () {
   if (Page.Controller !== "posts" || Page.Action !== "show") {
     return;
   }
