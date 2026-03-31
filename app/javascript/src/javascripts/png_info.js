@@ -5,8 +5,6 @@
  * Uses HTTP Range requests to fetch only the header portion of the file.
  */
 
-import Page from "./utility/page";
-
 const PngInfo = {};
 
 // Maximum bytes to fetch (32KB should cover metadata chunks before IDAT)
@@ -96,7 +94,6 @@ PngInfo.fetchMetadata = async function (url) {
 PngInfo.renderMetadata = function (chunks) {
   if (!chunks || chunks.length === 0) return null;
 
-  const $wrapper = $("<div>").addClass("ui-corner-all ui-state-highlight notice notice-resized");
   const $details = $("<details>").attr("id", "png-info");
   $details.append($("<summary>").text("Generation Info"));
 
@@ -110,8 +107,7 @@ PngInfo.renderMetadata = function (chunks) {
   });
 
   $details.append($content);
-  $wrapper.append($details);
-  return $wrapper;
+  return $details;
 };
 
 /**
@@ -124,41 +120,34 @@ PngInfo.getOriginalUrl = function () {
   const fileExt = $container.data("file-ext");
   if (fileExt !== "png") return null;
 
-  try {
-    const postData = $container.data("post");
-    return postData.file?.url || null;
-  } catch {
-    return null;
-  }
+  const postData = $container.data("post");
+  return postData?.file?.url || null;
 };
 
 /**
- * Initialize on post show pages
+ * Fetch and render PNG metadata, inserting it into the page.
+ * Returns true if metadata was found, false otherwise.
  */
-PngInfo.initialize = async function () {
-  if (Page.Controller !== "posts" || Page.Action !== "show") {
-    return;
-  }
-
+PngInfo.loadAndShow = async function () {
   const url = PngInfo.getOriginalUrl();
-  if (!url) return;
+  if (!url) return false;
 
-  try {
-    const chunks = await PngInfo.fetchMetadata(url);
-    const $element = PngInfo.renderMetadata(chunks);
+  const $container = $("#png-info-container");
+  if (!$container.length) return false;
 
-    if ($element) {
-      const $anchor = $("#image-resize-notice").length
-        ? $("#image-resize-notice")
-        : $("#image-container");
-      $anchor.after($element);
-    }
-  } catch (err) {
-    console.warn("PngInfo: Failed to extract metadata", err);
+  const chunks = await PngInfo.fetchMetadata(url);
+  const $element = PngInfo.renderMetadata(chunks);
+
+  if ($element) {
+    $container.append($element);
+    $element.attr("open", true);
+    return true;
   }
-};
 
-// Auto-initialize when DOM is ready
-$(PngInfo.initialize);
+  $container.append(
+    $("<span>").text("No generation info found.")
+  );
+  return false;
+};
 
 export default PngInfo;

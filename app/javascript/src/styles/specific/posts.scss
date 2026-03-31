@@ -366,10 +366,11 @@ body[data-user-can-approve-posts="true"] .notice {
 }
 
 // PNGInfo
-#png-info {
-  summary {
-    cursor: pointer;
-  }
+#png-info-container {
+  &.hidden { display: none; }
+  &:empty { display: none; }
+
+  #png-info { margin-bottom: 0; }
 
   .png-info-item {
     margin-top: 0.5em;

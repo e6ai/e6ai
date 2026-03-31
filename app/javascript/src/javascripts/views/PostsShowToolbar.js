@@ -2,6 +2,7 @@ import Hotkeys from "../hotkeys";
 import Favorite from "../models/Favorite";
 import PostVote from "../models/PostVote";
 import NoteManager from "../notes";
+import PngInfo from "../png_info";
 import Post from "../posts";
 import Utility from "../utility";
 import Offclick from "../utility/offclick";
@@ -40,6 +41,9 @@ export default class PostsShowToolbar {
 
     // Initialize fullscreen menu toggle
     this.initOverflowMenu();
+
+    // Initialize prompt button
+    this.initPromptButton();
 
     // Initialize share button
     $(".ptbr-share-button").on("click", () => {
@@ -180,6 +184,22 @@ export default class PostsShowToolbar {
         $("#image-container").attr("data-is-favorited", "false");
       });
   }
+
+  // Prompt button
+  initPromptButton () {
+    let loaded = false;
+    $(".ptbr-prompt-button").on("click", () => {
+      if (loaded) {
+        $("#png-info-container").toggleClass("hidden");
+        return;
+      }
+      loaded = true;
+      PngInfo.loadAndShow().catch((err) => {
+        console.warn("PngInfo: Failed to extract metadata", err);
+      });
+    });
+  }
+
 
   // Fullscreen / download menu
   initOverflowMenu () {
