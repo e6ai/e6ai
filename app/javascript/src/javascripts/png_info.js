@@ -145,7 +145,7 @@ PngInfo.loadAndShow = async function () {
   }
 
   $container.append(
-    $("<span>").text("No generation info found.")
+    $("<span>").text("No generation info found."),
   );
   return false;
 };
