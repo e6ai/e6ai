@@ -34,6 +34,48 @@ ModQueue.detailed_rejection_dialog = function () {
   return false;
 };
 
+let deletionDialog = null;
+ModQueue.delete_with_reason_dialog = function (event) {
+  const data = event.target.dataset;
+  if (deletionDialog == null) {
+    // Initialize the dialog
+    deletionDialog = new Dialog("#delete-with-reason-dialog");
+    let form = $("#delete-with-reason-dialog");
+    let dmailOption = $("#delete-with-reason-dialog-enable-dmail");
+    form.on("submit", (event) => {
+      event.preventDefault();
+      let dmail = dmailOption.val() ? dmailOption.attr("data-dmail-message") : null;
+      Post.delete_with_reason(data.postId, data.reason, {
+        reload_after_delete: true,
+        from_flag: data.fromFlag === "true",
+        move_favorites: data.moveFavs === "true",
+        dmail: dmail,
+      });
+      return false;
+    });
+    $("#delete-with-reason-dialog-cancel").on("click", () => deletionDialog.close());
+
+    $(document).on("keydown", (event) => {
+      // .isFocused would make more sense if it existed
+      if (event.key === "Enter" && deletionDialog.isOpen) {
+        event.preventDefault();
+        form.trigger("submit");
+      }
+    });
+  }
+
+  const reasonInput = $("#delete-with-reason-dialog-input");
+  reasonInput.val(data.reason);
+  reasonInput[0].style.display = data.fromFlag === "true" ? "none" : "visible";
+
+  deletionDialog.open();
+
+  // Scroll to end of reason so it's faster to append to it
+  reasonInput.scrollLeft(reasonInput[0].scrollWidth);
+
+  return false;
+};
+
 $(function () {
   if (!$("body").data("user-is-approver")) return;
 
@@ -57,18 +99,7 @@ $(function () {
 
   // Toolbar buttons
   $(document).on("click.danbooru", ".quick-mod .detailed-rejection-link", ModQueue.detailed_rejection_dialog);
-
-
-  $(".delete-with-reason-link").on("click", function (event) {
-    event.preventDefault();
-    const data = event.target.dataset;
-    if (!confirm(`Delete post for ${data.prompt}?`)) return;
-    Post.delete_with_reason(data.postId, data.reason, {
-      reload_after_delete: true,
-      from_flag: data.fromFlag === "true",
-      move_favorites: data.moveFavs === "true",
-    });
-  });
+  $(".delete-with-reason-link").on("click", ModQueue.delete_with_reason_dialog);
 });
 
 export default ModQueue;
