@@ -2,7 +2,7 @@ import Hotkeys from "../hotkeys";
 import Favorite from "../models/Favorite";
 import PostVote from "../models/PostVote";
 import NoteManager from "../notes";
-import PngInfo from "../png_info";
+import GenInfo from "../gen_info";
 import Post from "../posts";
 import Utility from "../utility";
 import Offclick from "../utility/offclick";
@@ -190,12 +190,12 @@ export default class PostsShowToolbar {
     let loaded = false;
     $(".ptbr-prompt-button").on("click", () => {
       if (loaded) {
-        $("#png-info-container").toggleClass("hidden");
+        $("#gen-info-container").toggleClass("hidden");
         return;
       }
       loaded = true;
-      PngInfo.loadAndShow().catch((err) => {
-        console.warn("PngInfo: Failed to extract metadata", err);
+      GenInfo.loadAndShow().catch((err) => {
+        console.warn("GenInfo: Failed to extract metadata", err);
       });
     });
   }
