@@ -257,9 +257,14 @@ GenInfo.loadAndShow = async function () {
     return true;
   }
 
-  $container.append(
-    $("<span>").text("No generation info found."),
-  );
+  const $details = $("<details>")
+    .attr({
+      "id": "gen-info",
+      "open": true,
+    })
+    .appendTo($container);
+  $("<summary>").text("Generation Info").appendTo($details);
+  $("<span>").text("No generation info found.").appendTo($details);
   return false;
 };
 
