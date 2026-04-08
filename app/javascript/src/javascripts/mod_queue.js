@@ -40,16 +40,18 @@ ModQueue.delete_with_reason_dialog = function (event) {
   if (deletionDialog == null) {
     // Initialize the dialog
     deletionDialog = new Dialog("#delete-with-reason-dialog");
-    let form = $("#delete-with-reason-dialog");
-    let dmailOption = $("#delete-with-reason-dialog-enable-dmail");
+    const form = $("#delete-with-reason-dialog");
+    const dmailOption = $("#delete-with-reason-dialog-enable-dmail");
     form.on("submit", (event) => {
       event.preventDefault();
-      let dmail = dmailOption.val() ? dmailOption.attr("data-dmail-message") : null;
+      const dmailMessage = dmailOption.val() ? dmailOption.attr("data-dmail-message") : null;
+      const dmailTitle = dmailOption.val() ? dmailOption.attr("data-dmail-title") : null;
       Post.delete_with_reason(data.postId, data.reason, {
         reload_after_delete: true,
         from_flag: data.fromFlag === "true",
         move_favorites: data.moveFavs === "true",
-        dmail: dmail,
+        dmail: dmailMessage,
+        dmail_title: dmailTitle,
       });
       return false;
     });
