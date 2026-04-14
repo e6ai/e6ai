@@ -509,13 +509,13 @@ module Danbooru
     def flag_reasons
       [
         {
-          name: "quality_or_relevancy",
+          name: "uploading_guidelines",
           reason: "Does not meet the [[uploading_guidelines#quality|quality standards]] or [[uploading_guidelines#bad|relevancy]] sections of the uploading guidelines.",
           text: "This post fails to meet the site's standards when it comes to image quality or is not furry related.",
           require_explanation: true,
         },
         {
-          name: "extreme_or_illegal",
+          name: "extreme",
           reason: "Does not meet the [[uploading_guidelines#bad|uploading guidelines]].",
           text: "This post features an underage character depicted in a suggestive or explicit way, an explicit depiction of an animal that could be mistaken for a photograph, a photorealistic human face, or real-life pornography.",
         },
