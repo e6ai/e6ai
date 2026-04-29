@@ -202,7 +202,7 @@ class TagAlias < TagRelationship
   end
 
   def rename_artist_undo
-    if consequent_tag.category == Tag.categories.artist
+    if consequent_tag.category == Tag.categories.director
       if consequent_tag.artist.present? && antecedent_tag.artist.blank?
         consequent_tag.artist.update!(name: antecedent_name)
       end
@@ -321,7 +321,7 @@ class TagAlias < TagRelationship
   end
 
   def rename_artist
-    return unless antecedent_tag.category == Tag.categories.artist && antecedent_tag.artist.present?
+    return unless antecedent_tag.category == Tag.categories.director && antecedent_tag.artist.present?
     if consequent_tag.artist.blank?
       antecedent_tag.artist.update!(name: consequent_name)
     elsif antecedent_tag&.artist&.linked_user_id.present? && consequent_tag&.artist&.linked_user_id.blank?

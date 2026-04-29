@@ -1547,7 +1547,7 @@ class Post < ApplicationRecord
           errors.add(:base, "Cannot delete with given reason when no active flag exists.")
           return
         end
-        if pending_flag.reason =~ /uploading_guidelines/
+        if pending_flag.reason == PostFlag::MAPPED_REASONS["uploading_guidelines"]
           errors.add(:base, "Cannot delete with given reason when the flag is for uploading guidelines.")
           return
         end

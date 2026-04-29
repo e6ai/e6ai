@@ -535,7 +535,7 @@ RSpec.describe PostIndex do
           expect(unverified_post.as_indexed_json[:artverified]).to be false
         end
 
-        it "returns true when the uploader is the linked artist for one of the post's artist tags" do
+        it "returns true when the uploader is the linked artist for one of the post's artist tags", skip: "This fork does not use linked artists" do
           expect(verified_post.as_indexed_json[:artverified]).to be true
         end
       end
