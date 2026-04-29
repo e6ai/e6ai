@@ -205,7 +205,7 @@ RSpec.describe Post do
     end
 
     describe "warning validators" do
-      describe "has_artist_tag warning" do
+      describe "has_artist_tag warning", skip: "This fork does not enforce artist tags" do
         it "adds a warning on new posts without an artist tag" do
           # Build a post with no artist-category tags
           post = build(:post, tag_string: "tag1 tag2 tag3 tag4 tag5 tag6 tag7 tag8 tag9 tag10")

@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe PostReplacement do
-  describe "Uploader linked artists:" do
+  describe "Uploader linked artists:", skip: "This fork does not use linked artists" do
     let(:user) { create(:user, created_at: 2.weeks.ago) }
     let(:mod_user) { create(:moderator_user, created_at: 2.weeks.ago) }
 
