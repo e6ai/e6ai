@@ -122,9 +122,12 @@
   </div>
 <% end %>
 
-<% if @post.file_ext.in?(%w[png jpg jpeg]) %>
+<% if @post.file_ext.in?(%w[png jpg jpeg webp]) %>
   <div class="ptbr-prompt">
-    <button class="st-button kinetic ptbr-prompt-button">Prompt</button>
+    <button class="st-button kinetic ptbr-prompt-button">
+      <%= svg_icon(:hexagon) %>
+      <span>Prompt</span>
+    </button>
   </div>
 <% end %>
 
@@ -153,8 +156,11 @@
         <span>Download</span>
       </a>
       <button class="st-button ptbr-share-button" data-hotkey="share">Share</button>
-      <% if @post.file_ext.in?(%w[png jpg jpeg]) %>
-        <button class="st-button ptbr-prompt-button">Prompt</button>
+      <% if @post.file_ext.in?(%w[png jpg jpeg webp]) %>
+        <button class="st-button ptbr-prompt-button">
+        <%= svg_icon(:hexagon) %>
+        <span>Prompt</span>
+        </button>
       <% end %>
       <% if CurrentUser.is_member? %>
         <button class="st-button ptbr-etc-pool add-to-pool" data-hotkey="add-to-pool">Add to Pool</button>
