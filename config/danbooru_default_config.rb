@@ -653,6 +653,20 @@ h5. What can I do now?
 
 [b]Appeal[/b]: If you believe this was a mistake, please click \"here\":[/appeals/new?disp_id=%FLAG_ID%&qtype=flag] to submit an appeal. If you are not satisfied with the interaction, see the \"Dispute Procedure\":[/static/code_of_conduct#disputingstaffactions] page.",
         },
+        appeal_only: {
+          title: "Post #%POST_ID% has been deleted",
+          body: "Your post #%POST_ID% was rejected by \"%STAFF_NAME%\":[/users/%STAFF_ID%] for violating our \"Upload Guidelines\":[/help/uploading_guidelines].
+
+h5. Reason for rejection:
+
+[quote]
+%REASON%
+[/quote]
+
+h5. What can I do now?
+
+[b]Appeal[/b]: If you believe this was a mistake, please click \"here\":[/appeals/new?disp_id=%FLAG_ID%&qtype=flag] to submit an appeal. If you are not satisfied with the interaction, see the \"Dispute Procedure\":[/static/code_of_conduct#disputingstaffactions] page.",
+        },
         prompt_spam: {
           title: "Post #%POST_ID% has been deleted",
           body: "Your post #%POST_ID% was rejected by \"%STAFF_NAME%\":[/users/%STAFF_ID%] for violating our policy on \"Prompt Spam\":[/help/uploading_guidelines#bad:~:text=Prompt%20spam].
