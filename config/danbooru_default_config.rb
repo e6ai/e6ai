@@ -639,39 +639,55 @@ module Danbooru
       {
         default: {
           title: "Post #%POST_ID% has been deleted",
-          body: "Post #%POST_ID% was deleted by \"%STAFF_NAME%\":[/users/%STAFF_ID%] for the following reason(s):
+          body: "Your post #%POST_ID% was rejected by \"%STAFF_NAME%\":[/users/%STAFF_ID%] for violating our \"Upload Guidelines\":[/help/uploading_guidelines].
+
+h5. Reason for rejection:
+
 [quote]
 %REASON%
 [/quote]
 
-This is a courtesy notification; you don't need to take further action if you don't want to.
+h5. What can I do now?
 
-If you would like to contest the deletion, click \"this link\":[/appeals/new?disp_id=%FLAG_ID%&qtype=flag].
+[b]Fix & Replace[/b]: Follow the \"Replacement Instructions\":[/help/replacements] or re-upload the corrected version (Need help? Check out the #gen-help channel on our \"official Discord\":[/static/discord]).
 
-You can see a list of your deleted posts \"here\":[/deleted_posts?user_id=%UPLOADER_ID%]; you can access this at any time by going to \"your profile page\":[/users/%UPLOADER_ID%] & selecting the `deleted` tab on the `Upload` pane, or you can search {{user:!%UPLOADER_ID% status:deleted}}.",
+[b]Appeal[/b]: If you believe this was a mistake, please click \"here\":[/appeals/new?disp_id=%FLAG_ID%&qtype=flag] to submit an appeal. If you are not satisfied with the interaction, see the \"Dispute Procedure\":[/static/code_of_conduct#disputingstaffactions] page.",
         },
-        DNP: {
+        prompt_spam: {
           title: "Post #%POST_ID% has been deleted",
-          body: "Post #%POST_ID% was deleted by \"%STAFF_NAME%\":[/users/%STAFF_ID%] for the following reason(s):
+          body: "Your post #%POST_ID% was rejected by \"%STAFF_NAME%\":[/users/%STAFF_ID%] for violating our policy on \"Prompt Spam\":[/help/uploading_guidelines#bad:~:text=Prompt%20spam].
+
+h5. Reason for rejection:
 [quote]
 %REASON%
 [/quote]
 
-DNP content like this is not allowed on this site without receiving preemptive and direct permission from the artist. If you have such permission (or are the artist), you may \"DMail %STAFF_NAME%\":[/dmails/new?dmail%5Bto_id%5D=%STAFF_ID%&dmail%5Btitle%5D=Appeal%3A+Permission+to+post+%23%POST_ID%] to discuss restoring the post.
+h5. What does this mean?
 
-Please note that repeatedly uploading DNP material without permission can & will result in any or all of the following:
-* Receiving records
-* Losing uploading privileges (temporarily or permanently)
-* Site bans (temporary & permanent)
+To maintain gallery variety, please limit posts to no more than 3 similar versions. A lower limit may be enforced at staff discretion.
 
-You can see a list of your deleted posts \"here\":[/deleted_posts?user_id=%UPLOADER_ID%]; you can access this at any time by going to \"your profile page\":[/users/%UPLOADER_ID%] & selecting the `deleted` tab on the `Upload` pane, or you can search {{user:!%UPLOADER_ID% status:deleted}}.",
+h5. What can I do now?
+
+[b]Appeal[/b]: If you believe these posts were distinct enough to warrant inclusion, please click \"here\":[/appeals/new?disp_id=%FLAG_ID%&qtype=flag] to submit an appeal. If you are not satisfied with the interaction, see the \"Dispute Procedure\":[/static/code_of_conduct#disputingstaffactions] page.",
+        },
+        follow_up: {
+          title: "Rejection reason for post #%POST_ID% was updated",
+          body: "The rejection reason for your post \"#%POST_ID%\":[/posts/%POST_ID%] has been updated by \"%STAFF_NAME%\":[/users/%STAFF_ID%].
+
+h5. Updated reason for rejection:
+
+[quote]
+%REASON%
+[/quote]
+
+If you have questions regarding this change, please \"DM the staff member\":[/dmails/new?dmail%5Bto_id%5D=%STAFF_ID%&dmail%5Btitle%5D=Appeal%3A+Deleted+post+%23%POST_ID%].",
         },
       }
     end
 
     # If true, the post deletion DMail will be enabled by default.
     def enable_post_deletion_dmail
-      false
+      true
     end
 
     # The number of records displayed per page. Posts use `user.per_page` which is configurable by the user
