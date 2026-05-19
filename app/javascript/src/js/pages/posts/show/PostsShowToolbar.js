@@ -232,14 +232,18 @@ export default class PostsShowToolbar {
   // Prompt button
   initPromptButton () {
     let loaded = false;
-    $(".ptbr-prompt-button").on("click", () => {
+    const button = $(".ptbr-prompt-button");
+    button.on("click", () => {
       if (loaded) {
         $("#gen-info-container").toggleClass("hidden");
         return;
       }
       loaded = true;
+      button.attr("pending", "true");
       GenInfo.loadAndShow().catch((err) => {
         console.warn("GenInfo: Failed to extract metadata", err);
+      }).finally(() => {
+        button.attr("pending", "false");
       });
     });
   }

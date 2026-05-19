@@ -38,7 +38,7 @@
         <h3>Related</h3>
         <%= render "posts/partials/show/sidebar/related", :post => @post %>
       </section>
-      
+
       <div class="go-up"><button type="button" class="st-button kinetic" title="Scroll to top" aria-label="Scroll to top"><%= svg_icon(:corner_right_up) %></button></div>
     </div>
 
@@ -85,7 +85,7 @@
 
       <%= render "posts/partials/show/content/toolbar", post: @post %>
 
-      <% if @post.file_ext.in?(%w[png jpg jpeg]) %>
+      <% if @post.file_ext.in?(%w[png jpg jpeg webp]) %>
         <div id="gen-info-container" class="styled-dtext"></div>
       <% end %>
 
