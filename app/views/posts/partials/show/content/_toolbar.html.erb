@@ -158,8 +158,8 @@
       <button class="st-button ptbr-share-button" data-hotkey="share">Share</button>
       <% if @post.file_ext.in?(%w[png jpg jpeg webp]) %>
         <button class="st-button ptbr-prompt-button">
-        <%= svg_icon(:hexagon) %>
-        <span>Prompt</span>
+          <%= svg_icon(:hexagon) %>
+          <span>Prompt</span>
         </button>
       <% end %>
       <% if CurrentUser.is_member? %>

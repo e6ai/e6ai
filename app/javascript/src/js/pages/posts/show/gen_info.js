@@ -118,7 +118,7 @@ GenInfo.parseWebPChunks = function (buffer) {
 
   // List of RIFF chunks (fourCC size body)
   let info = [];
-  while (offset < fileSize - 8) { // Need at least 8 bytes for a chunk
+  while (offset < Math.min(fileSize, buffer.byteLength) - 8) { // Need at least 8 bytes for a chunk
     const fourCC = view.getUint32(offset, true);
     const size = view.getUint32(offset + 4, true);
     const name = String.fromCharCode(
@@ -127,7 +127,6 @@ GenInfo.parseWebPChunks = function (buffer) {
       (fourCC >> 16) & 0xFF,
       (fourCC >> 24) & 0xFF,
     );
-    console.log(name);
     if (name == "EXIF") {
       info = info.concat(GenInfo.parseExifUserComment(buffer, offset + 8, size));
     }

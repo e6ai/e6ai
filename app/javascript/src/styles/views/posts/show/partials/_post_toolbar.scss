@@ -276,7 +276,7 @@
 #ptbr-wrapper .ptbr-prompt-button {
   font-family: "Roboto", Verdana, Geneva, sans-serif;
 
-  @include ptbr-wait-spinner
+  @include ptbr-wait-spinner;
 }
 
 
@@ -285,7 +285,7 @@
   min-width: 6rem;
   align-items: center;
 
-  @include ptbr-wait-spinner
+  @include ptbr-wait-spinner;
 }
 
 
