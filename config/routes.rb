@@ -25,6 +25,7 @@ Rails.application.routes.draw do
       resources :dmails, only: %i[index show]
     end
     resource :dashboard, only: %i[show]
+    resources :discord_reports, only: %i[index]
     resources :exceptions, only: %i[index show]
     resource :reowner, controller: "reowner", only: %i[new create]
     resource :stuck_dnp, controller: "stuck_dnp", only: %i[new create]
@@ -284,7 +285,6 @@ Rails.application.routes.draw do
       resource :similar, only: [], controller: "post_recommendations" do
         get :artist
         get :tags
-        get :remote
         get "", to: redirect { |params, req| "/iqdb_queries#{req.format.json? ? '.json' : ''}?post_id=#{params[:id]}" }
       end
     end
@@ -424,8 +424,6 @@ Rails.application.routes.draw do
     end
   end
 
-  options "*all", to: "application#enable_cors"
-
   # aliases
   resources :wpages, controller: "wiki_pages"
   resources :ftopics, controller: "forum_topics"
@@ -525,6 +523,7 @@ Rails.application.routes.draw do
   get "/static/avoid_posting" => "static#avoid_posting", as: "avoid_posting_static"
   get "/meta_searches/tags" => "meta_searches#tags", :as => "meta_searches_tags"
   get "status" => "rails/health#show", as: :rails_health_check
+  get "/robots.txt" => "static#robots", as: :robots
 
   root to: "static#home"
 

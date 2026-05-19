@@ -1174,9 +1174,9 @@ class Post < ApplicationRecord
     end
 
     ## DB!
-    # Fetches the avoid posting data for the post's artist tags.
+    # Fetches the avoid posting data for all artist, copyright, and character tags on the post.
     # Sends a db request to lookup avoid posting data.
-    def avoid_posting_artists
+    def avoid_posting_tags
       []
     end
   end
@@ -1647,6 +1647,9 @@ class Post < ApplicationRecord
       if reason
         text = text.gsub("%REASON%", reason)
       end
+      if (flag_id = deletion_flag&.id)
+        text = text.gsub("%FLAG_ID%", flag_id.to_s)
+      end
       text.gsub("%POST_ID%", id.to_s)
           .gsub("%STAFF_NAME%", CurrentUser.name)
           .gsub("%STAFF_ID%", CurrentUser.id.to_s)
@@ -2103,6 +2106,7 @@ class Post < ApplicationRecord
     @categorized_tags = nil
     @artist_tags = nil
     @uploader_linked_artists = nil
+    @avoid_posting_tags = nil
 
     @has_dimensions = nil
     @preview_dimensions = nil

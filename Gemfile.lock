@@ -149,7 +149,7 @@ GEM
       railties (>= 5.0.0)
     faker (3.4.2)
       i18n (>= 1.8.11, < 2)
-    faraday (2.14.1)
+    faraday (2.14.2)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
@@ -251,6 +251,9 @@ GEM
     raabro (1.4.0)
     racc (1.8.1)
     rack (3.2.6)
+    rack-cors (3.0.0)
+      logger
+      rack (>= 3.0.14)
     rack-proxy (0.7.7)
       rack
     rack-session (2.1.2)
@@ -408,6 +411,8 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
+    sitemap_generator (7.0.1)
+      builder (~> 3.0)
     smart_properties (1.17.0)
     streamio-ffmpeg (3.0.2)
       multi_json (~> 1.8)
@@ -475,6 +480,7 @@ DEPENDENCIES
   pg
   pitchfork
   puma
+  rack-cors
   rails (~> 8.1.0)
   rails-settings-cached (~> 2.9)
   recaptcha
@@ -499,6 +505,7 @@ DEPENDENCIES
   simple_form
   simplecov
   simplecov_json_formatter
+  sitemap_generator
   streamio-ffmpeg
   view_component
   vite_rails
