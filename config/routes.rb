@@ -522,8 +522,10 @@ Rails.application.routes.draw do
   get "/static/theme" => "static#theme", as: "theme"
   get "/static/avoid_posting" => "static#avoid_posting", as: "avoid_posting_static"
   get "/meta_searches/tags" => "meta_searches#tags", :as => "meta_searches_tags"
-  get "status" => "rails/health#show", as: :rails_health_check
   get "/robots.txt" => "static#robots", as: :robots
+
+  get "status" => "rails/health#show", as: :rails_health_check
+  get "health" => "health#index", as: :health_check
 
   root to: "static#home"
 
