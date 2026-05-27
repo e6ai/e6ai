@@ -1211,7 +1211,10 @@ class Post < ApplicationRecord
       return false if user_id.blank?
       cached = @favorited_status_cache&.[](user_id)
       return cached unless cached.nil?
-      Favorite.exists?(user_id: user_id, post_id: id)
+
+      is_favorited = Favorite.exists?(user_id: user_id, post_id: id)
+      preset_favorited_status(user_id, is_favorited)
+      is_favorited
     end
 
     alias_method :is_favorited?, :favorited_by?
@@ -1424,7 +1427,10 @@ class Post < ApplicationRecord
       return 0 if user_id.blank?
       cached = @vote_by_cache&.[](user_id)
       return cached unless cached.nil?
-      PostVote.where(user_id: user_id, post_id: id).pick(:score) || 0
+
+      score = PostVote.where(user_id: user_id, post_id: id).pick(:score) || 0
+      preset_vote_by(user_id, score)
+      score
     end
   end
 
