@@ -82,7 +82,7 @@ RSpec.describe SessionLoader do
 
     it "sets CurrentUser.user to User.anonymous when no credentials are present" do
       loader.load
-      expect(CurrentUser.is_anonymous?).to be true
+      expect(CurrentUser.user.is_logged_out?).to be true
     end
   end
 
@@ -117,7 +117,7 @@ RSpec.describe SessionLoader do
 
       it "leaves CurrentUser as anonymous" do
         loader.load
-        expect(CurrentUser.is_anonymous?).to be true
+        expect(CurrentUser.user.is_logged_out?).to be true
       end
     end
 
@@ -282,7 +282,7 @@ RSpec.describe SessionLoader do
 
       it "leaves CurrentUser as anonymous without raising" do
         expect { loader.load }.not_to raise_error
-        expect(CurrentUser.is_anonymous?).to be true
+        expect(CurrentUser.user.is_logged_out?).to be true
       end
     end
 
@@ -291,7 +291,7 @@ RSpec.describe SessionLoader do
 
       it "leaves CurrentUser as anonymous" do
         loader.load
-        expect(CurrentUser.is_anonymous?).to be true
+        expect(CurrentUser.user.is_logged_out?).to be true
       end
     end
   end
@@ -316,7 +316,7 @@ RSpec.describe SessionLoader do
     end
 
     context "with a time-limited ban" do
-      before { create(:ban, user: user, duration: 7) }
+      before { create(:ban, user: user, duration: 7, prevent_login: true) }
 
       it "raises AuthenticationFailure mentioning the suspension" do
         expect { loader.load }.to raise_error(SessionLoader::AuthenticationFailure, /suspended/)
@@ -324,13 +324,21 @@ RSpec.describe SessionLoader do
     end
 
     context "with an expired ban" do
-      let!(:ban) { create(:ban, user: user, duration: 7) }
+      let!(:ban) { create(:ban, user: user, duration: 7, prevent_login: true) }
 
       before { ban.update_columns(expires_at: 2.days.ago) }
 
       it "unbans the user and does not raise" do
         expect { loader.load }.not_to raise_error
-        expect(user.reload.is_banned?).to be false
+        expect(user.reload.is_restricted?).to be false
+      end
+    end
+
+    context "with a soft ban (prevent_login: false)" do
+      before { create(:ban, user: user, duration: 7, prevent_login: false) }
+
+      it "does not raise AuthenticationFailure" do
+        expect { loader.load }.not_to raise_error
       end
     end
   end

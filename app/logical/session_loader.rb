@@ -30,13 +30,15 @@ class SessionLoader
     end
 
     CurrentUser.user.unban! if CurrentUser.user.ban_expired?
-    if CurrentUser.user.is_blocked?
+    if CurrentUser.user.is_restricted?
       recent_ban = CurrentUser.user.recent_ban
-      ban_message = "Account is banned: forever"
-      if recent_ban && recent_ban.expires_at.present?
-        ban_message = "Account is suspended for another #{recent_ban.expire_days}"
+      if recent_ban.nil? || recent_ban.prevent_login?
+        ban_message = "Account is banned: forever"
+        if recent_ban&.expires_at.present?
+          ban_message = "Account is suspended for another #{recent_ban.expire_days}"
+        end
+        raise AuthenticationFailure, ban_message
       end
-      raise AuthenticationFailure, ban_message
     end
     update_user_login_tracking
     set_safe_mode
@@ -73,7 +75,7 @@ class SessionLoader
   end
 
   def refresh_old_remember_token
-    if cookies.encrypted[:remember] && !CurrentUser.is_anonymous?
+    if cookies.encrypted[:remember] && !CurrentUser.user.is_logged_out?
       cookies.encrypted[:remember] = {value: @remember_validator.generate("#{CurrentUser.id}:#{CurrentUser.password_token}", purpose: "rbr", expires_in: 14.days), expires: Time.now + 14.days, httponly: true, same_site: :lax, secure: Rails.env.production?}
     end
   end
@@ -141,7 +143,7 @@ class SessionLoader
   end
 
   def update_user_login_tracking
-    return if CurrentUser.is_anonymous?
+    return if CurrentUser.user.is_logged_out?
 
     cache_key = if CurrentUser.api_key
                   "user_login_tracking:api_key:#{CurrentUser.api_key.id}"
@@ -177,7 +179,7 @@ class SessionLoader
   # This should normally happen when the user reads their last unread dmail.
   def refresh_unread_dmails
     return if skip_cookies?
-    return if CurrentUser.is_anonymous?
+    return if CurrentUser.user.is_logged_out?
     return if cookies[:hide_dmail_notice].blank?
 
     if !CurrentUser.user.has_mail? && cookies[:hide_dmail_notice] == "1"

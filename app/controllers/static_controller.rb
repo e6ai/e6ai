@@ -73,7 +73,7 @@ class StaticController < ApplicationController
   end
 
   def disable_mobile_mode
-    if CurrentUser.is_anonymous?
+    if CurrentUser.user.is_logged_out?
       if cookies[:nmm]
         cookies.delete(:nmm)
       else
@@ -202,9 +202,9 @@ class StaticController < ApplicationController
 
     add_link[:tools, "DB Export", Danbooru.config.db_export_path] if Danbooru.config.db_export_path.present?
     add_link[:tools, "Discord", discord_post_path] if CurrentUser.can_discord?
-    add_link[:users, "Signup", new_user_path] if CurrentUser.is_anonymous?
+    add_link[:users, "Signup", new_user_path] if CurrentUser.user.is_logged_out?
 
-    unless CurrentUser.is_anonymous?
+    unless CurrentUser.user.is_logged_out?
       add_link[:users, "User Home", home_users_path]
       add_link[:users, "Profile", user_path(CurrentUser.user)]
       add_link[:users, "Settings", settings_users_path]
@@ -233,6 +233,7 @@ class StaticController < ApplicationController
       add_link[:admin, "IP Addresses", moderator_ip_addrs_path]
       add_link[:admin, "IP Bans", ip_bans_path]
       add_link[:admin, "Post Report Reasons", post_report_reasons_path]
+      add_link[:admin, "Post Flag Reasons", post_flag_reasons_path]
       add_link[:admin, "Email Blacklist", email_blacklists_path]
       add_link[:admin, "Destroyed Posts", admin_destroyed_posts_path]
       add_link[:admin, "Stuck DNP tags", new_admin_stuck_dnp_path]
