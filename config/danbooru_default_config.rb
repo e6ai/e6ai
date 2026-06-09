@@ -65,9 +65,9 @@ module Danbooru
       "Anonymous"
     end
 
-    # The path of the daily DB exports. Hidden from the site map if `nil`.
-    def db_export_path
-      "/db_export/"
+    # Whether the daily database exports are enabled. Hidden from the site map if false.
+    def db_export_enabled?
+      false
     end
 
     # Prevent new users from going above 80k while allowing those currently above
@@ -491,57 +491,6 @@ module Danbooru
     # * `:all`: Also visible to everyone (including anonymous users)
     def flag_reason_visibility
       :staff
-    end
-
-    def flag_reasons
-      [
-        {
-          name: "uploading_guidelines",
-          reason: "Does not meet the [[uploading_guidelines#quality|quality standards]] or [[uploading_guidelines#bad|relevancy]] sections of the uploading guidelines.",
-          text: "This post fails to meet the site's standards when it comes to image quality or is not furry related.",
-          require_explanation: true,
-        },
-        {
-          name: "extreme",
-          reason: "Does not meet the [[uploading_guidelines#bad|uploading guidelines]].",
-          text: "This post features an underage character depicted in a suggestive or explicit way, an explicit depiction of an animal that could be mistaken for a photograph, a photorealistic human face, or real-life pornography.",
-        },
-        {
-          name: "traditional",
-          reason: "Traditional artwork or img2img/img2vid of traditional artwork.",
-          text: "This post features traditional artwork or img2img/img2vid of traditional artwork.",
-          require_explanation: true,
-        },
-        {
-          name: "dnp_director",
-          reason: "The director of this post is on the \"avoid posting list\":/static/avoid_posting.",
-          text: "Certain directors have requested that their work is not to be published on this site, and were granted [[avoid_posting|Do Not Post]] status.\nSometimes, that status comes with conditions; see [[conditional_dnp]] for more information.",
-        },
-        {
-          name: "advertisement",
-          reason: "This post contains advertisements for paywalled content.",
-          text: "This post contains advertisements for paywalled content.",
-        },
-        {
-          name: "inferior",
-          reason: "Duplicate or inferior version of another post.",
-          text: "A superior version of this post exists on the site.",
-          parent: true,
-        },
-      ]
-    end
-
-    # What reason for the automatically created AI check flag
-    def check_for_ai_content_flag_reason
-      "uploading_guidelines"
-    end
-
-    def grandfathered_post_cutoff
-      Time.zone.local(2025, 1, 1)
-    end
-
-    def auto_flag_ai_posts?
-      false
     end
 
     def deletion_reasons

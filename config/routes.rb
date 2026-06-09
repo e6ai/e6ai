@@ -190,6 +190,7 @@ Rails.application.routes.draw do
     end
   end
   resource :dtext_preview, only: %i[create]
+  resources :db_exports, only: %i[index]
   resources :favorites, only: %i[index create destroy]
   resources :forum_posts do
     resource :votes, controller: "forum_post_votes"
@@ -390,6 +391,7 @@ Rails.application.routes.draw do
   resources :post_flag_reasons do
     collection do
       post :clear_cache
+      post :set_ai_flag_reason
     end
   end
   resources :post_sets do
