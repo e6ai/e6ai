@@ -5,7 +5,7 @@ import CStorage from "@/utility/StorageC";
 const Theme = {};
 
 Theme.Values = {
-  "Theme": ["Main", "Extra", "Palette", "Font", "StickyHeader", "Navbar", "Gestures"],
+  "Theme": ["Main", "Extra", "Palette", "Font", "StickyHeader", "Navbar", "Gestures", "Logo"],
   "Posts": ["WikiExcerpt", "StickySearch"],
   "Site": ["Events"],
 };
