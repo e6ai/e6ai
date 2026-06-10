@@ -32,7 +32,7 @@ class Post < ApplicationRecord
   validate :updater_can_change_rating
   before_save :update_tag_post_counts, if: :should_process_tags?
   before_save :set_tag_counts, if: :should_process_tags?
-  after_create :check_for_ai_content, if: -> { Setting.automatic_ai_check? }
+  # removed for e6ai: after_create :check_for_ai_content
   after_save :create_post_events
   after_save :create_version
   after_save :update_parent_on_save

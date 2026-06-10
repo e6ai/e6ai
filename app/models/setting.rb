@@ -42,7 +42,8 @@ class Setting < RailsSettings::Base
   end
 
   scope :ai_flag do
-    field :automatic_ai_check, type: :boolean, default: true
-    field :ai_flag_reason, type: :string, default: "uploading_guidelines"
+    # defaults modified for e6ai
+    field :automatic_ai_check, type: :boolean, default: false
+    field :ai_flag_reason, type: :string, default: ""
   end
 end
