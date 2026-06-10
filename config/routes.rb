@@ -158,6 +158,13 @@ Rails.application.routes.draw do
   end
 
   resources :bans
+  resources :blips do
+    member do
+      post :delete
+      post :undelete
+      post :warning
+    end
+  end
   resources :bulk_update_requests do
     member do
       post :approve
