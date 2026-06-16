@@ -37,8 +37,6 @@ class IqdbQueriesController < ApplicationController
       @matches = IqdbProxy.query_hash(search_params[:hash], search_params[:score_cutoff], v2_format: v2_format)
     end
 
-    Post.preload_stats!(@matches.filter_map { |m| m["post"] if m.is_a?(Hash) })
-
     respond_with(@matches) do |fmt|
       fmt.json do
         render json: @matches, root: "posts"
@@ -46,6 +44,10 @@ class IqdbQueriesController < ApplicationController
     end
   rescue Downloads::File::Error => e
     render_expected_error(404, e.message)
+  rescue IqdbProxy::CircuitOpenError => e
+    render_expected_error(503, e.message)
+  rescue IqdbProxy::BusyError => e
+    render_expected_error(429, e.message)
   rescue IqdbProxy::Error => e
     render_expected_error(500, e.message)
   end
@@ -56,10 +58,15 @@ class IqdbQueriesController < ApplicationController
     return if Danbooru.config.disable_throttles?
 
     if %i[file url post_id hash].any? { |key| search_params[key].present? }
-      if RateLimiter.check_limit("img:#{CurrentUser.ip_addr}", 1, 2.seconds)
-        raise APIThrottled
+      if CurrentUser.user.is_anonymous?
+        raise APIThrottled if IqdbProxy.anon_lockdown?
+        raise APIThrottled if RateLimiter.check_limit("img:anon:#{CurrentUser.ip_addr}", 1, 60.seconds)
+        RateLimiter.hit("img:anon:#{CurrentUser.ip_addr}", 60.seconds)
       else
+        raise APIThrottled if RateLimiter.check_limit("img:#{CurrentUser.ip_addr}", 1, 2.seconds)
+        raise APIThrottled if RateLimiter.check_limit("img:user:#{CurrentUser.user.id}", 1, 2.seconds)
         RateLimiter.hit("img:#{CurrentUser.ip_addr}", 2.seconds)
+        RateLimiter.hit("img:user:#{CurrentUser.user.id}", 2.seconds)
       end
     end
   end

@@ -94,9 +94,11 @@ class User < ApplicationRecord
   validate :validate_ip_addr_is_not_banned, on: :create
   validate :validate_sock_puppets, on: :create, if: -> { Danbooru.config.enable_sock_puppet_validation? }
   before_validation :normalize_blacklisted_tags, if: ->(rec) { rec.blacklisted_tags_changed? }
+  before_validation :normalize_favorite_tags, if: ->(rec) { rec.favorite_tags_changed? }
   before_validation :staff_cant_disable_dmail
   before_validation :blank_out_nonexistent_avatars
   validates :blacklisted_tags, length: { maximum: 150_000 }
+  validate :validate_favorite_tags_count
   validates :custom_style, length: { maximum: 500_000 }
   validates :custom_title, length: { maximum: 100 }, allow_blank: true
   validates :profile_about, length: { maximum: Danbooru.config.user_about_max_size }
@@ -257,7 +259,7 @@ class User < ApplicationRecord
     end
 
     def password_is_secure
-      analysis = Zxcvbn.test(password, [name, email])
+      analysis = ZXCVBN_TESTER.test(password, [name, email])
       return unless analysis.score < 2
       if analysis.feedback.warning
         errors.add(:password, "is insecure: #{analysis.feedback.warning}")
@@ -376,10 +378,6 @@ class User < ApplicationRecord
       is_bd_staff
     end
 
-    def is_staff?
-      is_janitor?
-    end
-
     def is_artist?
       @is_artist ||= artists.any?
     end
@@ -404,7 +402,7 @@ class User < ApplicationRecord
     end
 
     def staff_cant_disable_dmail
-      self.disable_user_dmails = false if is_janitor?
+      self.disable_user_dmails = false if is_staff?
     end
 
     def level_css_class
@@ -463,6 +461,18 @@ class User < ApplicationRecord
   module BlacklistMethods
     def normalize_blacklisted_tags
       self.blacklisted_tags = TagAlias.to_aliased_query(blacklisted_tags, comments: true) if blacklisted_tags.present?
+    end
+
+    def normalize_favorite_tags
+      tag_names = TagQuery.scan_recursive(favorite_tags.to_s, strip_prefixes: true)
+                          .grep_v(/\A[()]+\z/) # Strip parentheses. These have no meaning here.
+                          .uniq
+      self.favorite_tags = TagAlias.to_aliased(tag_names).join(" ")
+    end
+
+    def validate_favorite_tags_count
+      return if favorite_tags.blank?
+      errors.add(:favorite_tags, "has too many tags (maximum is 200)") if favorite_tags.split.size > 200
     end
 
     def is_blacklisting_user?(user)
@@ -547,9 +557,9 @@ class User < ApplicationRecord
     create_user_throttle(:wiki_edit, -> { Danbooru.config.wiki_edit_limit - WikiPageVersion.for_user(id).where("updated_at > ?", 1.hour.ago).count },
                          :general_bypass_throttle?, 7.days)
     create_user_throttle(:pool, -> { Danbooru.config.pool_limit - Pool.for_user(id).where("created_at > ?", 1.hour.ago).count },
-                         :is_janitor?, 7.days)
+                         :is_staff?, 7.days)
     create_user_throttle(:pool_edit, -> { Danbooru.config.pool_edit_limit - PoolVersion.for_user(id).where("updated_at > ?", 1.hour.ago).count },
-                         :is_janitor?, 3.days)
+                         :is_staff?, 3.days)
     create_user_throttle(:pool_post_edit, -> { Danbooru.config.pool_post_edit_limit - PoolVersion.for_user(id).where("updated_at > ?", 1.hour.ago).group(:pool_id).count(:pool_id).length },
                          :general_bypass_throttle?, 7.days)
     create_user_throttle(:note_edit, -> { Danbooru.config.note_edit_limit - NoteVersion.for_user(id).where("updated_at > ?", 1.hour.ago).count },
@@ -622,9 +632,9 @@ class User < ApplicationRecord
     )
 
     create_user_throttle(:suggest_tag, -> { Danbooru.config.tag_suggestion_limit - (TagAlias.for_creator(id).where("created_at > ?", 1.hour.ago).count + TagImplication.for_creator(id).where("created_at > ?", 1.hour.ago).count + BulkUpdateRequest.for_creator(id).where("created_at > ?", 1.hour.ago).count) },
-                         :is_janitor?, 7.days)
+                         :is_staff?, 7.days)
     create_user_throttle(:forum_vote, -> { Danbooru.config.forum_vote_limit - ForumPostVote.by(id).where("created_at > ?", 1.hour.ago).count },
-                         :is_janitor?, 3.days)
+                         :is_staff?, 3.days)
 
     def can_remove_from_pools?
       is_member? && older_than(7.days)
@@ -635,15 +645,15 @@ class User < ApplicationRecord
     end
 
     def can_view_flagger?(flagger_id)
-      is_janitor? || flagger_id == id
+      is_staff? || flagger_id == id
     end
 
     def can_view_flagger_on_post?(flag)
-      is_janitor? || flag.creator_id == id || flag.is_deletion
+      is_staff? || flag.creator_id == id || flag.is_deletion
     end
 
     def can_replace?
-      is_janitor? || replacements_beta?
+      is_staff? || replacements_beta?
     end
 
     def can_view_staff_notes?

@@ -102,6 +102,10 @@ module Danbooru
       "/usr/bin/ffmpeg"
     end
 
+    def ffprobe_path
+      "/usr/bin/ffprobe"
+    end
+
     # Thumbnail size
     def small_image_width
       256
@@ -672,7 +676,7 @@ If you have questions regarding this change, please \"DM the staff member\":[/dm
     end
 
     def can_user_see_post?(user, post)
-      return false if post.is_deleted? && !user.is_janitor?
+      return false if post.is_deleted? && !user.is_staff?
       !(is_user_restricted?(user) && is_post_restricted?(post))
     end
 
@@ -730,6 +734,31 @@ If you have questions regarding this change, please \"DM the staff member\":[/dm
     end
 
     def iqdb_server
+    end
+
+    def iqdb_read_timeout
+      5
+    end
+
+    # This should be set to a value lower than half of the total number of pitchfork workers.
+    def iqdb_max_concurrent_queries
+      20
+    end
+
+    def iqdb_circuit_failure_threshold
+      10
+    end
+
+    def iqdb_circuit_failure_window
+      60
+    end
+
+    def iqdb_circuit_cooldown
+      30
+    end
+
+    def iqdb_anon_lockdown_duration
+      3600
     end
 
     def opensearch_host
