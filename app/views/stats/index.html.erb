@@ -78,6 +78,14 @@
         ]
       %>
 
+      <%= render "percentage_table", header_title: "Blips", data: [
+          ["Blip count", "total_blips"],
+          ["Active blips", "active_blips", "total_blips"],
+          ["Deleted blips", "deleted_blips", "total_blips"],
+          ["Destroyed blips", "destroyed_blips", "total_blips"],
+        ]
+      %>
+
       <%= render "percentage_table", header_title: "Tags", data: [
           ["Tag count", "total_tags"],
           ["General tag count", "general_tags", "total_tags"],
