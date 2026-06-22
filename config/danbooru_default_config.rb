@@ -112,7 +112,7 @@ module Danbooru
     end
 
     def default_bg_color
-      "152f56"
+      "222222"
     end
 
     # Thumbnail size
