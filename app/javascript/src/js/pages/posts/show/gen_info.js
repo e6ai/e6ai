@@ -307,8 +307,8 @@ GenInfo.decodeStealthData = async function (blob) {
   let rgbState = State.SIGNATURE;
   let alphaState = State.SIGNATURE;
 
-  let rgbSignature = "";
-  let alphaSignature = "";
+  let rgbSignature;
+  let alphaSignature;
 
   let rgbPayloadCompressed = false;
   let alphaPayloadCompressed = false;
