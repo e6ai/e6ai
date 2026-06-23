@@ -8,7 +8,7 @@
           ["Average posts per day", "average_posts_per_day", "The average number of new posts made each day since the beginning of the site."],
           ["Average comments per day", "average_comments_per_day", "The average number of new comments made each day since the beginning of the site."],
           ["Average forum posts per day", "average_forum_posts_per_day", "The average number of new forum posts made each day since the beginning of the site."],
-          # ["Average blips per day", "average_blips_per_day", "The average number of new blips made each day since the beginning of the site."],
+          ["Average blips per day", "average_blips_per_day", "The average number of new blips made each day since the beginning of the site."],
         ]
       %>
 
@@ -75,6 +75,14 @@
           ["Thread count", "total_forum_threads"],
           ["Post count", "total_forum_posts"],
           ["Average posts per thread", "average_posts_per_thread"],
+        ]
+      %>
+
+      <%= render "percentage_table", header_title: "Blips", data: [
+          ["Blip count", "total_blips"],
+          ["Active blips", "active_blips", "total_blips"],
+          ["Deleted blips", "deleted_blips", "total_blips"],
+          ["Destroyed blips", "destroyed_blips", "total_blips"],
         ]
       %>
 
