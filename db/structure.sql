@@ -2063,6 +2063,44 @@ ALTER SEQUENCE public.staff_audit_logs_id_seq OWNED BY public.staff_audit_logs.i
 
 
 --
+-- Name: staff_files; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.staff_files (
+    id bigint NOT NULL,
+    creator_id integer NOT NULL,
+    storage_id character varying NOT NULL,
+    md5 character varying NOT NULL,
+    file_ext character varying NOT NULL,
+    file_size integer NOT NULL,
+    original_filename character varying NOT NULL,
+    title character varying,
+    description text,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: staff_files_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.staff_files_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: staff_files_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.staff_files_id_seq OWNED BY public.staff_files.id;
+
+
+--
 -- Name: staff_notes; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2095,6 +2133,110 @@ CREATE SEQUENCE public.staff_notes_id_seq
 --
 
 ALTER SEQUENCE public.staff_notes_id_seq OWNED BY public.staff_notes.id;
+
+
+--
+-- Name: staff_wiki_refs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.staff_wiki_refs (
+    id bigint NOT NULL,
+    staff_wiki_id integer NOT NULL,
+    related_id integer NOT NULL,
+    related_type character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: staff_wiki_refs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.staff_wiki_refs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: staff_wiki_refs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.staff_wiki_refs_id_seq OWNED BY public.staff_wiki_refs.id;
+
+
+--
+-- Name: staff_wiki_versions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.staff_wiki_versions (
+    id bigint NOT NULL,
+    staff_wiki_id integer NOT NULL,
+    updater_id integer NOT NULL,
+    claimant_id integer,
+    updater_ip_addr inet NOT NULL,
+    title character varying NOT NULL,
+    body text DEFAULT ''::text NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: staff_wiki_versions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.staff_wiki_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: staff_wiki_versions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.staff_wiki_versions_id_seq OWNED BY public.staff_wiki_versions.id;
+
+
+--
+-- Name: staff_wikis; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.staff_wikis (
+    id bigint NOT NULL,
+    creator_id integer NOT NULL,
+    updater_id integer NOT NULL,
+    claimant_id integer,
+    title character varying NOT NULL,
+    body text DEFAULT ''::text NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: staff_wikis_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.staff_wikis_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: staff_wikis_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.staff_wikis_id_seq OWNED BY public.staff_wikis.id;
 
 
 --
@@ -3121,10 +3263,38 @@ ALTER TABLE ONLY public.staff_audit_logs ALTER COLUMN id SET DEFAULT nextval('pu
 
 
 --
+-- Name: staff_files id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.staff_files ALTER COLUMN id SET DEFAULT nextval('public.staff_files_id_seq'::regclass);
+
+
+--
 -- Name: staff_notes id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.staff_notes ALTER COLUMN id SET DEFAULT nextval('public.staff_notes_id_seq'::regclass);
+
+
+--
+-- Name: staff_wiki_refs id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.staff_wiki_refs ALTER COLUMN id SET DEFAULT nextval('public.staff_wiki_refs_id_seq'::regclass);
+
+
+--
+-- Name: staff_wiki_versions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.staff_wiki_versions ALTER COLUMN id SET DEFAULT nextval('public.staff_wiki_versions_id_seq'::regclass);
+
+
+--
+-- Name: staff_wikis id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.staff_wikis ALTER COLUMN id SET DEFAULT nextval('public.staff_wikis_id_seq'::regclass);
 
 
 --
@@ -3682,11 +3852,43 @@ ALTER TABLE ONLY public.staff_audit_logs
 
 
 --
+-- Name: staff_files staff_files_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.staff_files
+    ADD CONSTRAINT staff_files_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: staff_notes staff_notes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.staff_notes
     ADD CONSTRAINT staff_notes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: staff_wiki_refs staff_wiki_refs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.staff_wiki_refs
+    ADD CONSTRAINT staff_wiki_refs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: staff_wiki_versions staff_wiki_versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.staff_wiki_versions
+    ADD CONSTRAINT staff_wiki_versions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: staff_wikis staff_wikis_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.staff_wikis
+    ADD CONSTRAINT staff_wikis_pkey PRIMARY KEY (id);
 
 
 --
@@ -4897,6 +5099,27 @@ CREATE INDEX index_staff_audit_logs_on_user_id ON public.staff_audit_logs USING 
 
 
 --
+-- Name: index_staff_files_on_creator_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_staff_files_on_creator_id ON public.staff_files USING btree (creator_id);
+
+
+--
+-- Name: index_staff_files_on_md5; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_staff_files_on_md5 ON public.staff_files USING btree (md5);
+
+
+--
+-- Name: index_staff_files_on_storage_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_staff_files_on_storage_id ON public.staff_files USING btree (storage_id);
+
+
+--
 -- Name: index_staff_notes_on_creator_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4915,6 +5138,41 @@ CREATE INDEX index_staff_notes_on_updater_id ON public.staff_notes USING btree (
 --
 
 CREATE INDEX index_staff_notes_on_user_id ON public.staff_notes USING btree (user_id);
+
+
+--
+-- Name: index_staff_wiki_refs_on_related_id_and_related_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_staff_wiki_refs_on_related_id_and_related_type ON public.staff_wiki_refs USING btree (related_id, related_type);
+
+
+--
+-- Name: index_staff_wiki_refs_on_staff_wiki_and_related; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_staff_wiki_refs_on_staff_wiki_and_related ON public.staff_wiki_refs USING btree (staff_wiki_id, related_id, related_type);
+
+
+--
+-- Name: index_staff_wiki_versions_on_staff_wiki_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_staff_wiki_versions_on_staff_wiki_id ON public.staff_wiki_versions USING btree (staff_wiki_id);
+
+
+--
+-- Name: index_staff_wiki_versions_on_updater_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_staff_wiki_versions_on_updater_id ON public.staff_wiki_versions USING btree (updater_id);
+
+
+--
+-- Name: index_staff_wikis_on_lower_title; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_staff_wikis_on_lower_title ON public.staff_wikis USING btree (lower((title)::text));
 
 
 --
@@ -5315,6 +5573,22 @@ ALTER TABLE ONLY public.blips
 
 
 --
+-- Name: staff_wiki_refs fk_rails_2cd6b3a2eb; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.staff_wiki_refs
+    ADD CONSTRAINT fk_rails_2cd6b3a2eb FOREIGN KEY (staff_wiki_id) REFERENCES public.staff_wikis(id) ON DELETE CASCADE;
+
+
+--
+-- Name: staff_wiki_versions fk_rails_317c9a4443; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.staff_wiki_versions
+    ADD CONSTRAINT fk_rails_317c9a4443 FOREIGN KEY (claimant_id) REFERENCES public.users(id);
+
+
+--
 -- Name: appeals fk_rails_3f7cd477a6; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5339,6 +5613,14 @@ ALTER TABLE ONLY public.avoid_posting_versions
 
 
 --
+-- Name: staff_wiki_versions fk_rails_4dad911f81; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.staff_wiki_versions
+    ADD CONSTRAINT fk_rails_4dad911f81 FOREIGN KEY (updater_id) REFERENCES public.users(id);
+
+
+--
 -- Name: appeals fk_rails_4ed6a7befb; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5355,11 +5637,35 @@ ALTER TABLE ONLY public.appeals
 
 
 --
+-- Name: staff_wikis fk_rails_7c286bc172; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.staff_wikis
+    ADD CONSTRAINT fk_rails_7c286bc172 FOREIGN KEY (updater_id) REFERENCES public.users(id);
+
+
+--
+-- Name: staff_files fk_rails_804a297dc9; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.staff_files
+    ADD CONSTRAINT fk_rails_804a297dc9 FOREIGN KEY (creator_id) REFERENCES public.users(id);
+
+
+--
 -- Name: user_feedback fk_rails_9329a36823; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.user_feedback
     ADD CONSTRAINT fk_rails_9329a36823 FOREIGN KEY (updater_id) REFERENCES public.users(id);
+
+
+--
+-- Name: staff_wikis fk_rails_949cd2810d; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.staff_wikis
+    ADD CONSTRAINT fk_rails_949cd2810d FOREIGN KEY (creator_id) REFERENCES public.users(id);
 
 
 --
@@ -5427,6 +5733,22 @@ ALTER TABLE ONLY public.avoid_postings
 
 
 --
+-- Name: staff_wiki_versions fk_rails_ce7d15f8f4; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.staff_wiki_versions
+    ADD CONSTRAINT fk_rails_ce7d15f8f4 FOREIGN KEY (staff_wiki_id) REFERENCES public.staff_wikis(id) ON DELETE CASCADE;
+
+
+--
+-- Name: staff_wikis fk_rails_d05de95362; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.staff_wikis
+    ADD CONSTRAINT fk_rails_d05de95362 FOREIGN KEY (claimant_id) REFERENCES public.users(id);
+
+
+--
 -- Name: favorites fk_rails_d20e53bb68; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5457,6 +5779,8 @@ ALTER TABLE ONLY public.staff_notes
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260617120000'),
+('20260615155147'),
 ('20260612160840'),
 ('20260608170029'),
 ('20260530165214'),

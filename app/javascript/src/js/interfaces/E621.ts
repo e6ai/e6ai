@@ -4,13 +4,15 @@ import ThumbnailEngine from "@/components/ThumbnailEngine";
 import Blacklist from "@/core/blacklists";
 import DeferredPostLoader from "@/core/DeferredPostLoader";
 import Hotkeys from "@/core/hotkeys";
+import CurrentUser from "@/models/CurrentUser";
 import PostCache from "@/models/PostCache";
 import Logger from "@/utility/Logger";
 import ModuleRegistry from "@/utility/ModuleRegistry";
 import PerformanceTracker from "@/utility/PerformanceTracker";
 import Settings from "@/utility/Settings";
-import LStorage from "@/utility/Storage";
-import CStorage from "@/utility/StorageC";
+import CStorage from "@/utility/storage/Cookie";
+import LStorage from "@/utility/storage/Local";
+import SStorage from "@/utility/storage/Session";
 import ToastManager from "@/utility/Toast";
 
 export default interface E621Type {
@@ -18,9 +20,9 @@ export default interface E621Type {
   Performance: PerformanceTracker;
   Logger: typeof Logger;
 
-  CStorage: typeof CStorage;
-  LStorage: typeof LStorage;
+  Storage: Storage;
   Settings: typeof Settings;
+  CurrentUser: CurrentUser;
 
   Hotkeys: typeof Hotkeys;
   Toast: typeof ToastManager;
@@ -39,6 +41,10 @@ export default interface E621Type {
     notice: typeof ToastManager.notice;
     error: typeof ToastManager.alert;
   };
+
+  CStorage: typeof CStorage;
+  LStorage: typeof LStorage;
+  SStorage: typeof SStorage;
 }
 
 /**
@@ -55,9 +61,13 @@ export function getE621Instance (): E621Type {
     Performance: new PerformanceTracker("app"),
     Logger,
 
-    CStorage,
-    LStorage,
+    Storage: {
+      Cookie: CStorage,
+      Local: LStorage,
+      Session: SStorage,
+    },
     Settings,
+    CurrentUser: CurrentUser.user,
 
     Hotkeys,
     Toast: ToastManager,
@@ -77,6 +87,10 @@ export function getE621Instance (): E621Type {
       notice: deprecated(ToastManager.notice, "E621.Flash.notice is deprecated. Please use E621.Toast.notice instead."),
       error: deprecated(ToastManager.alert, "E621.Flash.error is deprecated. Please use E621.Toast.alert instead."),
     },
+
+    CStorage: CStorage,
+    LStorage: LStorage,
+    SStorage: SStorage,
   };
 
   window["Danbooru"] = window["E621"] = instance;
@@ -89,9 +103,15 @@ export function getE621Instance (): E621Type {
  * @param warningMessage The warning message to log when the method is called.
  * @returns A new method that logs the warning message and then calls the original method.
  */
-function deprecated<T extends (...args: any[]) => void>(method: T, warningMessage: string): T {
+function deprecated<T extends (...args: any[]) => void> (method: T, warningMessage: string): T {
   return function (this: any, ...args: any[]) {
     console.warn(warningMessage);
     return method(...args);
   } as unknown as T;
+}
+
+interface Storage {
+  Cookie: typeof CStorage;
+  Local: typeof LStorage;
+  Session: typeof SStorage;
 }

@@ -1,5 +1,5 @@
 import Offclick, { OffclickEntry } from "../../utility/Offclick";
-import LStorage from "../../utility/Storage";
+import LStorage from "../../utility/storage/Local";
 
 export default class SearchControls {
 
@@ -124,6 +124,13 @@ export default class SearchControls {
     $("input[type='radio'][name='ssc-hover-text'][value='" + LStorage.Posts.HoverText + "']")
       .prop("checked", true);
     updateHoverTextNodes();
+
+    $("#ssc-corner-ribbons")
+      .prop("checked", LStorage.Posts.CornerRibbons)
+      .on("change", (event: JQuery.ChangeEvent<HTMLInputElement>) => {
+        LStorage.Posts.CornerRibbons = event.target.checked;
+        $("body").attr("data-st-cornerribbons", event.target.checked);
+      });
 
     $("#ssc-sticky-searchbar")
       .prop("checked", LStorage.Posts.StickySearch)

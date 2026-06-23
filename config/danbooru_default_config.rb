@@ -92,6 +92,11 @@ module Danbooru
       []
     end
 
+    # Autocomplete results matching these regular expressions will not be displayed.
+    def default_autocomplete_blacklist
+      []
+    end
+
     def safeblocked_tags
       []
     end
@@ -104,6 +109,10 @@ module Danbooru
 
     def ffprobe_path
       "/usr/bin/ffprobe"
+    end
+
+    def default_bg_color
+      "152f56"
     end
 
     # Thumbnail size
@@ -143,6 +152,24 @@ module Danbooru
 
     def replacement_file_secret
       "abc123"
+    end
+
+    def staff_file_path_prefix
+      "staff_files"
+    end
+
+    def staff_file_secret
+      "abc123"
+    end
+
+    # Maximum size of a file uploaded to the staff file store.
+    def staff_file_max_size
+      100.megabytes
+    end
+
+    # File extensions staff are allowed to upload to the staff file store.
+    def staff_file_allowed_extensions
+      %w[jpg png gif webp mp4 webm txt log csv json zip 7z]
     end
 
     def deleted_preview_url
