@@ -195,13 +195,6 @@ Rails.application.routes.draw do
   end
 
   resources :bans
-  resources :blips do
-    member do
-      post :delete
-      post :undelete
-      post :warning
-    end
-  end
   resources :bulk_update_requests do
     member do
       post :approve
@@ -429,6 +422,13 @@ Rails.application.routes.draw do
   resources :wiki_page_versions, only: %i[index show] do
     collection do
       get :diff
+    end
+  end
+  resources :blips do
+    member do
+      post :delete
+      post :undelete
+      post :warning
     end
   end
   resources :post_report_reasons
