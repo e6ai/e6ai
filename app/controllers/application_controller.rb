@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
 
   before_action :reset_current_user
   before_action :sanitize_params
+  before_action :sanitize_cookies
   before_action :set_current_user
   around_action :set_time_zone
   before_action :validate_pagination_param_types
@@ -70,6 +71,22 @@ class ApplicationController < ActionController::Base
     sanitize_hash.call(params)
   end
 
+  # The ParameterSanitizer middleware scrubs the raw, still-URL-encoded Cookie header,
+  # but Rails percent-decodes cookie values afterwards. Decoding can reintroduce invalid
+  # UTF-8 bytes or null bytes (e.g. `nmm=%FF`), which then blow up later when something
+  # calls a string operation such as `blank?`/`present?` on the value while rendering.
+  # This mirrors sanitize_params for the decoded cookie jar.
+  def sanitize_cookies
+    scrubbed = {}
+    cookies.each do |key, value|
+      next unless value.is_a?(String)
+      next if value.valid_encoding? && value.exclude?("\u0000")
+
+      scrubbed[key] = value.scrub("").delete("\u0000")
+    end
+    cookies.update(scrubbed) if scrubbed.any?
+  end
+
   def api_check
     if CurrentUser.user.is_logged_in? && !request.get? && !request.head?
       throttled = CurrentUser.user.token_bucket.throttled?
@@ -96,6 +113,12 @@ class ApplicationController < ActionController::Base
       render_error_page(500, exception, message: "The database timed out running your query.")
     when ActionDispatch::Http::Parameters::ParseError, ActionController::BadRequest, PostVersion::UndoError
       render_error_page(400, exception)
+    when SessionLoader::InsufficientScope
+      response.set_header("WWW-Authenticate", %(Bearer error="insufficient_scope", scope="full"))
+      render_expected_error(401, "Insufficient scope")
+    when SessionLoader::LevelBelowMinimum
+      response.set_header("WWW-Authenticate", %(Bearer error="invalid_token", error_description="user level below application minimum"))
+      render_expected_error(401, "Account level below application minimum")
     when SessionLoader::AuthenticationFailure
       session.delete(:user_id)
       cookies.delete :remember
@@ -210,6 +233,7 @@ class ApplicationController < ActionController::Base
     CurrentUser.user = nil
     CurrentUser.ip_addr = nil
     CurrentUser.safe_mode = Danbooru.config.safe_mode?
+    CurrentUser.oauth_token = nil
   end
 
   def requires_reauthentication
@@ -255,6 +279,12 @@ class ApplicationController < ActionController::Base
 
   def reject_api_key_auth
     if CurrentUser.api_key.present?
+      render_expected_error(:forbidden, "This action requires browser authentication")
+    end
+  end
+
+  def reject_bearer_auth
+    if CurrentUser.oauth_token.present?
       render_expected_error(:forbidden, "This action requires browser authentication")
     end
   end
