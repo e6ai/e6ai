@@ -27,6 +27,7 @@ class Post < ApplicationRecord
   validates :description, length: { maximum: Danbooru.config.post_descr_max_size }, if: :description_changed?
   validate :added_tags_are_valid, if: :should_process_tags?
   validate :removed_tags_are_valid, if: :should_process_tags?
+  validate :has_artist_tag, if: :should_process_tags?
   validate :has_enough_tags, if: :should_process_tags?
   validate :post_is_not_its_own_parent
   validate :updater_can_change_rating
@@ -1179,14 +1180,20 @@ class Post < ApplicationRecord
     # Fetches the data for the artist tags to find any that have the linked artists matching the uploader
     # Sends a db request to look up the artist data.
     def uploader_linked_artists
-      []
+      @uploader_linked_artists ||= begin
+        tags = artist_tags.filter_map(&:artist).select { |artist| artist.linked_user_id == uploader_id }
+        tags.map(&:name)
+      end
     end
 
     ## DB!
     # Fetches ALL linked users for the post's artist tags and returns the user IDs.
     # Sends a db request to look up the artist data.
     def linked_users
-      []
+      @linked_users ||= begin
+        tags = artist_tags.filter_map(&:artist).select(&:linked_user_id?)
+        tags.map(&:linked_user_id)
+      end
     end
 
     ## DB!
@@ -2075,6 +2082,7 @@ class Post < ApplicationRecord
       added_invalid_tags = added.select { |t| t.category == Tag.categories.invalid }
       new_tags = added.select { |t| t.post_count <= 0 }
       new_general_tags = new_tags.select { |t| t.category == Tag.categories.general }
+      new_artist_tags = new_tags.select { |t| t.category == Tag.categories.director }
       # See https://github.com/e621ng/e621ng/issues/494
       # If the tag is fresh it's save to assume it was created with a prefix
       repopulated_tags = new_tags.select { |t| t.category != Tag.categories.general && t.category != Tag.categories.meta && t.created_at < 10.seconds.ago }
@@ -2095,6 +2103,12 @@ class Post < ApplicationRecord
         n = repopulated_tags.size
         tag_wiki_links = repopulated_tags.map { |tag| "[[#{tag.name}]]" }
         warnings.add(:base, "Repopulated #{n} old #{'tag'.pluralize(n)}: #{tag_wiki_links.join(', ')}")
+      end
+
+      new_artist_tags.each do |tag|
+        if tag.artist.blank?
+          warnings.add(:base, "Artist [[#{tag.name}]] requires an artist entry. \"Create new artist entry\":[/artists/new?artist%5Bname%5D=#{CGI.escape(tag.name)}]")
+        end
       end
     end
 

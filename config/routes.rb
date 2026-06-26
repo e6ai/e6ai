@@ -195,6 +195,20 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :artists, constraints: id_name_constraint do
+    member do
+      put :revert
+    end
+    collection do
+      get :show_or_new
+    end
+  end
+  resources :artist_urls, only: %i[index]
+  resources :artist_versions, only: %i[index] do
+    collection do
+      get :search
+    end
+  end
   resources :bans
   resources :bulk_update_requests do
     member do
@@ -485,7 +499,14 @@ Rails.application.routes.draw do
   resources :ftopics, controller: "forum_topics"
   resources :fposts, controller: "forum_posts"
 
-  # legacy aliases
+  # Legacy aliases
+  get "/artist" => redirect { |_params, req| "/artists?page=#{req.params[:page]}&search[name]=#{CGI.escape(req.params[:name].to_s)}" }
+  get "/artist/index" => redirect { |_params, req| "/artists?page=#{req.params[:page]}" }
+  get "/artist/show/:id" => redirect("/artists/%{id}")
+  get "/artist/show" => redirect { |_params, req| "/artists?name=#{CGI.escape(req.params[:name].to_s)}" }
+  get "/artist/history/:id" => redirect("/artist_versions?search[artist_id]=%{id}")
+  get "/artist/recent_changes" => redirect("/artist_versions")
+
   get "/comment" => redirect { |_params, req| "/comments?page=#{req.params[:page]}" }
   get "/comment/index" => redirect { |_params, req| "/comments?page=#{req.params[:page]}" }
   get "/comment/show/:id" => redirect("/comments/%{id}")
