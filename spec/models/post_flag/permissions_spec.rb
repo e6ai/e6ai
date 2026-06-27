@@ -123,7 +123,7 @@ RSpec.describe PostFlag do
         expect(resolved_flag.can_appeal?(create(:user))).to be(false)
       end
 
-      it "returns true for linked users", skip: "Artist linking not implemented in this fork" do
+      it "returns true for linked users" do
         user = create(:user)
         artist = create(:artist, name: "linked_artist", linked_user_id: user.id)
         post.tag_string += " #{artist.name}"

@@ -285,6 +285,7 @@ class TagAlias < TagRelationship
         update_posts_locked_tags
         update_blacklists
         update_posts
+        rename_artist
         forum_updater.update(approval_message(approver), "APPROVED") if update_topic
         update(status: "active", post_count: consequent_tag&.post_count || 0)
         TagAliasFinalizeJob.perform_later(id)
