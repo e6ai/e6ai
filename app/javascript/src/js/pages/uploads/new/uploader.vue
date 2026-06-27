@@ -635,10 +635,10 @@
           newButton.classList.add("toggle-button");
           newButton.innerHTML = artistName;
           newButton.onclick = () => {
-            let val = (this.tagEntries.artist ?? "").trim().split(" ").filter(n => n);
+            let val = (this.tagEntries.director ?? "").trim().split(" ").filter(n => n);
             if (val.includes(artistName)) val = val.filter(n => n !== artistName);
             else val.push(artistName);
-            this.tagEntries.artist = val.join(" ") + " ";
+            this.tagEntries.director = val.join(" ") + " ";
           };
           buttonRow.appendChild(newButton);
         }
