@@ -231,6 +231,7 @@ RSpec.describe ArtistsController do
     let(:avoid_posting) { CurrentUser.scoped(bd_user) { create(:avoid_posting, artist: artist) } }
 
     before do
+      skip "This fork doesn't support DNP"
       avoid_posting
     end
 
