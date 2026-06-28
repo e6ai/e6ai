@@ -46,7 +46,7 @@ RSpec.describe AvoidPosting do
       CurrentUser.user = create(:user)
       artist.name = "#{artist.name}_changed"
       expect(artist).not_to be_valid
-      expect(artist.errors[:name]).to include("cannot be changed while the artist is on the avoid posting list")
+      expect(artist.errors[:name]).to include("cannot be changed while the director is on the avoid posting list")
     end
 
     it "allows a bd_staff user to change the artist's name even with an active DNP" do

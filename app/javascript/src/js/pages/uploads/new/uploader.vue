@@ -627,7 +627,7 @@
         buttonRow.classList.add("upload-artist-tags");
 
         const hint = document.createElement("div");
-        hint.innerHTML = "Linked artist tags:";
+        hint.innerHTML = "Linked director tags:";
         buttonRow.appendChild(hint);
 
         for (const artistName of window.uploaderSettings.verifiedArtistTags) {

@@ -106,7 +106,7 @@ class StaticController < ApplicationController
         { key: :tools, title: "Tools" },
       ],
       [
-        { key: :artists, title: "Artists" },
+        { key: :artists, title: "Directors" },
         { key: :tags, title: "Tags" },
         { key: :notes, title: "Notes" },
         { key: :pools, title: "Pools" },
@@ -246,7 +246,7 @@ class StaticController < ApplicationController
     add_link[:users, "Staff Notes", staff_notes_path] if CurrentUser.can_view_staff_notes?
 
     add_link[:posts, "Help", help_page_path(id: "posts")]
-    add_link[:artists, "Help", help_page_path(id: "artists")]
+    add_link[:artists, "Help", help_page_path(id: "directors")]
     add_link[:tags, "Help", help_page_path(id: "tags")]
     add_link[:notes, "Help", help_page_path(id: "notes")]
     add_link[:pools, "Help", help_page_path(id: "pools")]

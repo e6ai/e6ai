@@ -195,7 +195,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :artists, constraints: id_name_constraint do
+  artists_resources = proc do
     member do
       put :revert
     end
@@ -203,12 +203,17 @@ Rails.application.routes.draw do
       get :show_or_new
     end
   end
-  resources :artist_urls, only: %i[index]
-  resources :artist_versions, only: %i[index] do
+  artist_versions_resources = proc do
     collection do
       get :search
     end
   end
+  resources :artists, path: "directors", as: :directors, constraints: id_name_constraint, &artists_resources
+  resources :artists, &artists_resources
+  resources :artist_urls, path: "director_urls", as: :director_urls, only: %i[index]
+  resources :artist_urls
+  resources :artist_versions, path: "director_versions", as: :director_versions, only: %i[index], &artist_versions_resources
+  resources :artist_versions, &artist_versions_resources
   resources :bans
   resources :bulk_update_requests do
     member do
@@ -341,6 +346,7 @@ Rails.application.routes.draw do
       get :comments, to: "comments#for_post"
       resource :similar, only: [], controller: "post_recommendations" do
         get :artist
+        get :director, action: :artist
         get :tags
         get "", to: redirect { |params, req| "/iqdb_queries#{req.format.json? ? '.json' : ''}?post_id=#{params[:id]}" }
       end

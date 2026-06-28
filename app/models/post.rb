@@ -2107,7 +2107,7 @@ class Post < ApplicationRecord
 
       new_artist_tags.each do |tag|
         if tag.artist.blank?
-          warnings.add(:base, "Artist [[#{tag.name}]] requires an artist entry. \"Create new artist entry\":[/artists/new?artist%5Bname%5D=#{CGI.escape(tag.name)}]")
+          warnings.add(:base, "Director [[#{tag.name}]] requires an director entry. \"Create new director entry\":[/artists/new?artist%5Bname%5D=#{CGI.escape(tag.name)}]")
         end
       end
     end

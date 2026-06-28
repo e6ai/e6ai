@@ -115,7 +115,7 @@ RSpec.describe DbExportJob do
 
       it "exports artists" do
         create(:artist, name: "test_export_artist")
-        expect(export_csv("artists")).to include("test_export_artist")
+        expect(export_csv("directors")).to include("test_export_artist")
       end
 
       it "exports post versions for visible changes" do
