@@ -24,7 +24,7 @@ RSpec.describe Artist do
       expect { make_artist(name: name) }.to change(Tag, :count).by_at_least(1)
       tag = Tag.find_by(name: name)
       expect(tag).to be_present
-      expect(tag.category).to eq(Tag.categories.artist)
+      expect(tag.category).to eq(Tag.categories.director)
     end
 
     it "does not create a duplicate tag when one already exists" do
@@ -49,7 +49,7 @@ RSpec.describe Artist do
       artist = make_artist
       # categorize_tag has already fired; reload association
       artist.reload
-      expect(artist.category_id).to eq(Tag.categories.artist)
+      expect(artist.category_id).to eq(Tag.categories.director)
     end
   end
 end

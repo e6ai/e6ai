@@ -117,7 +117,7 @@ RSpec.describe ModActionDecorator do
     context "with artist actions" do
       it "artist_delete includes artist id and name" do
         desc = decorate("artist_delete", { "artist_id" => 3, "artist_name" => "someartist" }).format_description
-        expect(desc).to eq("Deleted artist #3 (someartist)")
+        expect(desc).to eq("Deleted director #3 (someartist)")
       end
 
       it "artist_page_rename includes old and new names" do

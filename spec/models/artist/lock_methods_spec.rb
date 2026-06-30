@@ -57,7 +57,7 @@ RSpec.describe Artist do
       CurrentUser.user = create(:user)
       artist.group_name = "any_group"
       expect(artist).not_to be_valid
-      expect(artist.errors[:base]).to include("Artist is locked")
+      expect(artist.errors[:base]).to include("Director is locked")
     end
 
     it "allows a member to edit an unlocked artist" do

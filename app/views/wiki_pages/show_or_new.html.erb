@@ -19,6 +19,10 @@
         <p>This wiki page is empty. <%= link_to "Click here to add details", new_wiki_page_path(wiki_page: { title: params[:title] }) %>.</p>
       </div>
 
+      <% if @wiki_page.tag&.category == Tag.categories.director %>
+        <%= link_to("View director",  show_or_new_artists_path(name: @wiki_page.title)) %>
+      <% end %>
+
       <%= wiki_page_alias_and_implication_list(@wiki_page)%>
 
       <%= render "recent_posts" %>

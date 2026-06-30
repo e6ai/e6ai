@@ -89,17 +89,17 @@ class ModActionDecorator < ApplicationDecorator
 
       ### Artist ###
     when "artist_delete"
-      "Deleted artist ##{vals['artist_id']} (#{vals['artist_name']})"
+      "Deleted director ##{vals['artist_id']} (#{vals['artist_name']})"
     when "artist_page_rename"
-      "Renamed artist page (\"#{vals['old_name']}\":/artists/show_or_new?name=#{vals['old_name']} → \"#{vals['new_name']}\":/artists/show_or_new?name=#{vals['new_name']})"
+      "Renamed director page (\"#{vals['old_name']}\":/directors/show_or_new?name=#{vals['old_name']} → \"#{vals['new_name']}\":/directors/show_or_new?name=#{vals['new_name']})"
     when "artist_page_lock"
-      "Locked artist page artist ##{vals['artist_page']}"
+      "Locked director page director ##{vals['artist_page']}"
     when "artist_page_unlock"
-      "Unlocked artist page artist ##{vals['artist_page']}"
+      "Unlocked director page director ##{vals['artist_page']}"
     when "artist_user_linked"
-      "Linked #{user} to artist ##{vals['artist_page']}"
+      "Linked #{user} to director ##{vals['artist_page']}"
     when "artist_user_unlinked"
-      "Unlinked #{user} from artist ##{vals['artist_page']}"
+      "Unlinked #{user} from director ##{vals['artist_page']}"
 
       ### Avoid Posting ###
     when "avoid_posting_create"

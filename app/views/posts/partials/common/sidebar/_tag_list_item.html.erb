@@ -7,7 +7,7 @@
   <a
     class="tag-list-wiki"
     rel="nofollow"
-    href="<%= show_or_new_wiki_pages_path(title: tag.name) %>"
+    href="<%= tag.category == Tag.categories.director ? show_or_new_artists_path(name: tag.name) : show_or_new_wiki_pages_path(title: tag.name) %>"
   >?</a>
 
   <% if query.present? %>
@@ -24,7 +24,7 @@
     <span class="tag-list-name">
       <%= tag.name.tr("_", " ") %>
       <% if post.present? && post.uploader_linked_artists.include?(tag.name) %>
-        <%= svg_icon(:chexagon, class: "chexagon", title: "Uploaded by the artist") %>
+        <%= svg_icon(:chexagon, class: "chexagon", title: "Uploaded by the director") %>
       <% end %>
     </span>
 
