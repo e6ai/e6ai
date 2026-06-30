@@ -18,7 +18,7 @@
         id="replacement-reason"
         listId="reason-datalist"
         :addToList="submittedReason"
-        placeholder="Better image quality / Fixed by the artist / etc."
+        placeholder="Better image quality / Fixed by the director / etc."
         v-model="reason"
       ></autocompletable-input>
     </label>
