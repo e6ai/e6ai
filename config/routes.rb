@@ -195,7 +195,7 @@ Rails.application.routes.draw do
     end
   end
 
-  artists_resources = proc do
+  resources :artists, path: "directors", constraints: id_name_constraint do
     member do
       put :revert
     end
@@ -203,17 +203,12 @@ Rails.application.routes.draw do
       get :show_or_new
     end
   end
-  artist_versions_resources = proc do
+  resources :artist_urls, path: "director_urls", only: %i[index]
+  resources :artist_versions, path: "director_versions", only: %i[index] do
     collection do
       get :search
     end
   end
-  resources :artists, path: "directors", as: :directors, constraints: id_name_constraint, &artists_resources
-  resources :artists, &artists_resources
-  resources :artist_urls, path: "director_urls", as: :director_urls, only: %i[index]
-  resources :artist_urls
-  resources :artist_versions, path: "director_versions", as: :director_versions, only: %i[index], &artist_versions_resources
-  resources :artist_versions, &artist_versions_resources
   resources :bans
   resources :bulk_update_requests do
     member do
