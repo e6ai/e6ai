@@ -36,7 +36,7 @@ class RecommendedQueryBuilder < ElasticPostQueryBuilder
 
     # Build weighted function_score: base randomness + boosts for shared character/copyright tags
     character_tags = @post.tags_for_category("character").min_by(10, &:post_count).map(&:name)
-    copyright_tags = @post.tags_for_category("copyright").min_by(10, &:post_count).map(&:name)
+    copyright_tags = @post.tags_for_category("franchise").min_by(10, &:post_count).map(&:name)
     species_tags = @post.tags_for_category("species").min_by(10, &:post_count).map(&:name)
 
     functions = [{ random_score: { seed: @post.id, field: "id" } }]
@@ -57,7 +57,7 @@ class RecommendedQueryBuilder < ElasticPostQueryBuilder
     species: 1.25,
     general: 1.0,
   }.freeze
-  IGNORED_CATEGORIES = %w[artist copyright].freeze
+  IGNORED_CATEGORIES = %w[director franchise].freeze
 
   def build_for_tags
     pool_ids = @post.pool_ids

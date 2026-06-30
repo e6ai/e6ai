@@ -20,7 +20,7 @@ RSpec.describe RecommendedQueryBuilder do
       pool_ids: pool_ids,
     )
     allow(post).to receive(:tags_for_category) do |category|
-      pairs = { "character" => character_tags, "copyright" => copyright_tags, "species" => species_tags }
+      pairs = { "character" => character_tags, "franchise" => copyright_tags, "species" => species_tags }
       (pairs[category] || []).map { |name, count| instance_double(Tag, name: name, post_count: count) }
     end
     allow(post).to receive(:categorized_tags) do
@@ -263,7 +263,7 @@ RSpec.describe RecommendedQueryBuilder do
       end
 
       it "does not assign weights to artist or copyright tags" do
-        post = make_post(all_tags: { "artist" => [["artist_a", 10]], "copyright" => [["copy_a", 10]] })
+        post = make_post(all_tags: { "director" => [["artist_a", 10]], "franchise" => [["copy_a", 10]] })
         artist_fn = tags_function_score(post)[:functions].find { |f| f.dig(:filter, :term, :tags) == "artist_a" }
         copy_fn = tags_function_score(post)[:functions].find { |f| f.dig(:filter, :term, :tags) == "copy_a" }
         expect(artist_fn).to be_nil
@@ -311,7 +311,7 @@ RSpec.describe RecommendedQueryBuilder do
 
     describe "no artist should terms" do
       it "does not add artist tags to the should clause" do
-        post = make_post(known_artists: %w[some_artist], all_tags: { "artist" => [["some_artist", 50]] })
+        post = make_post(known_artists: %w[some_artist], all_tags: { "director" => [["some_artist", 50]] })
         builder = build_for(post, mode: :tags)
         expect(builder.should).to be_empty
       end
