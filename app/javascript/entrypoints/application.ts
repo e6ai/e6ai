@@ -6,10 +6,11 @@ import Rails from "@rails/ujs";
 Rails.start();
 
 // Common imports for all controllers
-import "@/core/analytics";
+import "@/core/Analytics";
 import "@/core/AuthOverlay";
 import "@/core/common";
 import "@/core/dtext_formatter_loader";
+import "@/core/DTextExtras";
 import "@/core/Navigation";
 import "@/core/news_updates";
 import "@/core/paginator";

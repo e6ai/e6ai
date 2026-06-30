@@ -52,7 +52,6 @@ Layout/EmptyLines:
   Exclude:
     - 'app/controllers/emails_controller.rb'
     - 'app/controllers/post_report_reasons_controller.rb'
-    - 'app/logical/apng_inspector.rb'
     - 'app/models/post_approval.rb'
     - 'app/models/tag_alias.rb'
 
@@ -74,7 +73,6 @@ Layout/EmptyLinesAroundAttributeAccessor:
 Layout/EmptyLinesAroundClassBody:
   Exclude:
     - 'app/controllers/email_blacklists_controller.rb'
-    - 'app/logical/apng_inspector.rb'
     - 'app/logical/processing_error.rb'
 
 # Offense count: 2
@@ -164,7 +162,6 @@ Layout/HashAlignment:
 # SupportedStyles: normal, indented_internal_methods
 Layout/IndentationConsistency:
   Exclude:
-    - 'app/logical/apng_inspector.rb'
     - 'app/models/tag.rb'
 
 # Offense count: 3
@@ -172,7 +169,6 @@ Layout/IndentationConsistency:
 # Configuration parameters: Width, AllowedPatterns.
 Layout/IndentationWidth:
   Exclude:
-    - 'app/logical/apng_inspector.rb'
     - 'app/models/bulk_update_request.rb'
     - 'app/models/tag_implication.rb'
 
@@ -181,7 +177,6 @@ Layout/IndentationWidth:
 # Configuration parameters: AllowDoxygenCommentStyle, AllowGemfileRubyComment.
 Layout/LeadingCommentSpace:
   Exclude:
-    - 'app/logical/apng_inspector.rb'
     - 'app/models/post.rb'
     - 'app/views/users/home.html.erb'
 
@@ -222,7 +217,6 @@ Layout/SpaceAroundEqualsInParameterDefault:
 Layout/SpaceAroundOperators:
   Exclude:
     - 'app/indexes/post_version_index.rb'
-    - 'app/logical/apng_inspector.rb'
     - 'app/logical/user_throttle.rb'
     - 'app/models/tag_alias.rb'
     - 'app/models/tag_implication.rb'
@@ -241,7 +235,6 @@ Layout/SpaceBeforeBlockBraces:
   Exclude:
     - 'app/models/post.rb'
     - 'app/models/tag_relationship.rb'
-    - 'app/views/moderator/ip_addrs/_ip_listing.html.erb'
 
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
@@ -282,7 +275,6 @@ Layout/SpaceInsideBlockBraces:
     - 'app/presenters/user_presenter.rb'
     - 'app/views/comments/_index_by_post.html.erb'
     - 'app/views/forum_topics/index.html.erb'
-    - 'app/views/moderator/ip_addrs/_ip_listing.html.erb'
     - 'app/views/post_disapprovals/_counts.html.erb'
 
 # Offense count: 167
@@ -292,8 +284,6 @@ Layout/SpaceInsideBlockBraces:
 # SupportedStylesForEmptyBraces: space, no_space
 Layout/SpaceInsideHashLiteralBraces:
   Exclude:
-    - 'app/controllers/admin/users_controller.rb'
-    - 'app/controllers/moderator/ip_addrs_controller.rb'
     - 'app/controllers/post_report_reasons_controller.rb'
     - 'app/controllers/tag_corrections_controller.rb'
     - 'app/controllers/uploads_controller.rb'
@@ -308,7 +298,6 @@ Layout/SpaceInsideHashLiteralBraces:
     - 'app/models/post_replacement.rb'
     - 'app/models/tag_alias.rb'
     - 'app/models/tag_implication.rb'
-    - 'app/views/admin/users/edit_blacklist.html.erb'
     - 'app/views/artist_versions/_standard_listing.html.erb'
     - 'app/views/artists/_form.html.erb'
     - 'app/views/blips/_form.html.erb'
@@ -324,12 +313,6 @@ Layout/SpaceInsideHashLiteralBraces:
     - 'app/views/forum_topics/index.html.erb'
     - 'app/views/forum_topics/show.html.erb'
     - 'app/views/maintenance/user/passwords/edit.html.erb'
-    - 'app/views/moderator/dashboards/_activity_artist.html.erb'
-    - 'app/views/moderator/dashboards/_activity_note.html.erb'
-    - 'app/views/moderator/dashboards/_activity_tag.html.erb'
-    - 'app/views/moderator/dashboards/_activity_wiki_page.html.erb'
-    - 'app/views/moderator/ip_addrs/_ip_listing.html.erb'
-    - 'app/views/moderator/ip_addrs/_user_listing.erb'
     - 'app/views/note_versions/_revert_listing.html.erb'
     - 'app/views/note_versions/_standard_listing.html.erb'
     - 'app/views/notes/index.html.erb'
@@ -671,7 +654,6 @@ Rails/ActionOrder:
     - 'app/controllers/bulk_update_requests_controller.rb'
     - 'app/controllers/forum_categories_controller.rb'
     - 'app/controllers/ip_bans_controller.rb'
-    - 'app/controllers/moderator/post/disapprovals_controller.rb'
     - 'app/controllers/post_report_reasons_controller.rb'
     - 'app/controllers/tag_aliases_controller.rb'
     - 'app/controllers/tag_implications_controller.rb'
@@ -695,7 +677,6 @@ Rails/Blank:
     - 'app/models/application_record.rb'
     - 'app/models/note.rb'
     - 'app/models/post.rb'
-    - 'app/views/moderator/post/posts/confirm_delete.html.erb'
 
 # Offense count: 1
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -735,7 +716,7 @@ RSpec/MessageSpies:
 # AllowedReceivers: Gem::Specification, page
 Rails/DynamicFindBy:
   Exclude:
-    - 'app/controllers/admin/reowner_controller.rb'
+    - 'app/controllers/staff/reowner_controller.rb'
     - 'app/controllers/post_set_maintainers_controller.rb'
     - 'app/helpers/bulk_update_requests_helper.rb'
     - 'app/jobs/tag_nuke_job.rb'
@@ -802,9 +783,9 @@ Rails/OutputSafety:
     - 'app/views/ads/_leaderboard.html.erb'
     - 'app/views/forum_topics/index.html.erb'
     - 'app/views/layouts/_head.html.erb'
-    - 'app/views/moderator/ip_addrs/_ip_listing.json.erb'
-    - 'app/views/moderator/ip_addrs/_user_listing.json.erb'
-    - 'app/views/moderator/post/posts/confirm_delete.html.erb'
+    - 'app/views/staff/ip_addrs/_ip_listing.json.erb'
+    - 'app/views/staff/ip_addrs/_user_listing.json.erb'
+    - 'app/views/staff/post/posts/confirm_delete.html.erb'
     - 'app/views/post_disapprovals/_counts.html.erb'
     - 'app/views/post_sets/_form.html.erb'
     - 'app/views/posts/show.html.erb'
@@ -1012,7 +993,6 @@ Style/HashSyntax:
     - 'app/models/tag.rb'
     - 'app/models/tag_relationship.rb'
     - 'app/models/upload.rb'
-    - 'app/views/admin/dashboards/show.html.erb'
     - 'app/views/artists/_quick_search.html.erb'
     - 'app/views/artists/_show.html.erb'
     - 'app/views/bans/_form.html.erb'
@@ -1053,16 +1033,6 @@ Style/HashSyntax:
     - 'app/views/maintenance/user/password_resets/new.html.erb'
     - 'app/views/maintenance/user/passwords/edit.html.erb'
     - 'app/views/meta_searches/tags.html.erb'
-    - 'app/views/moderator/dashboards/_activity_artist.html.erb'
-    - 'app/views/moderator/dashboards/_activity_note.html.erb'
-    - 'app/views/moderator/dashboards/_activity_tag.html.erb'
-    - 'app/views/moderator/dashboards/_activity_upload.html.erb'
-    - 'app/views/moderator/dashboards/_activity_wiki_page.html.erb'
-    - 'app/views/moderator/dashboards/_search_activity.html.erb'
-    - 'app/views/moderator/dashboards/_search_ip_addr.html.erb'
-    - 'app/views/moderator/ip_addrs/_user_listing.erb'
-    - 'app/views/moderator/post/posts/confirm_delete.html.erb'
-    - 'app/views/moderator/post/posts/confirm_move_favorites.html.erb'
     - 'app/views/news_updates/index.html.erb'
     - 'app/views/note_versions/_revert_listing.html.erb'
     - 'app/views/notes/_quick_search.html.erb'
@@ -1196,7 +1166,6 @@ Style/NegatedIfElseCondition:
 # SupportedStyles: skip_modifier_ifs, always
 Style/Next:
   Exclude:
-    - 'app/logical/apng_inspector.rb'
     - 'app/logical/set_diff.rb'
 
 # Offense count: 5
@@ -1205,7 +1174,6 @@ Style/Next:
 # SupportedStyles: predicate, comparison
 Style/NilComparison:
   Exclude:
-    - 'app/logical/apng_inspector.rb'
     - 'app/models/ban.rb'
 
 # Offense count: 2
@@ -1230,7 +1198,6 @@ Style/NumericLiteralPrefix:
 Style/NumericLiterals:
   Exclude:
     - 'app/indexes/post_version_index.rb'
-    - 'app/logical/apng_inspector.rb'
     - 'app/logical/pbkdf2.rb'
     - 'app/views/ads/_leaderboard.html.erb'
     - 'app/views/takedowns/new.html.erb'
@@ -1330,7 +1297,6 @@ Style/RedundantParentheses:
 Style/RedundantReturn:
   Exclude:
     - 'app/helpers/forum_topics_helper.rb'
-    - 'app/logical/apng_inspector.rb'
     - 'app/logical/bulk_update_request_importer.rb'
     - 'app/logical/email_link_validator.rb'
     - 'app/logical/pbkdf2.rb'
@@ -1468,7 +1434,6 @@ Style/StringConcatenation:
     - 'app/models/artist_url.rb'
     - 'app/models/tag_alias.rb'
     - 'app/models/tag_implication.rb'
-    - 'app/views/moderator/post/posts/confirm_delete.html.erb'
     - 'app/views/posts/show.html.erb'
     - 'config/environment.rb'
     - 'spec/requests/oidc_endpoints_spec.rb'
@@ -1488,7 +1453,6 @@ Style/StringLiterals:
     - 'app/helpers/application_helper.rb'
     - 'app/helpers/bulk_update_requests_helper.rb'
     - 'app/helpers/posts_helper.rb'
-    - 'app/logical/apng_inspector.rb'
     - 'app/logical/bulk_update_request_importer.rb'
     - 'app/logical/pbkdf2.rb'
     - 'app/logical/user_email_change.rb'
@@ -1506,8 +1470,6 @@ Style/StringLiterals:
     - 'app/views/forum_post_votes/_vote.html.erb'
     - 'app/views/forum_posts/_forum_post.html.erb'
     - 'app/views/help/_form.html.erb'
-    - 'app/views/moderator/ip_addrs/_ip_listing.html.erb'
-    - 'app/views/moderator/ip_addrs/_user_listing.erb'
     - 'app/views/note_versions/_revert_listing.html.erb'
     - 'app/views/pool_versions/_revert_listing.html.erb'
     - 'app/views/post_sets/_form.html.erb'
