@@ -4,14 +4,26 @@ class ApplicationController < ActionController::Base
   class APIThrottled < StandardError; end
   class FeatureUnavailable < StandardError; end
 
-  # CSRF is skipped only for API-authenticated requests (clients that don't support CSRF tokens),
-  # AND only when the request is not a cross-origin browser submission. A hidden cross-site <form>
-  # can supply login/api_key params, but browser always attaches a cross-origin Origin header to it.
-  # Requiring a same-origin (or origin-less, i.e. non-browser) request closes that forgery vector
-  # while leaving genuine API clients unaffected.
+  # CSRF is skipped only for API-authenticated requests (clients that don't support CSRF tokens).
+  #
+  # Header auth (Authorization: Basic/Bearer) is skipped unconditionally, because it cannot be used
+  # to forge a request in the victim's name:
+  #   - Bearer is structurally CSRF-immune: browsers never auto-attach it, and cross-site JS that
+  #     sets an Authorization header triggers a CORS preflight the attacker's origin can't satisfy.
+  #   - Basic CAN reach us cross-site (e.g. a navigation to https://user:pass@host/ still sends the
+  #     header in Chrome/Firefox — do NOT rely on browsers stripping it), but the credentials are
+  #     attacker-supplied, so the request runs as the attacker, not the victim. Basic would only
+  #     become victim-ambient if browsers had cached Basic credentials for this origin, which never
+  #     happens here: browser login is cookie-based and we never send a `WWW-Authenticate: Basic`
+  #     challenge, so browsers are never prompted to cache/auto-resend Basic for us.
+  #
+  # Param auth (login/api_key) IS forgeable: a hidden cross-site <form> can submit those fields.
+  # A browser always attaches a cross-origin Origin header to such a submission, so we additionally
+  # require the request to be same-origin (or origin-less, i.e. non-browser) before skipping.
   skip_forgery_protection if: -> do
     loader = SessionLoader.new(request)
-    loader.has_api_authentication? && loader.same_origin_request?
+    loader.has_header_authentication? ||
+      (loader.has_login_param_authentication? && loader.same_origin_request?)
   end
 
   before_action :reset_current_user
