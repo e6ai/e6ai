@@ -4,13 +4,13 @@ require "rails_helper"
 
 RSpec.describe "Content Security Policy" do
   subject(:script_src) do
-    get furid_path
+    get site_map_path
     header = response.headers["Content-Security-Policy"]
     header.split(";").map(&:strip).find { |directive| directive.start_with?("script-src ") }
   end
 
   it "sends a Content-Security-Policy header" do
-    get furid_path
+    get site_map_path
     expect(response.headers["Content-Security-Policy"]).to be_present
   end
 

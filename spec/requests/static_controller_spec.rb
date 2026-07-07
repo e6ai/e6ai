@@ -97,7 +97,7 @@ RSpec.describe StaticController do
     include_examples "a wiki page action", "/static/privacy", "e6ai:privacy_policy"
   end
 
-  describe "GET /static/privacy_discordbot" do
+  describe "GET /static/privacy_discordbot", skip: "Not available in this fork" do
     include_examples "a wiki page action", "/static/privacy/discordbot", "e621:privacy_discordbot"
   end
 
