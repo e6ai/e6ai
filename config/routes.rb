@@ -594,7 +594,7 @@ Rails.application.routes.draw do
   get "/static/keyboard_shortcuts" => "static#keyboard_shortcuts", :as => "keyboard_shortcuts"
   get "/static/site_map" => "static#site_map", :as => "site_map"
   get "/static/privacy" => "static#privacy", as: "privacy_policy"
-  get "/static/privacy/discordbot" => "static#privacy_discordbot", as: "privacy_discordbot"
+  # get "/static/privacy/discordbot" => "static#privacy_discordbot", as: "privacy_discordbot"
   get "/static/code_of_conduct" => "static#code_of_conduct", as: "code_of_conduct"
   get "/static/takedown" => "static#takedown", as: "takedown_static"
   get "/static/terms_of_service" => redirect("/terms_of_use")
@@ -604,6 +604,7 @@ Rails.application.routes.draw do
   get "/static/toggle_mobile_mode" => "static#disable_mobile_mode", as: "disable_mobile_mode"
   get "/static/theme" => "static#theme", as: "theme"
   get "/static/avoid_posting" => "static#avoid_posting", as: "avoid_posting_static"
+  # get "/static/furid" => "static#furid", as: "furid"
   get "/meta_searches/tags" => "meta_searches#tags", :as => "meta_searches_tags"
   get "/robots.txt" => "static#robots", as: :robots
 
