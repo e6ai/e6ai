@@ -178,7 +178,7 @@ module SiteMap
   page :tools, :help_pages, "Help Index"
 
   # --- Artists ---
-  group :artists, "Artists"
+  group :artists, "Directors"
   page :artists, :artists, "Listing"
   page :artists, :artist_urls, "URLs"
   # page :artists, :avoid_postings, "Avoid Posting Entries"
