@@ -60,7 +60,7 @@ class UserFeedback < ApplicationRecord
     end
 
     def default_order
-      order(created_at: :desc)
+      order(created_at: :desc, id: :desc)
     end
 
     def visible(user)
@@ -132,5 +132,21 @@ class UserFeedback < ApplicationRecord
 
   def destroyable_by?(destroyer)
     deletable_by?(destroyer) && (destroyer.is_admin? || destroyer == creator)
+  end
+
+  def expires_at
+    return nil if category == "positive" || is_deleted? || body =~ /^Banned permanently/
+    @expires_at ||= begin
+      is_ban = body =~ /\ABanned for /
+      multiplier = if is_ban
+                     3
+                   elsif category == "negative"
+                     2
+                   else
+                     1
+                   end
+
+      created_at + (Danbooru.config.user_feedback_expires_after * multiplier)
+    end
   end
 end

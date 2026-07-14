@@ -51,6 +51,12 @@ module Danbooru
       "auto_moderator"
     end
 
+    # Canonical ID of the system account. When set, the account is resolved by primary key, so its
+    # display name can be changed freely. If absent, falls back to using the `system_user` value.
+    def system_user_id
+      nil
+    end
+
     def source_code_url
       "https://github.com/e6ai/e6ai"
     end
@@ -396,6 +402,10 @@ module Danbooru
       250_000
     end
 
+    def wiki_page_max_featured_posts
+      6
+    end
+
     def user_feedback_max_size
       20_000
     end
@@ -406,6 +416,10 @@ module Danbooru
 
     def post_set_post_limit
       10_000
+    end
+
+    def user_feedback_expires_after
+      6.months
     end
 
     def discord_site
