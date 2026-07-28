@@ -7,6 +7,7 @@ class ModAction < ApplicationRecord
 
   KnownActions = {
     admin_user_delete: { user_id: :integer },
+    artist_delete: { artist_id: :integer, artist_name: :string },
     artist_page_rename: { old_name: :string, new_name: :string },
     artist_page_lock: { artist_page: :string },
     artist_page_unlock: { artist_page: :string },
@@ -92,6 +93,8 @@ class ModAction < ApplicationRecord
     user_text_change: { user_id: :integer },
     user_custom_title_change: { user_id: :integer, old_custom_title: :string, new_custom_title: :string },
     user_upload_limit_change: { user_id: :integer, old_upload_limit: :integer, new_upload_limit: :integer },
+    user_karma_change: { user_id: :integer, old_karma: :integer, new_karma: :integer },
+    user_karma_free_toggle: { user_id: :integer, disabled: :boolean },
     user_uploads_toggle: { user_id: :integer, disabled: :boolean },
     user_flags_change: { user_id: :integer, added: :string, removed: :string },
     user_level_change: { user_id: :integer, level: :string, level_was: :string },

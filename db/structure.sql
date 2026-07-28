@@ -249,6 +249,39 @@ ALTER SEQUENCE public.artists_id_seq OWNED BY public.artists.id;
 
 
 --
+-- Name: asn_ranges; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.asn_ranges (
+    id bigint NOT NULL,
+    first_ip inet NOT NULL,
+    last_ip inet NOT NULL,
+    asn bigint NOT NULL,
+    name character varying NOT NULL,
+    country character varying DEFAULT ''::character varying NOT NULL
+);
+
+
+--
+-- Name: asn_ranges_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.asn_ranges_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: asn_ranges_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.asn_ranges_id_seq OWNED BY public.asn_ranges.id;
+
+
+--
 -- Name: automod_rules; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1729,7 +1762,9 @@ CREATE TABLE public.post_replacements2 (
     reason character varying NOT NULL,
     protected boolean DEFAULT false NOT NULL,
     uploader_id_on_approve integer,
-    penalize_uploader_on_approve boolean
+    penalize_uploader_on_approve boolean,
+    sequence_number integer NOT NULL,
+    CONSTRAINT post_replacements2_status_original_seq0 CHECK ((((status)::text = 'original'::text) = (sequence_number = 0)))
 );
 
 
@@ -2785,6 +2820,44 @@ ALTER SEQUENCE public.user_feedback_id_seq OWNED BY public.user_feedback.id;
 
 
 --
+-- Name: user_ip_addresses; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_ip_addresses (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    ip_addr inet NOT NULL,
+    subnet inet GENERATED ALWAYS AS (
+CASE
+    WHEN (family(ip_addr) = 4) THEN network(set_masklen(ip_addr, 24))
+    ELSE network(set_masklen(ip_addr, 64))
+END) STORED NOT NULL,
+    first_seen_at timestamp(6) without time zone NOT NULL,
+    last_seen_at timestamp(6) without time zone NOT NULL,
+    hit_count integer DEFAULT 1 NOT NULL
+);
+
+
+--
+-- Name: user_ip_addresses_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.user_ip_addresses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: user_ip_addresses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.user_ip_addresses_id_seq OWNED BY public.user_ip_addresses.id;
+
+
+--
 -- Name: user_name_change_requests; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2881,7 +2954,8 @@ CREATE TABLE public.user_statuses (
     own_post_replaced_penalize_count integer DEFAULT 0,
     post_replacement_rejected_count integer DEFAULT 0,
     ticket_count integer DEFAULT 0 NOT NULL,
-    appeal_count integer DEFAULT 0 NOT NULL
+    appeal_count integer DEFAULT 0 NOT NULL,
+    upload_karma integer DEFAULT 0 NOT NULL
 );
 
 
@@ -3077,6 +3151,13 @@ ALTER TABLE ONLY public.artist_versions ALTER COLUMN id SET DEFAULT nextval('pub
 --
 
 ALTER TABLE ONLY public.artists ALTER COLUMN id SET DEFAULT nextval('public.artists_id_seq'::regclass);
+
+
+--
+-- Name: asn_ranges id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.asn_ranges ALTER COLUMN id SET DEFAULT nextval('public.asn_ranges_id_seq'::regclass);
 
 
 --
@@ -3549,6 +3630,13 @@ ALTER TABLE ONLY public.user_feedback ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- Name: user_ip_addresses id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_ip_addresses ALTER COLUMN id SET DEFAULT nextval('public.user_ip_addresses_id_seq'::regclass);
+
+
+--
 -- Name: user_name_change_requests id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3636,6 +3724,14 @@ ALTER TABLE ONLY public.artist_versions
 
 ALTER TABLE ONLY public.artists
     ADD CONSTRAINT artists_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: asn_ranges asn_ranges_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.asn_ranges
+    ADD CONSTRAINT asn_ranges_pkey PRIMARY KEY (id);
 
 
 --
@@ -4185,6 +4281,14 @@ ALTER TABLE ONLY public.user_feedback
 
 
 --
+-- Name: user_ip_addresses user_ip_addresses_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_ip_addresses
+    ADD CONSTRAINT user_ip_addresses_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: user_name_change_requests user_name_change_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4377,6 +4481,13 @@ CREATE INDEX index_artists_on_name_trgm ON public.artists USING gin (name public
 --
 
 CREATE INDEX index_artists_on_other_names ON public.artists USING gin (other_names);
+
+
+--
+-- Name: index_asn_ranges_on_first_ip; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_asn_ranges_on_first_ip ON public.asn_ranges USING btree (first_ip);
 
 
 --
@@ -5143,6 +5254,13 @@ CREATE INDEX index_post_replacements2_on_post_id ON public.post_replacements2 US
 
 
 --
+-- Name: index_post_replacements2_on_post_id_and_sequence_number; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_post_replacements2_on_post_id_and_sequence_number ON public.post_replacements2 USING btree (post_id, sequence_number);
+
+
+--
 -- Name: index_post_sets_on_post_ids; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5634,6 +5752,41 @@ CREATE INDEX index_user_feedback_on_user_id ON public.user_feedback USING btree 
 
 
 --
+-- Name: index_user_ip_addresses_on_ip_addr_and_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_user_ip_addresses_on_ip_addr_and_user_id ON public.user_ip_addresses USING btree (ip_addr, user_id);
+
+
+--
+-- Name: index_user_ip_addresses_on_last_seen_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_user_ip_addresses_on_last_seen_at ON public.user_ip_addresses USING btree (last_seen_at);
+
+
+--
+-- Name: index_user_ip_addresses_on_subnet_and_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_user_ip_addresses_on_subnet_and_user_id ON public.user_ip_addresses USING btree (subnet, user_id);
+
+
+--
+-- Name: index_user_ip_addresses_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_user_ip_addresses_on_user_id ON public.user_ip_addresses USING btree (user_id);
+
+
+--
+-- Name: index_user_ip_addresses_on_user_id_and_ip_addr; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_user_ip_addresses_on_user_id_and_ip_addr ON public.user_ip_addresses USING btree (user_id, ip_addr);
+
+
+--
 -- Name: index_user_lower_email; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5928,6 +6081,14 @@ ALTER TABLE ONLY public.appeals
 
 
 --
+-- Name: user_ip_addresses fk_rails_5ea8388355; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_ip_addresses
+    ADD CONSTRAINT fk_rails_5ea8388355 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: oauth_access_tokens fk_rails_732cb83ab7; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -6102,6 +6263,11 @@ ALTER TABLE ONLY public.oauth_access_tokens
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260728160704'),
+('20260727195335'),
+('20260727191219'),
+('20260727160104'),
+('20260713192035'),
 ('20260707182943'),
 ('20260702120000'),
 ('20260624213023'),

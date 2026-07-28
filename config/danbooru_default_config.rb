@@ -76,11 +76,8 @@ module Danbooru
       false
     end
 
-    # Prevent new users from going above 80k while allowing those currently above
-    # it to continue adding new favorites with the old limit.
-    # { 123 => 200_000 }
-    def legacy_favorite_limit
-      {}
+    def default_favorite_limit
+      100_000
     end
 
     # Set the default level, permissions, and other settings for new users here.
@@ -312,6 +309,24 @@ module Danbooru
     # Flat limit that applies to all users, regardless of level
     def hourly_upload_limit
       30
+    end
+
+    def upload_karma_l1_threshold
+      100
+    end
+
+    def upload_karma_l10_threshold
+      10_000
+    end
+
+    # User bypasses the approval queue once they reach this upload karma level. Set to nil to disable.
+    def upload_karma_free_threshold
+      1
+    end
+
+    # Base number of concurrent queued uploads a below-threshold user may have.
+    def upload_slots_base
+      10
     end
 
     def ticket_hourly_limit
@@ -757,6 +772,11 @@ If you have questions regarding this change, please \"DM the staff member\":[/dm
       }
     end
 
+    # The iptoasn.com dataset used to resolve IP addresses to ASNs on the admin IP search page.
+    def ip_to_asn_data_url
+      "https://iptoasn.com/data/ip2asn-combined.tsv.gz"
+    end
+
     # you should override this
     def email_key
       "zDMSATq0W3hmA5p3rKTgD"
@@ -777,6 +797,73 @@ If you have questions regarding this change, please \"DM the staff member\":[/dm
     # disable this for tests
     def enable_sock_puppet_validation?
       true
+    end
+
+    # Kill switch for the per-request IP tracking that feeds the alt-account
+    # finder (UserIpTracker). Turning this off stops the write path without a
+    # revert deploy; existing rows are untouched.
+    def enable_user_ip_tracking?
+      true
+    end
+
+    # Rows in user_ip_addresses unseen for this long are pruned daily. Also the
+    # window the one-time backfill imports from. The sole expiry mechanism for
+    # that table (account deletion deliberately leaves rows behind).
+    def user_ip_retention_period
+      2.years
+    end
+
+    # UserAltFinder tuning. These are informed starting values and MUST be
+    # validated/tuned against the real aggregate table before moderators rely
+    # on the scores.
+    #
+    # Exact IPs shared by more distinct users than this are dropped as
+    # institutional/CGNAT noise before joining; likewise subnets past
+    # alt_finder_max_users_per_subnet.
+    def alt_finder_max_users_per_ip
+      50
+    end
+
+    def alt_finder_max_users_per_subnet
+      200
+    end
+
+    # Relative weight of each kind of shared value. An IPv6 /64 is delegated
+    # per-customer (near-exact signal); an IPv4 /24 is a whole ISP neighborhood
+    # (should only ever nudge a score).
+    def alt_finder_weight_exact
+      1.0
+    end
+
+    def alt_finder_weight_subnet_v6
+      0.8
+    end
+
+    def alt_finder_weight_subnet_v4
+      0.2
+    end
+
+    # Half-life (in days) of the proximity decay applied to the gap between the
+    # two users' usage windows on a shared value. Concurrent use scores full.
+    def alt_finder_proximity_half_life_days
+      120
+    end
+
+    # Raw score that maps to a displayed 100 (values above saturate at 100).
+    # Mirrors the validated prototype (script/alt_finder_prototype.rb): a lone
+    # handoff bonus of 1.5 lands ~75, strong real alts ~82-85.
+    def alt_finder_score_saturation
+      2.0
+    end
+
+    # Cap on how many of the target's most-recently-seen IPs are considered,
+    # and how many candidates advance to the (per-candidate) shortlist pass.
+    def alt_finder_target_ip_cap
+      500
+    end
+
+    def alt_finder_candidate_cap
+      50
     end
 
     def iqdb_server
@@ -971,6 +1058,8 @@ If you have questions regarding this change, please \"DM the staff member\":[/dm
   end
 
   class EnvironmentConfiguration
+    class ValidationError < StandardError; end
+
     def custom_configuration
       @custom_configuration ||= CustomConfiguration.new
     end
@@ -993,6 +1082,19 @@ If you have questions regarding this change, please \"DM the staff member\":[/dm
         env_to_boolean(method, var)
       else
         custom_configuration.send(method, *)
+      end
+    end
+
+    def validate!
+      l1 = upload_karma_l1_threshold
+      l10 = upload_karma_l10_threshold
+      free = upload_karma_free_threshold
+
+      raise ValidationError, "upload_karma_l1_threshold must be positive" unless l1 > 0
+      raise ValidationError, "upload_karma_l10_threshold must be positive" unless l10 > 0
+      raise ValidationError, "upload_karma_l1_threshold must be less than upload_karma_l10_threshold" unless l1 < l10
+      unless free.nil? || (free >= 1 && free <= 10)
+        raise ValidationError, "upload_karma_free_threshold must be either nil, or an integer between 1 and 10"
       end
     end
   end

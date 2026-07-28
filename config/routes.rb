@@ -86,6 +86,7 @@ Rails.application.routes.draw do
     # Previously under /moderator/
     resource :moderator_dashboard, only: %i[show], controller: "moderator_dashboards"
     resource :post_diff, only: %i[show]
+    resource :user_alts, only: %i[show]
     resources :ip_addrs, only: %i[index] do
       collection do
         get :export
@@ -325,6 +326,7 @@ Rails.application.routes.draw do
       put :reject
       post :promote
       put :toggle_penalize
+      put :transfer
     end
   end
   resources :deleted_posts, only: %i[index]
@@ -405,7 +407,9 @@ Rails.application.routes.draw do
     member do
       get :upload_limit
       get :toggle_uploads
+      get :toggle_karma_free
       post :disable_uploads
+      post :disable_karma_free
       post :flush_favorites
       get :fix_counts
       get "/api_key", to: redirect("/api_keys")
