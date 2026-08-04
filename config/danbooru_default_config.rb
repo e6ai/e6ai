@@ -850,8 +850,9 @@ If you have questions regarding this change, please \"DM the staff member\":[/dm
     end
 
     # Raw score that maps to a displayed 100 (values above saturate at 100).
-    # Mirrors the validated prototype (script/alt_finder_prototype.rb): a lone
-    # handoff bonus of 1.5 lands ~75, strong real alts ~82-85.
+    # Mirrors the validated prototype (script/alt_finder_prototype.rb): strong
+    # real alts land ~82-85. The handoff bonus is scaled by the triggering IP's
+    # quality and capped at the organic evidence, so it at most doubles a score.
     def alt_finder_score_saturation
       2.0
     end
