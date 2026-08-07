@@ -43,6 +43,16 @@ class ModActionDecorator < ApplicationDecorator
       end
       msg
 
+      ### Search Trend ###
+    when "search_trend_blacklist_create"
+      "Created search trend blacklist entry for \"#{vals['tag']}\""
+    when "search_trend_blacklist_update"
+      "Updated search trend blacklist entry for \"#{vals['tag']}\""
+    when "search_trend_blacklist_delete"
+      "Deleted search trend blacklist entry for \"#{vals['tag']}\""
+    when "search_trend_blacklist_purge"
+      "Purged #{vals['deleted_count']} search trend entries matching \"#{vals['tag']}\""
+
       ### Ticket ###
     when "ticket_update"
       text = "Modified ticket ##{vals['ticket_id']}"
@@ -172,6 +182,14 @@ class ModActionDecorator < ApplicationDecorator
       "Hid all blips by #{user}"
     when "user_blacklist_changed"
       "Edited blacklist of #{user}"
+    when "totp_reset"
+      "Removed two-factor authentication from #{user}"
+    when "password_reset"
+      if vals["invalidated"]
+        "Reset password for #{user} and invalidated their old password"
+      else
+        "Reset password for #{user}"
+      end
     when "user_text_change"
       "Changed profile text of #{user}"
     when "user_custom_title_change"

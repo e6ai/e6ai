@@ -22,6 +22,14 @@ RSpec.describe User do
     target.reload
   end
 
+  describe "karma constants" do
+    it "have the expected values" do
+      expect(UserStatus::KARMA_APPROVED_CREDIT).to eq(1)
+      expect(UserStatus::KARMA_DELETION_PENALTY).to eq(3)
+      expect(UserStatus::KARMA_REPLACEMENT_PENALTY).to eq(3)
+    end
+  end
+
   # -------------------------------------------------------------------------
   # #raw_upload_karma
   # -------------------------------------------------------------------------
@@ -77,14 +85,14 @@ RSpec.describe User do
   end
 
   # -------------------------------------------------------------------------
-  # #required_karma_for_level
+  # .required_karma_for_level
   # -------------------------------------------------------------------------
   describe "#required_karma_for_level" do
     it "returns the required karma for a given level" do
-      expect(user.required_karma_for_level(-1)).to eq(0)
-      expect(user.required_karma_for_level(0)).to eq(0)
-      expect(user.required_karma_for_level(1)).to eq(Danbooru.config.upload_karma_l1_threshold)
-      expect(user.required_karma_for_level(10)).to eq(Danbooru.config.upload_karma_l10_threshold)
+      expect(User.required_karma_for_level(-1)).to eq(0)
+      expect(User.required_karma_for_level(0)).to eq(0)
+      expect(User.required_karma_for_level(1)).to eq(Danbooru.config.upload_karma_l1_threshold)
+      expect(User.required_karma_for_level(10)).to eq(Danbooru.config.upload_karma_l10_threshold)
     end
   end
 
@@ -93,8 +101,8 @@ RSpec.describe User do
   # -------------------------------------------------------------------------
   describe "#upload_karma_percent" do
     it "returns the percentage of progress toward the next level" do
-      required_for_level_one = user.required_karma_for_level(1)
-      required_for_level_two = user.required_karma_for_level(2)
+      required_for_level_one = User.required_karma_for_level(1)
+      required_for_level_two = User.required_karma_for_level(2)
 
       set_karma(user, 0)
       expect(user.upload_karma_percent).to eq(0)
@@ -122,7 +130,7 @@ RSpec.describe User do
   # #upload_karma_free?
   # -------------------------------------------------------------------------
   describe "#upload_karma_free?" do
-    let(:upload_free_karma_threshold) { user.required_karma_for_level(Danbooru.config.upload_karma_free_threshold) }
+    let(:upload_free_karma_threshold) { User.required_karma_for_level(Danbooru.config.upload_karma_free_threshold) }
 
     it "is false below the threshold" do
       set_karma(user, upload_free_karma_threshold - 1)
@@ -156,7 +164,7 @@ RSpec.describe User do
   # #upload_free?
   # -------------------------------------------------------------------------
   describe "#upload_free?" do
-    let(:upload_free_karma_threshold) { user.required_karma_for_level(Danbooru.config.upload_karma_free_threshold) }
+    let(:upload_free_karma_threshold) { User.required_karma_for_level(Danbooru.config.upload_karma_free_threshold) }
 
     it "is false for a user with no karma and no grant" do
       expect(user.upload_free?).to be false

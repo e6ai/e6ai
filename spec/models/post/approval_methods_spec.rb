@@ -64,11 +64,11 @@ RSpec.describe Post do
         expect { post.reload.approve!(other) }.not_to change(PostApproval, :count)
       end
 
-      it "grants +1 upload karma to the uploader" do
+      it "grants the approved credit to the uploader" do
         approver = create(:admin_user)
         post = create(:pending_post)
         expect { post.approve!(approver) }
-          .to change { post.uploader.user_status.reload.upload_karma }.by(1)
+          .to change { post.uploader.user_status.reload.upload_karma }.by(UserStatus::KARMA_APPROVED_CREDIT)
       end
     end
 
@@ -91,7 +91,7 @@ RSpec.describe Post do
         approver = create(:admin_user)
         post = create(:pending_post)
         post.approve!(approver)
-        expect { post.unapprove! }.to change { post.uploader.user_status.reload.upload_karma }.by(-1)
+        expect { post.unapprove! }.to change { post.uploader.user_status.reload.upload_karma }.by(-UserStatus::KARMA_APPROVED_CREDIT)
       end
     end
 
@@ -152,8 +152,9 @@ RSpec.describe Post do
       end
 
       it "resolves all open flags on the post" do
-        post = create(:flagged_post)
+        post = create(:post)
         flag = create(:post_flag, post: post)
+        expect(post.reload.is_flagged).to be true
         post.unflag!
         expect(flag.reload.is_resolved).to be true
       end
