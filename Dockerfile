@@ -138,8 +138,8 @@ COPY --from=asset-builder /app /app
 # machine). e621/e926 use 1000; the e6ai fork builds with APP_UID=1002.
 # Baked at build time because the chowned tmp/log dirs must agree with the
 # runtime UID — a `docker run --user` override would leave them unwritable.
-ARG APP_UID=1000
-ARG APP_GID=1000
+ARG APP_UID=1002
+ARG APP_GID=1002
 RUN addgroup --gid ${APP_GID} e621ng \
   && adduser -S --shell /bin/sh --uid ${APP_UID} -G e621ng e621ng \
   && chown -R e621ng:e621ng /app/tmp /app/log /app/public/data

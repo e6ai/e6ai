@@ -604,7 +604,7 @@ class TagAlias < TagRelationship
   end
 
   def artist_rename_action
-    return unless antecedent_tag.category == Tag.categories.artist && antecedent_tag.artist.present?
+    return unless antecedent_tag.category == Tag.categories.director && antecedent_tag.artist.present?
     if consequent_tag.artist.blank?
       :rename
     elsif antecedent_tag.artist.linked_user_id.present? && consequent_tag.artist.linked_user_id.blank?
