@@ -48,6 +48,17 @@ class TagCategory
     8 => "lore",
   }.freeze
 
+  ENUM_MAPPING = {
+    0 => "general",
+    1 => "artist",
+    3 => "copyright",
+    4 => "character",
+    5 => "species",
+    6 => "invalid",
+    7 => "meta",
+    8 => "lore",
+  }.freeze
+
   SHORT_NAME_MAPPING = {
     "gen" => "general",
     "dir" => "director",

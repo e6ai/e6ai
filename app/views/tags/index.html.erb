@@ -14,7 +14,7 @@
           <tr>
             <td><%= tag.post_count %></td>
             <td class="category-<%= tag.category %>">
-              <% if tag.category == Tag.categories.director %>
+              <% if tag.category == Tag.categories.artist %>
                 <%= link_to("?",  show_or_new_artists_path(:name => tag.name)) %>
               <% else %>
                 <%= link_to_wiki_or_new("?", tag.name) %>

@@ -31,7 +31,7 @@
                         <div>A director is the individual/s that directed the model to produce content. Usually you.<br>Please don't use <a href="/wiki_pages/anonymous_director">anonymous_director</a> or <a href="/wiki_pages/unknown_director">unknown_director</a> tags unless they fall under those definitions on the wiki.</div>
                     </div>
                     <div class="col2">
-                        <artist-tag-input v-model="tagEntries.director" />
+                        <artist-tag-input v-model="tagEntries.artist" />
                     </div>
                 </div>
                 <div class="flex-grid border-bottom">
@@ -346,7 +346,7 @@
         tagEntries: {
           // These had a bizarre naming pattern
           // Old names are listed below VVV
-          director: "",   // character: '',
+          artist: "",   // character: '',
           character: "",  // sex: '',
           species: "",    // bodyType: '',
           content: "",    // theme: '',
@@ -635,10 +635,10 @@
           newButton.classList.add("toggle-button");
           newButton.innerHTML = artistName;
           newButton.onclick = () => {
-            let val = (this.tagEntries.director ?? "").trim().split(" ").filter(n => n);
+            let val = (this.tagEntries.artist ?? "").trim().split(" ").filter(n => n);
             if (val.includes(artistName)) val = val.filter(n => n !== artistName);
             else val.push(artistName);
-            this.tagEntries.director = val.join(" ") + " ";
+            this.tagEntries.artist = val.join(" ") + " ";
           };
           buttonRow.appendChild(newButton);
         }
@@ -665,7 +665,7 @@
           if (all_pairing_tag_set.has(x)) return validPairingTags.has(x);
           return true;
         });
-        return checked.concat([this.tagEntries.other, this.tagEntries.director, this.tagEntries.character,
+        return checked.concat([this.tagEntries.other, this.tagEntries.artist, this.tagEntries.character,
           this.tagEntries.species, this.tagEntries.content]).join(' ').replace(',', ' ').trim().replace(/ +/g, ' ');
       },
       tagsArray() {
