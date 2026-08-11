@@ -346,6 +346,8 @@ class ModActionDecorator < ApplicationDecorator
       else
         "Updated tag alias #{vals['alias_desc']}\n#{vals['change_desc']}"
       end
+    when "tag_alias_undo"
+      "Undid tag alias #{vals['alias_desc']}"
 
       ### Implication ###
 
@@ -369,6 +371,8 @@ class ModActionDecorator < ApplicationDecorator
       else
         "Updated tag implication #{vals['implication_desc']}\n#{vals['change_desc']}"
       end
+    when "tag_implication_undo"
+      "Undid tag implication #{vals['implication_desc']}"
 
       ### BURs ###
 

@@ -7,6 +7,7 @@ services:
   dev-container:
     build:
       dockerfile: Dockerfile
+      target: development
     image: e6ai
     user: ${DOCKER_USER:-root}
     environment:

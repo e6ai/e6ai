@@ -158,7 +158,7 @@ Rails.application.routes.draw do
       post :regenerate
     end
   end
-  resource :totp, only: %i[new create destroy], controller: "totps" do
+  resource :totp, only: %i[show new create destroy], controller: "totps" do
     post :regenerate_backup_codes, on: :collection
   end
 
@@ -400,12 +400,14 @@ Rails.application.routes.draw do
   resources :tag_aliases do
     member do
       post :approve
+      post :undo
     end
   end
   resource :tag_alias_request, only: %i[new create]
   resources :tag_implications do
     member do
       post :approve
+      post :undo
     end
   end
   resource :tag_implication_request, only: %i[new create]
@@ -432,6 +434,7 @@ Rails.application.routes.draw do
       get :me
 
       get :avatar_menu
+      get :upload_tags
     end
   end
   resources :user_feedbacks do
