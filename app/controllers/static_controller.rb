@@ -2,27 +2,27 @@
 
 class StaticController < ApplicationController
   def privacy
-    @page_name = "e6ai:privacy_policy"
+    @page_name = tm("{{e621}}:privacy_policy")
     @page = format_wiki_page(@page_name)
   end
 
   def privacy_discordbot
-    @page_name = "e621:privacy_discordbot"
+    @page_name = tm("{{e621}}:privacy_discordbot")
     @page = format_wiki_page(@page_name)
   end
 
   def code_of_conduct
-    @page_name = "e6ai:rules"
+    @page_name = tm("{{e621}}:rules")
     @page = format_wiki_page(@page_name)
   end
 
   def contact
-    @page_name = "e6ai:contact"
+    @page_name = tm("{{e621}}:contact")
     @page = format_wiki_page(@page_name)
   end
 
   def takedown
-    @page_name = "e6ai:takedown"
+    @page_name = tm("{{e621}}:takedown")
     @page = format_wiki_page(@page_name)
   end
 
@@ -96,7 +96,7 @@ class StaticController < ApplicationController
     if request.post?
       redirect_to(Danbooru.config.discord_site, allow_other_host: true)
     else
-      @page_name = "e6ai:discord"
+      @page_name = tm("{{e621}}:discord")
       @page = format_wiki_page(@page_name)
     end
   end

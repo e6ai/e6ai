@@ -4,15 +4,14 @@ class TagCategory
   MAPPING = {
     "general" => 0,
     "gen" => 0,
-    "director" => 1,
-    "direct" => 1,
-    "dir" => 1,
+    tm("{{artist}}") => 1,
+    tm("{{artist}}")[..2] => 1,
     "contributor" => 2,
     "contrib" => 2,
     "cont" => 2,
-    "franchise" => 3,
-    "franc" => 3,
-    "fr" => 3,
+    tm("{{copyright}}") => 3,
+    tm("{{copyright}}")[..3] => 3,
+    tm("{{copyright}}")[..1] => 3,
     "character" => 4,
     "char" => 4,
     "ch" => 4,
@@ -28,9 +27,9 @@ class TagCategory
 
   CANONICAL_MAPPING = {
     "General" => 0,
-    "Director" => 1,
+    tm("{{Artist}}") => 1,
     "Contributor" => 2,
-    "Franchise" => 3,
+    tm("{{Copyright}}") => 3,
     "Character" => 4,
     "Species" => 5,
     "Invalid" => 6,
@@ -38,14 +37,21 @@ class TagCategory
     "Lore" => 8,
   }.freeze
 
-  MEMBER_EDITABLE_CATEGORIES = %w[General Director Contributor Franchise Character Species].freeze
+  MEMBER_EDITABLE_CATEGORIES = [
+    "General",
+    tm("{{Artist}}"),
+    "Contributor",
+    tm("{{Copyright}}"),
+    "Character",
+    "Species",
+  ].freeze
   MEMBER_EDITABLE_MAPPING = CANONICAL_MAPPING.select { |k, _| MEMBER_EDITABLE_CATEGORIES.include?(k) }.freeze
 
   REVERSE_MAPPING = {
     0 => "general",
-    1 => "director",
+    1 => tm("{{artist}}"),
     2 => "contributor",
-    3 => "franchise",
+    3 => tm("{{copyright}}"),
     4 => "character",
     5 => "species",
     6 => "invalid",
@@ -70,9 +76,9 @@ class TagCategory
 
   SHORT_NAME_MAPPING = {
     "gen" => "general",
-    "dir" => "director",
+    "dir" => tm("{{artist}}"),
     "cont" => "contributor",
-    "franc" => "franchise",
+    "franc" => tm("{{copyright}}"),
     "char" => "character",
     "spec" => "species",
     "inv" => "invalid",
@@ -82,9 +88,9 @@ class TagCategory
 
   HEADER_MAPPING = {
     "general" => "General",
-    "director" => "Director",
+    tm("{{artist}}") => tm("{{Artist}}"),
     "contributor" => "Contributors",
-    "franchise" => "Franchises",
+    tm("{{copyright}}") => tm("{{Copyrights}}"),
     "character" => "Characters",
     "species" => "Species",
     "invalid" => "Invalid",
@@ -94,9 +100,9 @@ class TagCategory
 
   ADMIN_ONLY_MAPPING = {
     "general" => false,
-    "director" => false,
+    tm("{{artist}}") => false,
     "contributor" => false,
-    "franchise" => false,
+    tm("{{copyright}}") => false,
     "character" => false,
     "species" => false,
     "invalid" => true,
@@ -105,13 +111,13 @@ class TagCategory
   }.freeze
 
   HUMANIZED_MAPPING = {
-    "director" => {
+    tm("{{artist}}") => {
       "slice" => 0,
       "exclusion" => [],
       "regexmap" => //,
       "formatstr" => "directed by %s",
     },
-    "franchise" => {
+    tm("{{copyright}}") => {
       "slice" => 1,
       "exclusion" => [],
       "regexmap" => //,
@@ -125,13 +131,47 @@ class TagCategory
     },
   }.freeze
 
-  CATEGORIES = %w[general species character franchise director contributor invalid lore meta].freeze
+  CATEGORIES = [
+    "general",
+    "species",
+    "character",
+    tm("{{copyright}}"),
+    tm("{{artist}}"),
+    "contributor",
+    "invalid",
+    "lore",
+    "meta",
+  ].freeze
   CATEGORY_IDS = CANONICAL_MAPPING.values.freeze
 
   SHORT_NAME_LIST = SHORT_NAME_MAPPING.keys.freeze
-  HUMANIZED_LIST = %w[character franchise director].freeze
-  SPLIT_HEADER_LIST = %w[invalid director contributor franchise character species general meta lore].freeze
-  CATEGORIZED_LIST = %w[invalid director contributor franchise character species meta general lore].freeze
+  HUMANIZED_LIST = [
+    "character",
+    tm("{{copyright}}"),
+    tm("{{artist}}"),
+  ].freeze
+  SPLIT_HEADER_LIST = [
+    "invalid",
+    tm("{{artist}}"),
+    "contributor",
+    tm("{{copyright}}"),
+    "character",
+    "species",
+    "general",
+    "meta",
+    "lore",
+  ].freeze
+  CATEGORIZED_LIST = [
+    "invalid",
+    tm("{{artist}}"),
+    "contributor",
+    tm("{{copyright}}"),
+    "character",
+    "species",
+    "meta",
+    "general",
+    "lore",
+  ].freeze
 
   SHORT_NAME_REGEX = SHORT_NAME_LIST.join("|").freeze
   ALL_NAMES_REGEX = MAPPING.keys.join("|").freeze

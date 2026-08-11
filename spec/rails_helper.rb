@@ -120,5 +120,11 @@ RSpec.configure do |config|
         reason.description = "The file contains either malicious code or contains a hidden file archive. This is not for imagery depicted in the image itself."
       end
     end
+
+    # Tests use the default terms
+    config.before do
+      stub_const("TermHelper::TERMS", {}.freeze)
+      TermHelper::CACHE.clear
+    end
   end
 end

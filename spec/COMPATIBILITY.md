@@ -1,5 +1,7 @@
 # e621ng vs e6AI — Known Differences
 
+OUTDATED: most differences have been reverted or moved to configuration.
+
 This document records fork-specific divergences discovered while making the test suite
 portable across both codebases. Use it as a reference when writing new specs or porting
 changes between forks.

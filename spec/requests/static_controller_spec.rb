@@ -94,7 +94,7 @@ RSpec.describe StaticController do
   end
 
   describe "GET /static/privacy" do
-    include_examples "a wiki page action", "/static/privacy", "e6ai:privacy_policy"
+    include_examples "a wiki page action", "/static/privacy", "e621:privacy_policy"
   end
 
   describe "GET /static/privacy_discordbot", skip: "Not available in this fork" do
@@ -102,19 +102,19 @@ RSpec.describe StaticController do
   end
 
   describe "GET /static/code_of_conduct" do
-    include_examples "a wiki page action", "/static/code_of_conduct", "e6ai:rules"
+    include_examples "a wiki page action", "/static/code_of_conduct", "e621:rules"
   end
 
   describe "GET /static/contact" do
-    include_examples "a wiki page action", "/static/contact", "e6ai:contact"
+    include_examples "a wiki page action", "/static/contact", "e621:contact"
   end
 
   describe "GET /static/takedown" do
-    include_examples "a wiki page action", "/static/takedown", "e6ai:takedown"
+    include_examples "a wiki page action", "/static/takedown", "e621:takedown"
   end
 
   describe "GET /static/avoid_posting", skip: "Avoid postings routes not available in this fork" do
-    include_examples "a wiki page action", "/static/avoid_posting", "e6ai:avoid_posting_notice"
+    include_examples "a wiki page action", "/static/avoid_posting", "e621:avoid_posting_notice"
   end
 
   # ---------------------------------------------------------------------------
@@ -318,7 +318,7 @@ RSpec.describe StaticController do
       context "when the wiki page exists" do
         before do
           CurrentUser.scoped(create(:admin_user)) do
-            create(:wiki_page, title: "e6ai:discord", body: "Join our Discord!")
+            create(:wiki_page, title: "e621:discord", body: "Join our Discord!")
           end
         end
 

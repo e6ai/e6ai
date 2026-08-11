@@ -19,7 +19,7 @@ RSpec.describe RecommendedQueryBuilder do
       pool_ids: pool_ids,
     )
     allow(post).to receive(:tags_for_category) do |category|
-      pairs = { "character" => character_tags, "franchise" => copyright_tags, "species" => species_tags }
+      pairs = { "character" => character_tags, "copyright" => copyright_tags, "species" => species_tags }
       (pairs[category] || []).map { |name, count| instance_double(Tag, name: name, post_count: count, category_name: category) }
     end
     post

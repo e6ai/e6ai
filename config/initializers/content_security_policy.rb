@@ -14,21 +14,21 @@ Rails.application.configure do
     # legacy CSP2 browsers that ignore strict-dynamic.
 
     # TODO: Temporarily disabled. Re-enable after resolving the issue with CF email obfuscation breaking upon the CSP.
-    policy.script_src :self, :strict_dynamic, "rv.e6ai.net", "https://www.google.com/recaptcha/", "https://www.gstatic.com/recaptcha/", "https://www.recaptcha.net/", "https://assets.freespeechcoalition.com", "https://op.dragonfru.it/"
+    policy.script_src :self, :strict_dynamic, "rv.#{Danbooru.config.domain}", "https://www.google.com/recaptcha/", "https://www.gstatic.com/recaptcha/", "https://www.recaptcha.net/", "https://assets.freespeechcoalition.com", "https://op.dragonfru.it/"
     policy.script_src(*policy.script_src, :unsafe_eval) if Rails.env.development?
 
     policy.style_src :self, :unsafe_inline
     policy.style_src(*policy.style_src, :unsafe_inline) if Rails.env.development?
 
-    policy.connect_src :self, "rv.e6ai.net", "op.dragonfru.it", "static1.e6ai.net", "api.freespeechcoalition.com"
+    policy.connect_src :self, "rv.#{Danbooru.config.domain}", "op.dragonfru.it", "static1.#{Danbooru.config.domain}", "api.freespeechcoalition.com"
     policy.connect_src(*policy.connect_src, "ws://localhost:3036", "http://localhost:3036", "http://host.docker.internal:8000") if Rails.env.development?
 
-    policy.object_src  :self, "static1.e6ai.net"
-    policy.media_src   :self, "static1.e6ai.net"
+    policy.object_src  :self, "static1.#{Danbooru.config.domain}"
+    policy.media_src   :self, "static1.#{Danbooru.config.domain}"
     policy.frame_ancestors :none
     policy.frame_src   "https://www.google.com/recaptcha/", "https://www.recaptcha.net/"
     policy.font_src    :self
-    policy.img_src     :self, :data, "static1.e6ai.net", "rv.e6ai.net"
+    policy.img_src     :self, :data, "static1.#{Danbooru.config.domain}", "rv.#{Danbooru.config.domain}"
     policy.child_src   :none
     policy.form_action :self
     # Specify URI for violation reports
