@@ -1282,15 +1282,8 @@ class Post < ApplicationRecord
   end
 
   module SetMethods
-    def set_ids
-      pool_string.scan(/set:(\d+)/).map { |set| ParseValue.safe_id(set[0]) }
-    end
-
     def post_sets
-      @post_sets ||= begin
-        return PostSet.none if pool_string.blank?
-        PostSet.where(id: set_ids)
-      end
+      @post_sets ||= new_record? ? PostSet.none : PostSet.where("post_ids @> ARRAY[?]::int[]", id)
     end
 
     def belongs_to_post_set(set)
@@ -1332,9 +1325,15 @@ class Post < ApplicationRecord
   end
 
   module PoolMethods
+    # Falls back to pool_string for rows that haven't been backfilled yet (see db/fixes/141).
     def pool_ids
+      self[:pool_ids] || pool_ids_from_string
+    end
+
+    def pool_ids_from_string
       pool_string.scan(/pool:(\d+)/).map { |pool| ParseValue.safe_id(pool[0]) }
     end
+    private :pool_ids_from_string
 
     def pools
       @pools ||= begin
@@ -1356,6 +1355,7 @@ class Post < ApplicationRecord
 
       with_lock do
         self.pool_string = "#{pool_string} pool:#{pool.id}".strip
+        self[:pool_ids] = pool_ids_from_string
       end
     end
 
@@ -1365,6 +1365,7 @@ class Post < ApplicationRecord
 
       with_lock do
         self.pool_string = pool_string.gsub(/(?:\A| )pool:#{pool.id}(?:\Z| )/, " ").strip
+        self[:pool_ids] = pool_ids_from_string
       end
     end
 
@@ -1832,11 +1833,11 @@ class Post < ApplicationRecord
 
   module ApiMethods
     def hidden_attributes
-      list = super + [:pool_string]
+      list = super + [:pool_string, :pool_ids]
       if !visible?
         list += [:md5, :file_ext]
       end
-      super + list
+      list
     end
 
     def method_attributes

@@ -501,7 +501,7 @@ RSpec.describe Post do
           post_set = create(:post_set, creator: CurrentUser.user)
           post = create(:post)
           post.update!(tag_string: "#{post.tag_string} set:#{post_set.id}")
-          expect(post.reload.set_ids).to include(post_set.id)
+          expect(post.reload.post_sets).to include(post_set)
         end
       end
 
@@ -511,7 +511,7 @@ RSpec.describe Post do
           post = create(:post)
           post_set.add!(post)
           post.update!(tag_string: "#{post.tag_string} -set:#{post_set.id}")
-          expect(post.reload.set_ids).not_to include(post_set.id)
+          expect(post.reload.post_sets).not_to include(post_set)
         end
       end
 
@@ -520,7 +520,7 @@ RSpec.describe Post do
           post_set = create(:post_set, creator: CurrentUser.user)
           post = create(:post)
           post.update!(tag_string: "#{post.tag_string} set:#{post_set.shortname}")
-          expect(post.reload.set_ids).to include(post_set.id)
+          expect(post.reload.post_sets).to include(post_set)
         end
       end
 
@@ -530,7 +530,7 @@ RSpec.describe Post do
           post = create(:post)
           post_set.add!(post)
           post.update!(tag_string: "#{post.tag_string} -set:#{post_set.shortname}")
-          expect(post.reload.set_ids).not_to include(post_set.id)
+          expect(post.reload.post_sets).not_to include(post_set)
         end
       end
 
@@ -744,6 +744,41 @@ RSpec.describe Post do
       it "returns an empty array when the post has no artist, copyright, or character tags" do
         post = create(:post, tag_string: (1..10).map { |i| "gen_only_#{i}" }.join(" "))
         expect(post.avoid_posting_tags).to eq([])
+      end
+
+      # The raw tag string of an unsaved post has not gone through normalize_tags yet,
+      # so the check must canonicalize the input itself to match the eventual result.
+      it "matches differently-cased tags on an unsaved post" do
+        artist = create(:artist)
+        avoid = create(:avoid_posting, artist: artist)
+        post = build(:post, tag_string: artist.name.upcase)
+        expect(post.avoid_posting_tags).to include(avoid)
+      end
+
+      it "matches aliases of DNP tags on an unsaved post" do
+        artist = create(:artist)
+        avoid = create(:avoid_posting, artist: artist)
+        create(:active_tag_alias, antecedent_name: "#{artist.name}_(artist)", consequent_name: artist.name)
+        post = build(:post, tag_string: "#{artist.name}_(artist)")
+        expect(post.avoid_posting_tags).to include(avoid)
+      end
+
+      it "matches tags with a category prefix on an unsaved post" do
+        artist = create(:artist)
+        avoid = create(:avoid_posting, artist: artist)
+        post = build(:post, tag_string: "artist:#{artist.name}")
+        expect(post.avoid_posting_tags).to include(avoid)
+      end
+
+      # Persisted tag strings are always normalized, so the alias lookup would be
+      # a wasted query on every render of the avoid-posting notice.
+      it "does not resolve aliases for a persisted post with a clean tag string" do
+        artist = create(:artist)
+        avoid = create(:avoid_posting, artist: artist)
+        post = Post.find(create(:post, tag_string: "artist:#{artist.name} " + (1..10).map { |i| "gen_#{i}" }.join(" ")).id)
+        allow(TagAlias).to receive(:to_aliased).and_call_original
+        expect(post.avoid_posting_tags).to include(avoid)
+        expect(TagAlias).not_to have_received(:to_aliased)
       end
     end
   end
