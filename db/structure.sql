@@ -2025,13 +2025,13 @@ CREATE TABLE public.posts (
     description text DEFAULT ''::text NOT NULL,
     comment_count integer DEFAULT 0 NOT NULL,
     change_seq bigint NOT NULL,
-    tag_count_lore integer DEFAULT 0 NOT NULL,
     bg_color character varying,
     duration numeric,
     is_comment_disabled boolean DEFAULT false NOT NULL,
     is_comment_locked boolean DEFAULT false NOT NULL,
     tag_count_franchise integer DEFAULT 0 NOT NULL,
     video_samples jsonb DEFAULT '{}'::jsonb NOT NULL,
+    tag_count_lore integer DEFAULT 0 NOT NULL,
     hotness double precision DEFAULT 0.0 NOT NULL,
     pool_ids integer[] DEFAULT '{}'::integer[]
 );
