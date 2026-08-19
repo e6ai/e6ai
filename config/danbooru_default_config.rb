@@ -88,7 +88,6 @@ module Danbooru
       user.enable_keyboard_navigation = true
       user.per_page = records_per_page
       user.show_post_statistics = true
-      user.style_usernames = true
     end
 
     def default_blacklist
@@ -758,7 +757,8 @@ If you have questions regarding this change, please \"DM the staff member\":[/dm
       !(is_user_restricted?(user) && is_post_restricted?(post))
     end
 
-    def user_needs_login_for_post?(_post)
+    def user_needs_login_for_post?(post)
+      return true if post.tag_array.include?("young") && post.rating != "s"
       false
     end
 
