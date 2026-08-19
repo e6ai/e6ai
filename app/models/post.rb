@@ -1113,11 +1113,11 @@ class Post < ApplicationRecord
     def artist_tags
       @artist_tags ||= begin
         if @categorized_tags.nil?
-          Tag.where(name: tag_array, category: Tag.categories.director).select(:name, :post_count, :category).filter do |tag|
+          Tag.where(name: tag_array, category: Tag.categories.artist).select(:name, :post_count, :category).filter do |tag|
             NON_ARTIST_TAGS.exclude?(tag.name)
           end
         else
-          tags_for_category(Tag.categories.director).filter do |tag|
+          tags_for_category(Tag.categories.artist).filter do |tag|
             NON_ARTIST_TAGS.exclude?(tag.name)
           end
         end
@@ -2071,7 +2071,7 @@ class Post < ApplicationRecord
       added_invalid_tags = added.select { |t| t.category == Tag.categories.invalid }
       new_tags = added.select { |t| t.post_count <= 0 }
       new_general_tags = new_tags.select { |t| t.category == Tag.categories.general }
-      new_artist_tags = new_tags.select { |t| t.category == Tag.categories.director }
+      new_artist_tags = new_tags.select { |t| t.category == Tag.categories.artist }
       # See https://github.com/e621ng/e621ng/issues/494
       # If the tag is fresh it's save to assume it was created with a prefix
       repopulated_tags = new_tags.select { |t| t.category != Tag.categories.general && t.category != Tag.categories.meta && t.created_at < 10.seconds.ago }
@@ -2115,7 +2115,7 @@ class Post < ApplicationRecord
 
     def has_artist_tag
       return if !new_record?
-      return if tags.any? { |t| t.category == Tag.categories.director }
+      return if tags.any? { |t| t.category == Tag.categories.artist }
 
       self.warnings.add(:base, 'Director tag is required. "Click here":/help/tags#catchange if you need help changing the category of an tag. Ask on the forum if you need naming help')
     end

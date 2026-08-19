@@ -54,7 +54,6 @@ class TagCategory
   ENUM_MAPPING = {
     0 => "general",
     1 => "artist",
-    2 => "contributor",
     3 => "copyright",
     4 => "character",
     5 => "species",
