@@ -887,6 +887,11 @@ If you have questions regarding this change, please \"DM the staff member\":[/dm
     def iqdb_server
     end
 
+    # Bearer token for authenticating with the ERIS server. `nil` disables authentication.
+    def iqdb_secret
+      nil
+    end
+
     def iqdb_read_timeout
       5
     end

@@ -115,6 +115,25 @@ services:
       retries: 12
       test: curl "opensearch:9200/_cluster/health?wait_for_status=yellow&timeout=2s"
 
+  iqdb:
+    image: ghcr.io/e621ng/eris:1.0.0
+    environment:
+      ERIS_DATABASE_URL: postgres://e621@postgres:5432/e621_development
+    depends_on:
+      postgres:
+        condition: service_started
+  
+  datadog-agent:
+    image: datadog/agent:7.52.0
+    environment:
+      DD_API_KEY: ${DD_API_KEY:-}
+      DD_SITE: ${DD_SITE:-us5.datadoghq.com}
+      DD_HOSTNAME: datadog-agent
+      DD_LOG_LEVEL: WARN
+      DD_APM_NON_LOCAL_TRAFFIC: true
+    profiles:
+      - datadog
+
   # Useful for development
 
   tests:
