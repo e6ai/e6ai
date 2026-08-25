@@ -37,6 +37,7 @@ module PostIndex
 
           tag_count_general: { type: "integer" },
           tag_count_director: { type: "integer" },
+          tag_count_contributor: { type: "integer" },
           tag_count_character: { type: "integer" },
           tag_count_franchise: { type: "integer" },
           tag_count_meta: { type: "integer" },
@@ -309,6 +310,7 @@ module PostIndex
 
       tag_count_general:        tag_count_general,
       tag_count_director:       tag_count_director,
+      tag_count_contributor:    tag_count_contributor,
       tag_count_character:      tag_count_character,
       tag_count_franchise:      tag_count_franchise,
       tag_count_meta:           tag_count_meta,

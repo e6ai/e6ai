@@ -2033,7 +2033,8 @@ CREATE TABLE public.posts (
     video_samples jsonb DEFAULT '{}'::jsonb NOT NULL,
     tag_count_lore integer DEFAULT 0 NOT NULL,
     hotness double precision DEFAULT 0.0 NOT NULL,
-    pool_ids integer[] DEFAULT '{}'::integer[]
+    pool_ids integer[] DEFAULT '{}'::integer[],
+    tag_count_contributor integer DEFAULT 0 NOT NULL
 );
 
 
@@ -6415,6 +6416,7 @@ ALTER TABLE ONLY public.oauth_access_tokens
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260825223656'),
 ('20260824220908'),
 ('20260819154314'),
 ('20260818231537'),
