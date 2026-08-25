@@ -7,6 +7,9 @@ class TagCategory
     "director" => 1,
     "direct" => 1,
     "dir" => 1,
+    "contributor" => 2,
+    "contrib" => 2,
+    "cont" => 2,
     "franchise" => 3,
     "franc" => 3,
     "fr" => 3,
@@ -26,6 +29,7 @@ class TagCategory
   CANONICAL_MAPPING = {
     "General" => 0,
     "Director" => 1,
+    "Contributor" => 2,
     "Franchise" => 3,
     "Character" => 4,
     "Species" => 5,
@@ -34,12 +38,13 @@ class TagCategory
     "Lore" => 8,
   }.freeze
 
-  MEMBER_EDITABLE_CATEGORIES = %w[General Director Franchise Character Species].freeze
+  MEMBER_EDITABLE_CATEGORIES = %w[General Director Contributor Franchise Character Species].freeze
   MEMBER_EDITABLE_MAPPING = CANONICAL_MAPPING.select { |k, _| MEMBER_EDITABLE_CATEGORIES.include?(k) }.freeze
 
   REVERSE_MAPPING = {
     0 => "general",
     1 => "director",
+    2 => "contributor",
     3 => "franchise",
     4 => "character",
     5 => "species",
@@ -54,6 +59,7 @@ class TagCategory
   ENUM_MAPPING = {
     0 => "general",
     1 => "artist",
+    2 => "contributor",
     3 => "copyright",
     4 => "character",
     5 => "species",
@@ -65,6 +71,7 @@ class TagCategory
   SHORT_NAME_MAPPING = {
     "gen" => "general",
     "dir" => "director",
+    "cont" => "contributor",
     "franc" => "franchise",
     "char" => "character",
     "spec" => "species",
@@ -76,6 +83,7 @@ class TagCategory
   HEADER_MAPPING = {
     "general" => "General",
     "director" => "Director",
+    "contributor" => "Contributors",
     "franchise" => "Franchises",
     "character" => "Characters",
     "species" => "Species",
@@ -87,6 +95,7 @@ class TagCategory
   ADMIN_ONLY_MAPPING = {
     "general" => false,
     "director" => false,
+    "contributor" => false,
     "franchise" => false,
     "character" => false,
     "species" => false,
@@ -116,13 +125,13 @@ class TagCategory
     },
   }.freeze
 
-  CATEGORIES = %w[general species character franchise director invalid lore meta].freeze
+  CATEGORIES = %w[general species character franchise director contributor invalid lore meta].freeze
   CATEGORY_IDS = CANONICAL_MAPPING.values.freeze
 
   SHORT_NAME_LIST = SHORT_NAME_MAPPING.keys.freeze
   HUMANIZED_LIST = %w[character franchise director].freeze
-  SPLIT_HEADER_LIST = %w[invalid director franchise character species general meta lore].freeze
-  CATEGORIZED_LIST = %w[invalid director franchise character species meta general lore].freeze
+  SPLIT_HEADER_LIST = %w[invalid director contributor franchise character species general meta lore].freeze
+  CATEGORIZED_LIST = %w[invalid director contributor franchise character species meta general lore].freeze
 
   SHORT_NAME_REGEX = SHORT_NAME_LIST.join("|").freeze
   ALL_NAMES_REGEX = MAPPING.keys.join("|").freeze
