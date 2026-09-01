@@ -137,7 +137,7 @@ services:
 
   # Useful for development
 
-  tests:
+  rspec: &rspec
     image: e6ai
     environment:
       <<: *common-env
@@ -151,10 +151,16 @@ services:
       <<: *common-depends-on
     entrypoint: bundle exec parallel_rspec --serialize-stdout --runtime-log tmp/spec_runtime.log
     profiles:
+      - rspec
+
+  # Deprecated alias for `rspec`, kept for existing muscle memory and CI
+  tests:
+    <<: *rspec
+    profiles:
       - tests
 
   bundle:
-    image: e621
+    image: e6ai
     environment:
       <<: *common-env
       RAILS_ENV: development
@@ -169,7 +175,7 @@ services:
       - bundle
 
   rails:
-    image: e621
+    image: e6ai
     environment:
       <<: *common-env
       RAILS_ENV: test
@@ -184,7 +190,7 @@ services:
       - rails
 
   rails_dev:
-    image: e621
+    image: e6ai
     environment:
       <<: *common-env
       RAILS_ENV: development
@@ -208,14 +214,35 @@ services:
     profiles: 
       - rubocop
 
-  linter:
+  eslint: &eslint
     image: e6ai
     volumes:
       - .:/app
       - node_modules:/app/node_modules
     entrypoint: npm run lint
-    profiles: 
+    profiles:
+      - eslint
+
+  # Deprecated alias for `eslint`, kept for existing muscle memory and CI
+  linter:
+    <<: *eslint
+    profiles:
       - linter
+
+  vitest: &vitest
+    image: e6ai
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    entrypoint: npm test
+    profiles:
+      - vitest
+
+  # Deprecated alias for `vitest`, kept for existing muscle memory and CI
+  jstests:
+    <<: *vitest
+    profiles:
+      - jstests
 
 volumes:
   post_data:

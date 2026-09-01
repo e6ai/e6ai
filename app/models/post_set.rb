@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class PostSet < ApplicationRecord
+  class PostLimitError < StandardError; end
+
   array_attribute :post_ids, parse: %r{(?:https://(?:e621|e926)\.net/posts/)?(\d+)}i, cast: :to_i
 
   has_many :post_set_maintainers, dependent: :destroy do
@@ -434,7 +436,7 @@ class PostSet < ApplicationRecord
       # Deferred to commit so the job cannot import pre-commit membership state
       # when called inside a transaction; runs immediately when none is open.
       ActiveRecord.after_all_transactions_commit do
-        ids.each_slice(5_000) { |slice| BulkIndexUpdateJob.perform_later("Post", slice) }
+        ids.each_slice(5_000) { |slice| BulkIndexUpdateJob.perform_async("Post", slice) }
       end
     end
 

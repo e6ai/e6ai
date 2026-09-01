@@ -9,16 +9,16 @@ import CurrentUser from "@/models/CurrentUser";
 import PostCache from "@/models/PostCache";
 import Logger from "@/utility/Logger";
 import ModuleRegistry from "@/utility/ModuleRegistry";
-import PerformanceTracker from "@/utility/PerformanceTracker";
+import Performance from "@/utility/Performance";
 import Settings from "@/utility/Settings";
 import CStorage from "@/utility/storage/Cookie";
 import LStorage from "@/utility/storage/Local";
 import SStorage from "@/utility/storage/Session";
 import ToastManager from "@/utility/Toast";
 
-export default interface E621Type {
-  Registry: ModuleRegistry;
-  Performance: PerformanceTracker;
+export interface E621Type {
+  Registry: typeof ModuleRegistry;
+  Performance: typeof Performance;
   Logger: typeof Logger;
 
   Storage: Storage;
@@ -49,6 +49,12 @@ export default interface E621Type {
   SStorage: typeof SStorage;
 }
 
+interface Storage {
+  Cookie: typeof CStorage;
+  Local: typeof LStorage;
+  Session: typeof SStorage;
+}
+
 /**
  * Bootstraps and returns the global e621 instance.
  * Only intended to be used internally; for external usage, access the global `E621` variable directly.
@@ -59,8 +65,8 @@ export function getE621Instance (): E621Type {
     return window["E621"] as E621Type;
 
   const instance = {
-    Registry: new ModuleRegistry(),
-    Performance: new PerformanceTracker("app"),
+    Registry: ModuleRegistry,
+    Performance,
     Logger,
 
     Storage: {
@@ -111,10 +117,4 @@ function deprecated<T extends (...args: any[]) => void> (method: T, warningMessa
     console.warn(warningMessage);
     return method(...args);
   } as unknown as T;
-}
-
-interface Storage {
-  Cookie: typeof CStorage;
-  Local: typeof LStorage;
-  Session: typeof SStorage;
 }
