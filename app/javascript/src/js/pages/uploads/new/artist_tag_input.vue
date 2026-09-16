@@ -4,7 +4,7 @@
       class="tag-textarea"
       :value="modelValue"
       @input="handleInput"
-      id="post_directors"
+      id="post_director"
       rows="2"
       placeholder="Ex: director_name unknown_director anonymous_director etc."
       data-autocomplete="tag-edit"
@@ -100,7 +100,7 @@ async function checkTags() {
     .split(/\s+/)
     .filter((t) => {
       t = t.toLowerCase();
-      return t && !(t.startsWith("artist:") || t.startsWith("art:"))
+      return t && !(t.startsWith("director:") || t.startsWith("dir:"))
     });
   if (tags.length === 0) {
     notices.value = [];
@@ -126,7 +126,7 @@ async function checkTags() {
   }
 
   const general = TagCategories.idFor("general");
-  const artist = TagCategories.idFor("artist");
+  const artist = TagCategories.idFor("director");
   const result: Notice[] = [];
   for (const tagName of tags) {
     const tag = tagMap[tagName.toLowerCase()];
@@ -148,7 +148,7 @@ function makeArtistTag(tagName: string) {
   const parts = (props.modelValue || '').trim().split(/\s+/).filter(t => t);
   const idx = parts.indexOf(tagName);
   if (idx !== -1) {
-    parts[idx] = `artist:${tagName}`;
+    parts[idx] = `director:${tagName}`;
   }
   emit('update:modelValue', parts.join(' ') + ' ');
 }

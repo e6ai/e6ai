@@ -4,8 +4,8 @@ vi.mock("@/components/autocomplete", () => ({ default: { initialize_autocomplete
 vi.mock("@/components/DTextFormatter", () => ({ default: vi.fn() }));
 vi.mock("@/utility/Toast", () => ({ default: { notice: vi.fn(), alert: vi.fn() } }));
 
-import { afterEach, describe, expect, it } from "vitest";
 import type { VueWrapper } from "@vue/test-utils";
+import { afterEach, describe, expect, it } from "vitest";
 import { mountUploader, unmountAll } from "./mountUploader";
 
 afterEach(unmountAll);
@@ -57,7 +57,7 @@ describe("uploads/uploader — query-param import", () => {
     const { wrapper } = await mountUploader({
       search: "?tags-artist=picasso&tags-character=pikachu&tags-species=rodent&tags-content=young",
     });
-    expect(value(wrapper, "#post_artist")).toContain("picasso");
+    expect(value(wrapper, "#post_director")).toContain("picasso");
     expect(value(wrapper, "#post_character")).toContain("pikachu");
     expect(value(wrapper, "#post_species")).toContain("rodent");
     expect(value(wrapper, "#post_content")).toContain("young");

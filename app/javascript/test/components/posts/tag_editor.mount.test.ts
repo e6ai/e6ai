@@ -50,7 +50,7 @@ describe("posts/tag_editor — mount", () => {
   it("renders the seven related-category links", async () => {
     const { wrapper } = await mountTagEditor();
     const labels = wrapper.findAll(".related-tag-functions a").map((a) => a.text());
-    expect(labels).toEqual(["Tags", "Artists", "Contributors", "Copyrights", "Characters", "Species", "Metatags"]);
+    expect(labels).toEqual(["Tags", "Directors", "Contributors", "Franchises", "Characters", "Species", "Metatags"]);
   });
 
   it("shows the related panel expanded by default and collapses it via the header link", async () => {

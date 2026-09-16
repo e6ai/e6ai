@@ -1,6 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
 import ArtistTagInput from "@/pages/uploads/new/artist_tag_input.vue";
+import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const wrappers: VueWrapper[] = [];
 
@@ -72,12 +72,12 @@ describe("uploads/artist_tag_input", () => {
     expect(notices(w)[0].text()).toContain("character");
   });
 
-  it("prefixes with artist: when 'make artist' is clicked", async () => {
+  it("prefixes with director: when 'make artist' is clicked", async () => {
     stubFetch([], []);
     const w = make();
     await checkAfter(w, "newartist");
     await notices(w)[0].find("a").trigger("click");
-    expect(lastEmit(w)).toBe("artist:newartist ");
+    expect(lastEmit(w)).toBe("director:newartist ");
   });
 
   it("removes a wrong-category tag when its notice is clicked", async () => {
@@ -88,10 +88,10 @@ describe("uploads/artist_tag_input", () => {
     expect(lastEmit(w)).toBe(" "); // removing the only tag leaves the trailing-space artifact
   });
 
-  it("ignores tags already carrying an artist:/art: prefix", async () => {
+  it("ignores tags already carrying a director:/dir: prefix", async () => {
     const fetchSpy = stubFetch([]);
     const w = make();
-    await checkAfter(w, "artist:picasso art:monet");
+    await checkAfter(w, "director:picasso dir:monet");
     expect(fetchSpy).not.toHaveBeenCalled();
     expect(notices(w)).toHaveLength(0);
   });

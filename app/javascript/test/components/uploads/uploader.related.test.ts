@@ -4,9 +4,9 @@ vi.mock("@/components/autocomplete", () => ({ default: { initialize_autocomplete
 vi.mock("@/components/DTextFormatter", () => ({ default: vi.fn() }));
 vi.mock("@/utility/Toast", () => ({ default: { notice: vi.fn(), alert: vi.fn() } }));
 
+import { flushPromises, VueWrapper } from "@vue/test-utils";
 import { afterEach, describe, expect, it } from "vitest";
 import { nextTick } from "vue";
-import { flushPromises, VueWrapper } from "@vue/test-utils";
 import { jsonResponse } from "../../helpers";
 import { mountUploader, unmountAll } from "./mountUploader";
 
@@ -32,7 +32,7 @@ describe("uploads/uploader — related tags", () => {
     const { wrapper, fetchSpy } = await mountUploader();
     await wrapper.find("#post_tags").setValue("wolf outside");
     stubRelated(fetchSpy, {});
-    await loadRelated(wrapper, "Artists");
+    await loadRelated(wrapper, "Directors");
     const [url, init] = fetchSpy.mock.calls.at(-1)! as [string, RequestInit];
     expect(url).toBe("/related_tag/bulk.json");
     expect(init.method).toBe("POST");
@@ -84,7 +84,7 @@ describe("uploads/uploader — related tags", () => {
     await wrapper.find("#post_tags").setValue("seed");
     // A 500 whose body is valid JSON must NOT be rendered as related tags.
     fetchSpy.mockResolvedValue(jsonResponse({ artist: [{ name: "abe", category_id: 1 }] }, { status: 500 }));
-    await loadRelated(wrapper, "Artists");
+    await loadRelated(wrapper, "Directors");
     expect(wrapper.find(".related-section").exists()).toBe(false);
     expect((wrapper.vm as any).loadingRelated).toBe(false);
   });
@@ -93,10 +93,10 @@ describe("uploads/uploader — related tags", () => {
     const { wrapper, fetchSpy } = await mountUploader();
     await wrapper.find("#post_tags").setValue("seed");
     stubRelated(fetchSpy, { artist: [{ name: "abe", category_id: 1 }] });
-    await loadRelated(wrapper, "Artists");
+    await loadRelated(wrapper, "Directors");
     expect(wrapper.find(".related-section").exists()).toBe(true);
 
-    await loadRelated(wrapper, "Artists");
+    await loadRelated(wrapper, "Directors");
     expect(wrapper.find(".related-section").exists()).toBe(false);
   });
 

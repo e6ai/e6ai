@@ -29,10 +29,10 @@ describe("uploads/uploader — mount smoke", () => {
   it("renders normal mode by default and compact mode when requested", async () => {
     const normal = (await mountUploader()).wrapper;
     // Artists/Characters sections only exist in normal mode.
-    expect(normal.find("#post_artist").exists()).toBe(true);
+    expect(normal.find("#post_director").exists()).toBe(true);
 
     const compact = (await mountUploader({ compactMode: true })).wrapper;
-    expect(compact.find("#post_artist").exists()).toBe(false);
+    expect(compact.find("#post_director").exists()).toBe(false);
   });
 
   it("seeds the rating buttons per safe mode", async () => {

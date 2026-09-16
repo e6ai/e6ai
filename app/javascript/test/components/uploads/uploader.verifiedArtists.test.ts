@@ -4,21 +4,21 @@ vi.mock("@/components/autocomplete", () => ({ default: { initialize_autocomplete
 vi.mock("@/components/DTextFormatter", () => ({ default: vi.fn() }));
 vi.mock("@/utility/Toast", () => ({ default: { notice: vi.fn(), alert: vi.fn() } }));
 
+import type { VueWrapper } from "@vue/test-utils";
 import { afterEach, describe, expect, it } from "vitest";
 import { nextTick } from "vue";
-import type { VueWrapper } from "@vue/test-utils";
 import { mountUploader, unmountAll } from "./mountUploader";
 
 afterEach(unmountAll);
 
-const artistField = (w: VueWrapper) => (w.find("#post_artist").element as HTMLTextAreaElement);
+const artistField = (w: VueWrapper) => (w.find("#post_director").element as HTMLTextAreaElement);
 const linkedButton = (w: VueWrapper, name: string) => w.findAll(".upload-artist-tags button").find((b) => b.text() === name)!;
 
 describe("uploads/uploader — verified artist buttons", () => {
   it("renders one button per linked artist in normal mode", async () => {
     const { wrapper } = await mountUploader({ verifiedArtistTags: ["artist_a", "artist_b"] });
     expect(wrapper.find(".upload-artist-tags").exists()).toBe(true);
-    expect(wrapper.text()).toContain("Linked artist tags:");
+    expect(wrapper.text()).toContain("Linked director tags:");
     expect(wrapper.findAll(".upload-artist-tags button").map((b) => b.text())).toEqual(["artist_a", "artist_b"]);
   });
 
@@ -38,7 +38,7 @@ describe("uploads/uploader — verified artist buttons", () => {
     expect(wrapper.find(".upload-artist-tags").exists()).toBe(false);
   });
 
-  it("renders nothing in compact mode (no #post_artist to attach to)", async () => {
+  it("renders nothing in compact mode (no #post_director to attach to)", async () => {
     const { wrapper } = await mountUploader({ compactMode: true, verifiedArtistTags: ["artist_a"] });
     expect(wrapper.find(".upload-artist-tags").exists()).toBe(false);
   });

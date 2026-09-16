@@ -27,9 +27,8 @@
     <div class="uploader-row">
       <div class="uploader-row-label">
         <label class="section-label" for="post_sources">Sources</label>
-        <div>You should include: A link to the artists page where this was obtained, and a link to the
-          submission page where this image was obtained. No available source should ONLY be used if the
-          content has never been posted online anywhere else.
+          <div>You should include: A link to the page where this was obtained, and a link to the
+            submission page where this image was obtained. Useful if this content was posted to ex. Twitter.
         </div>
       </div>
       <div class="uploader-row-input">
@@ -45,14 +44,14 @@
     </div>
 
     <template v-if="!compactMode">
-      <!-- Artist and Contributor Tags -->
+      <!-- Director Tags -->
       <div class="uploader-row">
         <div class="uploader-row-label">
-          <label class="section-label" for="names">Artists and Contributors</label>
-          <div><a href="/forum_topics/23553">How do I tag an artist?</a></div>
+          <label class="section-label" for="names">Directors</label>
           <div>
-            Please don't use <a href="/wiki_pages/anonymous_artist">anonymous_artist</a> or
-            <a href="/wiki_pages/unknown_artist">unknown_artist</a> tags unless they fall under
+            A director is the individual/s that directed the model to produce content. Usually you.<br />
+            Please don't use <a href="/wiki_pages/anonymous_director">anonymous_director</a> or
+            <a href="/wiki_pages/unknown_director">unknown_director</a> tags unless they fall under
             those definitions on the wiki.
           </div>
         </div>
@@ -116,7 +115,7 @@
             role="content"
             field-id="post_content"
             :order="5"
-            placeholder="Ex: young gore scat watersports diaper my_little_pony vore not_furry rape hyper etc."
+            placeholder="Ex: gore scat watersports diaper my_little_pony vore not_furry rape hyper etc."
           ></tag-textarea>
         </div>
       </div>
@@ -186,9 +185,9 @@
         <div class="related-tag-functions">
           Related:
           <a href="#" @click.prevent="findRelated()">Tags</a> |
-          <a href="#" @click.prevent="findRelated('artist')">Artists</a> |
+          <a href="#" @click.prevent="findRelated('director')">Directors</a> |
           <a href="#" @click.prevent="findRelated('contributor')">Contributors</a> |
-          <a href="#" @click.prevent="findRelated('copyright')">Copyrights</a> |
+          <a href="#" @click.prevent="findRelated('franchise')">Franchises</a> |
           <a href="#" @click.prevent="findRelated('character')">Characters</a> |
           <a href="#" @click.prevent="findRelated('species')">Species</a> |
           <a href="#" @click.prevent="findRelated('meta')">Metatags</a>

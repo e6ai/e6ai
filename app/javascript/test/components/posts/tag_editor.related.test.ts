@@ -3,8 +3,8 @@ import { vi } from "vitest";
 vi.mock("@/components/autocomplete", () => ({ default: { initialize_autocomplete: vi.fn() } }));
 vi.mock("@/utility/Toast", () => ({ default: { notice: vi.fn(), alert: vi.fn() } }));
 
-import { afterEach, describe, expect, it } from "vitest";
 import { VueWrapper } from "@vue/test-utils";
+import { afterEach, describe, expect, it } from "vitest";
 import { mountTagEditor, unmountAll } from "./mountTagEditor";
 
 afterEach(unmountAll);
@@ -29,7 +29,7 @@ describe("posts/tag_editor — findRelated", () => {
 
   it("sends the artist category id resolved from its name", async () => {
     const { wrapper, fetchCalls } = await mountTagEditor();
-    await relatedLink(wrapper, "Artists").trigger("click");
+    await relatedLink(wrapper, "Directors").trigger("click");
     expect(fetchCalls[0].params.get("category_id")).toBe("1");
   });
 
@@ -41,7 +41,7 @@ describe("posts/tag_editor — findRelated", () => {
 
   it("maps every category link to its canonical id", async () => {
     const expected: Record<string, string> = {
-      Artists: "1", Contributors: "2", Copyrights: "3",
+      Directors: "1", Contributors: "2", Franchises: "3",
       Characters: "4", Species: "5", Metatags: "7",
     };
     for (const [label, id] of Object.entries(expected)) {
@@ -106,32 +106,32 @@ describe("posts/tag_editor — findRelated", () => {
   // in flight — no concurrent requests, no race.
   it("ignores a second category click while a lookup is in flight (B3 fixed)", async () => {
     const { wrapper, fetchCalls } = await mountTagEditor();
-    await relatedLink(wrapper, "Artists").trigger("click");
+    await relatedLink(wrapper, "Directors").trigger("click");
     await relatedLink(wrapper, "Species").trigger("click");
     expect(fetchCalls).toHaveLength(1);
 
-    await fetchCalls[0].resolve({ artist: [{ name: "abe", category_id: 1 }] });
-    expect(groupTitles(wrapper)).toEqual(["Related: artist"]);
+    await fetchCalls[0].resolve({ director: [{ name: "abe", category_id: 1 }] });
+    expect(groupTitles(wrapper)).toEqual(["Related: director"]);
   });
 
   // I3 parity: same-category re-click collapses the results instead of
   // re-fetching, matching uploader.vue.
   it("collapses the results on a same-category re-click without re-fetching (I3 parity)", async () => {
     const { wrapper, fetchCalls } = await mountTagEditor();
-    await relatedLink(wrapper, "Artists").trigger("click");
-    await fetchCalls[0].resolve({ artist: [{ name: "abe", category_id: 1 }] });
-    expect(groupTitles(wrapper)).toEqual(["Related: artist"]);
+    await relatedLink(wrapper, "Directors").trigger("click");
+    await fetchCalls[0].resolve({ director: [{ name: "abe", category_id: 1 }] });
+    expect(groupTitles(wrapper)).toEqual(["Related: director"]);
 
-    await relatedLink(wrapper, "Artists").trigger("click");
+    await relatedLink(wrapper, "Directors").trigger("click");
     expect(groupTitles(wrapper)).toEqual([]);
     expect(fetchCalls).toHaveLength(1);
   });
 
   it("re-fetches when a different category follows the collapse", async () => {
     const { wrapper, fetchCalls } = await mountTagEditor();
-    await relatedLink(wrapper, "Artists").trigger("click");
-    await fetchCalls[0].resolve({ artist: [{ name: "abe", category_id: 1 }] });
-    await relatedLink(wrapper, "Artists").trigger("click"); // collapse
+    await relatedLink(wrapper, "Directors").trigger("click");
+    await fetchCalls[0].resolve({ director: [{ name: "abe", category_id: 1 }] });
+    await relatedLink(wrapper, "Directors").trigger("click"); // collapse
 
     await relatedLink(wrapper, "Species").trigger("click");
     expect(fetchCalls).toHaveLength(2);

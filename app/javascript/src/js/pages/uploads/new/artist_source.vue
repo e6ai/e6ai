@@ -1,7 +1,7 @@
 <template>
   <artist-tag-input v-model="model"></artist-tag-input>
   <div v-if="verifiedArtistTags.length" class="toggle-button-group upload-artist-tags">
-    <div class="upload-artist-title">Linked artist tags:</div>
+    <div class="upload-artist-title">Linked director tags:</div>
     <button
       v-for="name in verifiedArtistTags"
       :key="name"

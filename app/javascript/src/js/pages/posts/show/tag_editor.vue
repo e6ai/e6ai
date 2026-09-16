@@ -17,6 +17,7 @@
     <tag-preview :tags="tags" />
     <div class="related-tag-functions">
       Related:
+      <a href="#" @click.prevent="findRelated()">Tags</a> |
       <a href="#" @click.prevent="findRelated('director')">Directors</a> |
       <a href="#" @click.prevent="findRelated('contributor')">Contributors</a> |
       <a href="#" @click.prevent="findRelated('franchise')">Franchises</a> |
