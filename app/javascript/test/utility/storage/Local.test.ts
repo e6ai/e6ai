@@ -1,6 +1,6 @@
+import type { StorageDefinition } from "@/utility/storage/utilities/Types";
 import { describe, expect, it, vi } from "vitest";
 import { setMeta } from "../../helpers";
-import type { StorageDefinition } from "@/utility/storage/utilities/Types";
 
 // LStorage is an import-time singleton (see plan); the global beforeEach in
 // setup.ts calls vi.resetModules(), so re-importing here yields a fresh instance
@@ -93,7 +93,7 @@ describe("LStorage", () => {
     const LStorage = await freshStorage();
     expect(LStorage.Site.NewsID).toBe(0);
     expect(LStorage.Site.Events).toBe(true);
-    expect(LStorage.Theme.Main).toBe("hexagon");
+    expect(LStorage.Theme.Main).toBe("bloodlust");
     expect(LStorage.Posts.WikiExcerpt).toBe(1);
     expect(LStorage.Posts.Size).toBe("m");
   });
