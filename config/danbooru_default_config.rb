@@ -679,7 +679,9 @@ h5. What can I do now?
 
 [b]Fix & Replace[/b]: Follow the \"Replacement Instructions\":[/help/replacements] or re-upload the corrected version (Need help? Check out the #gen-help channel on our \"official Discord\":[/static/discord]).
 
-[b]Appeal[/b]: If you believe this was a mistake, please click \"here\":[/appeals/new?disp_id=%FLAG_ID%&qtype=flag] to submit an appeal. If you are not satisfied with the interaction, see the \"Dispute Procedure\":[/static/code_of_conduct#disputingstaffactions] page.",
+[b]Appeal[/b]: If you believe this was a mistake, please click \"here\":[/appeals/new?disp_id=%FLAG_ID%&qtype=flag] to submit an appeal (\"instructions\":[/help/appeals]). If you are not satisfied with the interaction, see the \"Dispute Procedure\":[/static/code_of_conduct#disputingstaffactions] page.
+
+If you have any questions, please \"DM the staff member\":[/dmails/new?dmail%5Bto_id%5D=%STAFF_ID%&dmail%5Btitle%5D=About+deleted+post+%23%POST_ID%].",
         },
         appeal_only: {
           title: "Post #%POST_ID% has been deleted",
@@ -693,7 +695,9 @@ h5. Reason for rejection:
 
 h5. What can I do now?
 
-[b]Appeal[/b]: If you believe this was a mistake, please click \"here\":[/appeals/new?disp_id=%FLAG_ID%&qtype=flag] to submit an appeal. If you are not satisfied with the interaction, see the \"Dispute Procedure\":[/static/code_of_conduct#disputingstaffactions] page.",
+[b]Appeal[/b]: If you believe this was a mistake, please click \"here\":[/appeals/new?disp_id=%FLAG_ID%&qtype=flag] to submit an appeal (\"instructions\":[/help/appeals]). If you are not satisfied with the interaction, see the \"Dispute Procedure\":[/static/code_of_conduct#disputingstaffactions] page.
+
+If you have any questions, please \"DM the staff member\":[/dmails/new?dmail%5Bto_id%5D=%STAFF_ID%&dmail%5Btitle%5D=About+deleted+post+%23%POST_ID%].",
         },
         prompt_spam: {
           title: "Post #%POST_ID% has been deleted",
@@ -710,7 +714,9 @@ To maintain gallery variety, please limit posts to no more than 3 similar versio
 
 h5. What can I do now?
 
-[b]Appeal[/b]: If you believe these posts were distinct enough to warrant inclusion, please click \"here\":[/appeals/new?disp_id=%FLAG_ID%&qtype=flag] to submit an appeal. If you are not satisfied with the interaction, see the \"Dispute Procedure\":[/static/code_of_conduct#disputingstaffactions] page.",
+[b]Appeal[/b]: If you believe these posts were distinct enough to warrant inclusion, please click \"here\":[/appeals/new?disp_id=%FLAG_ID%&qtype=flag] to submit an appeal (\"instructions\":[/help/appeals]). If you are not satisfied with the interaction, see the \"Dispute Procedure\":[/static/code_of_conduct#disputingstaffactions] page.
+
+If you have any questions, please \"DM the staff member\":[/dmails/new?dmail%5Bto_id%5D=%STAFF_ID%&dmail%5Btitle%5D=About+deleted+post+%23%POST_ID%].",
         },
         follow_up: {
           title: "Rejection reason for post #%POST_ID% was updated",
@@ -722,7 +728,7 @@ h5. Updated reason for rejection:
 %REASON%
 [/quote]
 
-If you have questions regarding this change, please \"DM the staff member\":[/dmails/new?dmail%5Bto_id%5D=%STAFF_ID%&dmail%5Btitle%5D=Appeal%3A+Deleted+post+%23%POST_ID%].",
+If you have questions regarding this change, please \"DM the staff member\":[/dmails/new?dmail%5Bto_id%5D=%STAFF_ID%&dmail%5Btitle%5D=About+deleted+post+%23%POST_ID%].",
         },
       }
     end
