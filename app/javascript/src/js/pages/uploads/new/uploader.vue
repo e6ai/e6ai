@@ -325,9 +325,9 @@
     <p>
       <strong>Posts must have at least 10 non-implied general category tags at the time of upload.</strong>
       This <u>excludes</u> other tag types, such as
-      <span style="color: var(--color-tag-artist)">Artist</span>,
+      <span style="color: var(--color-tag-artist)">Director</span>,
       <span style="color: var(--color-tag-species)">Species</span>,
-      <span style="color: var(--color-tag-copyright)">Copyright</span>,
+      <span style="color: var(--color-tag-franchise)">Franchise</span>,
       and <span style="color: var(--color-tag-meta)">Meta</span>.
       Ensure all contentious topics are fully tagged.
     </p>
