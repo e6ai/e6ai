@@ -1,5 +1,7 @@
 import ToastManager from "@/utility/Toast";
-import Post from "@/pages/posts/posts";
+import BulkActions from "@/pages/posts/BulkActions";
+import PendingUpdates from "@/pages/posts/PendingUpdates";
+import PostModel from "@/models/Post";
 import Favorite from "@/models/Favorite";
 import PostSet from "@/pages/posts/show/PostSet";
 import TagScript from "@/models/tag_script";
@@ -7,7 +9,6 @@ import Rails from "@rails/ujs";
 import Hotkeys from "@/core/hotkeys";
 import LStorage from "@/utility/storage/Local";
 import SStorage from "@/utility/storage/Session";
-import TaskQueue from "@/utility/TaskQueue";
 import PostVote from "@/models/PostVote";
 import Autocomplete from "@/components/autocomplete";
 import CurrentUser from "@/models/CurrentUser";
@@ -72,23 +73,16 @@ PostModeMenu.initialize_edit_form = function () {
   $("#quick-edit-form").on("submit.danbooru", function (event) {
     event.preventDefault();
 
-    $.ajax({
-      type: "put",
-      url: $("#quick-edit-form").attr("action"),
-      data: {
-        post: {
-          tag_string: $("#post_tag_string").val(),
-        },
-      },
-      complete: function () {
-        Rails.enableElement(document.getElementById("quick-edit-form"));
-      },
-      success: function (data) {
-        Post.update_data(data);
-        ToastManager.notice("Post #" + data.post.id + " updated");
+    PendingUpdates.track(PostModel.update(PostModeMenu.editing_post_id, { tag_string: $("#post_tag_string").val() }))
+      .then((data) => {
+        BulkActions.syncThumbnail(data);
+        ToastManager.notice("Post #" + data.id + " updated");
         PostModeMenu.close_edit_form();
-      },
-    });
+      })
+      .catch(() => { /* Reported through danbooru:error */ })
+      .finally(() => {
+        Rails.enableElement(document.getElementById("quick-edit-form"));
+      });
 
     return false;
   });
@@ -121,29 +115,7 @@ PostModeMenu.tag_script_apply_all = function (event) {
 };
 
 PostModeMenu.update_sets_menu = function () {
-  let target = $("#set-id");
-  target.off("change");
-  TaskQueue.add(() => {
-    $.ajax({
-      type: "GET",
-      url: "/post_sets/for_select.json",
-    }).fail(function (data) {
-      ToastManager.alert("Error getting sets list: " + data.message);
-    }).done(function (data) {
-      target.on("change", function (e) {
-        LStorage.Posts.Set = e.target.value;
-      });
-      target.empty();
-      const target_set = LStorage.Posts.Set;
-      ["Owned", "Maintained"].forEach(function (v) {
-        let group = $("<optgroup>", {label: v});
-        data[v].forEach(function (gi) {
-          group.append($("<option>", {value: gi[1], selected: (gi[1] == target_set)}).text(gi[0]));
-        });
-        target.append(group);
-      });
-    });
-  }, { name: "PostModeMenu.update_sets_menu" });
+  return PostSet.populateSelect($("#set-id"));
 };
 
 PostModeMenu.change = function () {
@@ -170,8 +142,10 @@ PostModeMenu.change = function () {
   }
 };
 
+PostModeMenu.editing_post_id = null;
 PostModeMenu.open_edit = function (post_id) {
   Hotkeys.enabled = false;
+  PostModeMenu.editing_post_id = post_id;
   var $post = $(`article.thumbnail[data-id="${post_id}"]`).first();
   $("#quick-edit-div").slideDown("fast");
   $("#quick-edit-form").attr("action", "/posts/" + post_id + ".json");
@@ -189,47 +163,39 @@ PostModeMenu.click = function (e) {
   var post_id = $(e.currentTarget).data("id");
 
   if (s === "add-fav") {
-    Post.notice_update("inc");
-    Favorite.create(post_id)
-      .finally(() => { Post.notice_update("dec"); });
+    PendingUpdates.track(Favorite.create(post_id)).catch(() => { /* Reported through danbooru:error */ });
   } else if (s === "remove-fav") {
-    Post.notice_update("inc");
-    Favorite.destroy(post_id)
-      .finally(() => { Post.notice_update("dec"); });
+    PendingUpdates.track(Favorite.destroy(post_id)).catch(() => { /* Reported through danbooru:error */ });
   } else if (s === "edit") {
     PostModeMenu.open_edit(post_id);
   } else if (s === "vote-down") {
-    Post.notice_update("inc");
-    PostVote.vote(post_id, -1, true)
-      .finally(() => { Post.notice_update("dec"); });
+    PendingUpdates.track(PostVote.vote(post_id, -1, true)).catch(() => { /* Reported through danbooru:error */ });
   } else if (s === "vote-up") {
-    Post.notice_update("inc");
-    PostVote.vote(post_id, 1, true)
-      .finally(() => { Post.notice_update("dec"); });
+    PendingUpdates.track(PostVote.vote(post_id, 1, true)).catch(() => { /* Reported through danbooru:error */ });
   } else if (s === "add-to-set") {
     PostSet.add_post($("#set-id").val(), post_id);
   } else if (s === "remove-from-set") {
     PostSet.remove_post($("#set-id").val(), post_id);
   } else if (s === "rating-q") {
-    Post.update(post_id, {"post[rating]": "q"});
+    BulkActions.update(post_id, { rating: "q" });
   } else if (s === "rating-s") {
-    Post.update(post_id, {"post[rating]": "s"});
+    BulkActions.update(post_id, { rating: "s" });
   } else if (s === "rating-e") {
-    Post.update(post_id, {"post[rating]": "e"});
+    BulkActions.update(post_id, { rating: "e" });
   } else if (s === "lock-rating") {
-    Post.update(post_id, {"post[is_rating_locked]": "1"});
+    BulkActions.update(post_id, { is_rating_locked: "1" });
   } else if (s === "lock-note") {
-    Post.update(post_id, {"post[is_note_locked]": "1"});
+    BulkActions.update(post_id, { is_note_locked: "1" });
   } else if (s === "delete") {
-    Post.delete_with_reason(post_id, $("#quick-mode-reason").val());
+    BulkActions.delete(post_id, $("#quick-mode-reason").val());
   } else if (s === "undelete") {
-    Post.undelete(post_id);
+    BulkActions.undelete(post_id);
   } else if (s === "unflag") {
-    Post.unflag(post_id, "none", false);
+    BulkActions.unflag(post_id, "none");
   } else if (s === "approve") {
-    Post.approve(post_id);
+    BulkActions.approve(post_id);
   } else if (s === "remove-parent") {
-    Post.update(post_id, {"post[parent_id]": ""});
+    BulkActions.update(post_id, { parent_id: "" });
   } else if (s === "tag-script") {
     const tag_script = LStorage.Posts.TagScript.Content;
     if (!tag_script) {
@@ -239,7 +205,7 @@ PostModeMenu.click = function (e) {
     const postTags = $(`article.thumbnail[data-id="${post_id}"]`).first().data("tags").split(" ");
     const tags = new Set(postTags);
     const changes = TagScript.run(tags, tag_script);
-    Post.tagScript(post_id, changes, $("#tag-script-reason").val());
+    BulkActions.tagScript(post_id, changes, $("#tag-script-reason").val());
   } else {
     return;
   }

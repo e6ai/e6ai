@@ -127,14 +127,31 @@ RSpec.describe SavedSearchesController do
   end
 
   describe "GET /saved_searches/:id/visit" do
-    it "advances the watermark and redirects to the only-new view" do
+    it "advances the watermark and redirects to the only-new view when the cached count is positive" do
       create(:post)
       ss = create(:saved_search, user: owner, name: "foxes", query: "fox", is_tracked: true)
       old_watermark = ss.last_seen_post_id
       create(:post)
+      SavedSearch.write_badge_entry(SavedSearch.badge_cache_key(owner.id), { ss.id => 1 })
       get visit_saved_search_path(ss)
       expect(response).to redirect_to(posts_path(tags: "search:foxes id:>#{old_watermark}"))
       expect(ss.reload.last_seen_post_id).to eq(Post.maximum(:id))
+    end
+
+    it "redirects to the full listing when the cached count is zero, still advancing the watermark" do
+      create(:post)
+      ss = create(:saved_search, user: owner, name: "foxes", query: "fox", is_tracked: true)
+      create(:post)
+      SavedSearch.write_badge_entry(SavedSearch.badge_cache_key(owner.id), { ss.id => 0 })
+      get visit_saved_search_path(ss)
+      expect(response).to redirect_to(posts_path(tags: "search:foxes"))
+      expect(ss.reload.last_seen_post_id).to eq(Post.maximum(:id))
+    end
+
+    it "redirects to the full listing when nothing is cached" do
+      ss = create(:saved_search, user: owner, name: "foxes", query: "fox", is_tracked: true)
+      get visit_saved_search_path(ss)
+      expect(response).to redirect_to(posts_path(tags: "search:foxes"))
     end
 
     it "redirects untracked searches without a watermark filter" do
@@ -237,6 +254,41 @@ RSpec.describe SavedSearchesController do
       sign_in_as nil
       get badge_saved_searches_path(format: :json)
       expect(response).not_to have_http_status(:ok)
+    end
+  end
+
+  describe "subscription anchor" do
+    let(:anchor) { SavedSearch.subscription_for!(owner) }
+
+    it "redirects edit to the tag subscriptions page" do
+      get edit_saved_search_path(anchor)
+      expect(response).to redirect_to(tag_subscriptions_path)
+    end
+
+    it "refuses JSON updates" do
+      patch saved_search_path(anchor, format: :json), params: { saved_search: { query: "fox" } }
+      expect(response).to have_http_status(:forbidden)
+      expect(anchor.reload.query).to eq("")
+    end
+
+    it "cannot be created through the saved searches endpoint" do
+      post saved_searches_path(format: :json), params: { saved_search: { query: "fox", is_subscription: true } }
+      expect(SavedSearch.where(user_id: owner.id, is_subscription: true)).to be_empty
+    end
+
+    it "serializes is_subscription and tag_count" do
+      create(:tag_subscription, user: owner)
+      anchor
+      get saved_searches_path(format: :json)
+      expect(response.parsed_body.first).to include("is_subscription" => true, "tag_count" => 1)
+    end
+
+    it "renders the anchor row with a Manage link" do
+      anchor
+      get saved_searches_path
+      expect(response.body).to include(%(id="saved-search-#{anchor.id}"))
+      expect(response.body).to include(tag_subscriptions_path)
+      expect(response.body).not_to include(edit_saved_search_path(anchor))
     end
   end
 end

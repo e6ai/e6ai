@@ -5,12 +5,29 @@
   // files elsewhere stay explicit until their directory is fully migrated.
   "include": [
     "app/javascript/src/js/jquery-shims.d.ts",
+    "app/javascript/src/js/models/Favorite.ts",
+    "app/javascript/src/js/models/Post.ts",
+    "app/javascript/src/js/models/PostApproval.ts",
+    "app/javascript/src/js/models/PostFlag.ts",
+    "app/javascript/src/js/utility/ApiRequest.ts",
     "app/javascript/src/js/components/autocompletable_input.vue",
     "app/javascript/src/js/components/tags/**/*",
     "app/javascript/src/js/components/uploads/**/*",
     "app/javascript/src/js/pages/uploads/new/**/*",
     "app/javascript/src/js/pages/post_replacements/new/**/*",
     "app/javascript/src/js/pages/posts/show/tag_editor.vue",
-    "app/javascript/src/js/pages/posts/show/TagEditor.ts"
+    "app/javascript/src/js/pages/posts/show/TagEditor.ts",
+    "app/javascript/src/js/pages/posts/BulkActions.ts",
+    "app/javascript/src/js/pages/posts/PendingUpdates.ts",
+    "app/javascript/src/js/pages/posts/RandomPost.ts",
+    "app/javascript/src/js/pages/posts/TagListCollapse.ts",
+    "app/javascript/src/js/pages/posts/show/EditTab.ts",
+    "app/javascript/src/js/pages/posts/show/Navigation.ts",
+    "app/javascript/src/js/pages/posts/show/PostActions.ts",
+    "app/javascript/src/js/pages/posts/show/RelationshipPreview.ts",
+    "app/javascript/src/js/pages/posts/show/SourceValidation.ts",
+    "app/javascript/src/js/pages/posts/show/SwipeGestureHandler.ts",
+    "app/javascript/src/js/pages/posts/show/notes/**/*",
+    "app/javascript/src/js/pages/posts/show/toolbar/**/*"
   ]
 }

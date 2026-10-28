@@ -393,6 +393,12 @@ module Danbooru
       50
     end
 
+    # Maximum tags a user can subscribe to. Evaluated as one `terms` clause, so cost scales
+    # with this rather than with tag_query_limit.
+    def tag_subscription_limit
+      500
+    end
+
     # How long cached saved-search badge counts stay fresh.
     def saved_search_badge_ttl
       15.minutes
@@ -941,16 +947,16 @@ If you have questions regarding this change, please \"DM the staff member\":[/dm
     def opensearch_host
     end
 
-    # Use a recaptcha on the signup page to protect against spambots creating new accounts.
-    # https://developers.google.com/recaptcha/intro
-    def enable_recaptcha?
-      Rails.env.production? && Danbooru.config.recaptcha_site_key.present? && Danbooru.config.recaptcha_secret_key.present?
+    # Use Cloudflare Turnstile on the signup page to protect against spambots creating new accounts.
+    # https://developers.cloudflare.com/turnstile/
+    def enable_turnstile?
+      Rails.env.production? && Danbooru.config.turnstile_site_key.present? && Danbooru.config.turnstile_secret_key.present?
     end
 
-    def recaptcha_site_key
+    def turnstile_site_key
     end
 
-    def recaptcha_secret_key
+    def turnstile_secret_key
     end
 
     def enable_image_cropping?
@@ -1049,6 +1055,12 @@ If you have questions regarding this change, please \"DM the staff member\":[/dm
       false
     end
 
+    # ISO 3166-1 alpha-2 codes, as provided by Cloudflare's CF-IPCountry header.
+    # Visitors from these countries are shown the region notice modal.
+    def region_notice_countries
+      %w[GB]
+    end
+
     def janitor_reports_discord_webhook_url
       nil
     end
@@ -1086,6 +1098,7 @@ If you have questions regarding this change, please \"DM the staff member\":[/dm
 
         video: "This tag is added automatically to posts containing videos.",
         flash: "This tag is added automatically to posts containing Flash files.",
+        sound: "This tag is added automatically to video posts containing any sound.",
 
         animated: "This tag is added automatically to posts containing animated images.",
         animated_gif: "This tag is added automatically to posts containing animated GIFs.",
