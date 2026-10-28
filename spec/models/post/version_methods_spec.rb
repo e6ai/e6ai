@@ -79,7 +79,7 @@ RSpec.describe Post do
 
       it "does not store a removal when a category prefix is added to an existing tag" do
         post = Post.find(create(:post, tag_string: "tagme foo").id)
-        post.update!(tag_string: "tagme artist:foo")
+        post.update!(tag_string: "tagme director:foo")
         expect(post.tags_before_parse).to eq([])
       end
 
@@ -92,7 +92,7 @@ RSpec.describe Post do
 
       it "strips post metatags and category prefixes" do
         post = Post.find(create(:post, tag_string: "tagme foo").id)
-        post.tag_string_diff = "fav:me artist:bar_artist baz"
+        post.tag_string_diff = "fav:me director:bar_artist baz"
         post.save!
         expect(post.versions.last.original_tags).to match_array(%w[bar_artist baz])
       end
@@ -113,7 +113,7 @@ RSpec.describe Post do
 
       it "strips category prefixes regardless of case" do
         post = Post.find(create(:post, tag_string: "tagme foo").id)
-        post.tag_string_diff = "Artist:bar_artist ART:baz_artist"
+        post.tag_string_diff = "Director:bar_artist DIR:baz_artist"
         post.save!
         expect(post.tag_array).to include("bar_artist", "baz_artist")
         expect(post.versions.last.original_tags).to match_array(%w[bar_artist baz_artist])
@@ -121,7 +121,7 @@ RSpec.describe Post do
 
       it "strips category prefixes from negated tags while keeping the sign" do
         post = Post.find(create(:post, tag_string: "tagme foo").id)
-        post.tag_string_diff = "-art:foo bar"
+        post.tag_string_diff = "-dir:foo bar"
         post.save!
         expect(post.versions.last.original_tags).to match_array(%w[-foo bar])
       end
