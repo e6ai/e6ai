@@ -28,6 +28,16 @@
   </tab-body>
 </tab-entry>
 
+<tab-entry tab="<%= tab_name %>" group="account" class="with-button" search="user account data export download backup save favorites sets json">
+  <tab-head>Export Data</tab-head>
+  <tab-body>
+    <%= link_to "Export User Data", maintenance_user_data_export_path, class: "st-button" %>
+  </tab-body>
+  <tab-hint>
+    Downloads your favorites and sets, including private ones, as a JSON file.
+  </tab-hint>
+</tab-entry>
+
 <tab-entry tab="<%= tab_name %>" group="account" search="user account timezone">
   <tab-head>Time Zone</tab-head>
   <tab-body>
