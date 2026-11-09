@@ -6,8 +6,10 @@
 # Format (version 1):
 #   profile:   the user's about text, artist/director info, and avatar
 #              (post ID and whether a crop was applied; crop coordinates aren't stored)
-#   favorites: when each post was favorited, keyed by post ID (as a string),
-#              in the order they were favorited, oldest first
+#   favorites: when each post was favorited, keyed by post ID (as a string).
+#              Entries are written oldest first, but JSON object order isn't
+#              guaranteed to survive parsing (JavaScript reorders integer-like
+#              keys), so consumers must sort by the timestamp value instead.
 #   sets:      owned sets keyed by set ID (as a string), ordered by ID;
 #              post_ids are exactly as stored, so the set's own order is kept
 #
@@ -29,10 +31,6 @@ class UserDataExport
       favorites: favorites,
       sets: sets,
     }
-  end
-
-  def to_json(*)
-    as_json.to_json
   end
 
   def filename
@@ -59,13 +57,13 @@ class UserDataExport
 
   # favorites.created_at is when the post was favorited; the favorite ID breaks ties.
   def favorites
-    Favorite.where(user_id: @user.id).order(:created_at, :id).pluck(:post_id, :created_at).to_h do |post_id, created_at|
+    Favorite.for_user(@user.id).order(:created_at, :id).pluck(:post_id, :created_at).to_h do |post_id, created_at|
       [post_id.to_s, format_time(created_at)]
     end
   end
 
   def sets
-    PostSet.where(creator_id: @user.id).order(:id).pluck(*SET_COLUMNS).to_h do |row|
+    PostSet.owned(@user).order(:id).pluck(*SET_COLUMNS).to_h do |row|
       set = SET_COLUMNS.zip(row).to_h
       data = {
         name: set[:name],

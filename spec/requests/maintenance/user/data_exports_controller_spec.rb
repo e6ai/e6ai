@@ -36,7 +36,16 @@ RSpec.describe Maintenance::User::DataExportsController do
     end
 
     context "when logged in" do
-      before { sign_in_as(user) }
+      before do
+        sign_in_as(user)
+        allow(RateLimiter).to receive(:throttle!).and_return(false)
+      end
+
+      it "returns 429 when the per-user rate limit is exceeded" do
+        allow(RateLimiter).to receive(:throttle!).with("user_data_export:#{user.id}", any_args).and_return(true)
+        get maintenance_user_data_export_path
+        expect(response).to have_http_status(:too_many_requests)
+      end
 
       it "returns the export as a non-cacheable JSON attachment" do
         get maintenance_user_data_export_path
