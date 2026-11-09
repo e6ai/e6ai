@@ -4,10 +4,10 @@
 # so they can be restored on another e621ng-based site.
 #
 # Format (version 1):
-#   favorites:    post IDs in the order they were favorited, oldest first
-#   favorited_at: when each of those posts was favorited, keyed by post ID (as a string)
-#   sets:         owned sets keyed by set ID (as a string), ordered by ID;
-#                 post_ids are exactly as stored, so the set's own order is kept
+#   favorites: when each post was favorited, keyed by post ID (as a string),
+#              in the order they were favorited, oldest first
+#   sets:      owned sets keyed by set ID (as a string), ordered by ID;
+#              post_ids are exactly as stored, so the set's own order is kept
 #
 # Only plucks columns, so no Post or PostSet records are instantiated.
 class UserDataExport
@@ -20,12 +20,10 @@ class UserDataExport
   end
 
   def as_json(*)
-    favorites = favorite_rows
     {
       format_version: FORMAT_VERSION,
       exported_at: format_time(Time.current),
-      favorites: favorites.map(&:first),
-      favorited_at: favorites.to_h { |post_id, created_at| [post_id.to_s, format_time(created_at)] },
+      favorites: favorites,
       sets: sets,
     }
   end
@@ -42,8 +40,10 @@ class UserDataExport
   private
 
   # favorites.created_at is when the post was favorited; the favorite ID breaks ties.
-  def favorite_rows
-    Favorite.where(user_id: @user.id).order(:created_at, :id).pluck(:post_id, :created_at)
+  def favorites
+    Favorite.where(user_id: @user.id).order(:created_at, :id).pluck(:post_id, :created_at).to_h do |post_id, created_at|
+      [post_id.to_s, format_time(created_at)]
+    end
   end
 
   def sets

@@ -50,11 +50,10 @@ RSpec.describe Maintenance::User::DataExportsController do
 
       it "returns valid JSON with empty collections for a user with no data" do
         json = export_json
-        expect(json.keys).to eq(%w[format_version exported_at favorites favorited_at sets])
+        expect(json.keys).to eq(%w[format_version exported_at favorites sets])
         expect(json["format_version"]).to eq(1)
         expect(json["exported_at"]).to match(/\A\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ\z/)
-        expect(json["favorites"]).to eq([])
-        expect(json["favorited_at"]).to eq({})
+        expect(json["favorites"]).to eq({})
         expect(json["sets"]).to eq({})
       end
 
@@ -63,7 +62,7 @@ RSpec.describe Maintenance::User::DataExportsController do
         post = create(:post)
         FavoriteManager.add!(user: user, post: post)
 
-        expect(export_json["favorites"]).to eq([post.id])
+        expect(export_json["favorites"].keys).to eq([post.id.to_s])
       end
 
       it "orders favorites by when they were favorited, not by post ID or favorite ID" do
@@ -76,8 +75,8 @@ RSpec.describe Maintenance::User::DataExportsController do
         ])
 
         json = export_json
-        expect(json["favorites"]).to eq([high.id, low.id, mid.id])
-        expect(json["favorited_at"]).to eq(
+        expect(json["favorites"].keys).to eq([high.id, low.id, mid.id].map(&:to_s))
+        expect(json["favorites"]).to eq(
           high.id.to_s => "2024-01-01T00:00:00Z",
           low.id.to_s => "2025-06-01T00:00:00Z",
           mid.id.to_s => "2025-09-01T00:00:00Z",
@@ -89,7 +88,7 @@ RSpec.describe Maintenance::User::DataExportsController do
         FavoriteManager.add!(user: user, post: mine)
         FavoriteManager.add!(user: other_user, post: theirs)
 
-        expect(export_json["favorites"]).to eq([mine.id])
+        expect(export_json["favorites"].keys).to eq([mine.id.to_s])
       end
 
       it "includes private and public owned sets with their metadata and post order" do
@@ -132,13 +131,13 @@ RSpec.describe Maintenance::User::DataExportsController do
         make_set(other_user)
 
         get maintenance_user_data_export_path, params: { user_id: other_user.id, id: other_user.id }
-        expect(response.parsed_body["favorites"]).to eq([])
+        expect(response.parsed_body["favorites"]).to eq({})
         expect(response.parsed_body["sets"]).to eq({})
       end
 
       it "does not truncate large exports" do
         template = create(:post).attributes.except("id", "md5", "change_seq")
-        rows = Array.new(1_000) { |i| template.merge("md5" => Digest::MD5.hexdigest("export-#{i}")) }
+        rows = Array.new(20_000) { |i| template.merge("md5" => Digest::MD5.hexdigest("export-#{i}")) }
         post_ids = Post.insert_all!(rows, returning: :id).rows.flatten
         Favorite.insert_all!(post_ids.map { |id| { user_id: user.id, post_id: id } })
 
@@ -146,8 +145,7 @@ RSpec.describe Maintenance::User::DataExportsController do
         big_set = make_set(user, post_ids: big_set_ids)
 
         json = export_json
-        expect(json["favorites"]).to eq(post_ids)
-        expect(json["favorited_at"].size).to eq(1_000)
+        expect(json["favorites"].keys).to eq(post_ids.map(&:to_s))
         expect(json["sets"][big_set.id.to_s]["post_ids"]).to eq(big_set_ids)
       end
     end
