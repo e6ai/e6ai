@@ -50,11 +50,30 @@ RSpec.describe Maintenance::User::DataExportsController do
 
       it "returns valid JSON with empty collections for a user with no data" do
         json = export_json
-        expect(json.keys).to eq(%w[format_version exported_at favorites sets])
+        expect(json.keys).to eq(%w[format_version exported_at profile favorites sets])
         expect(json["format_version"]).to eq(1)
         expect(json["exported_at"]).to match(/\A\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ\z/)
+        expect(json["profile"]).to eq("about" => "", "artinfo" => "", "avatar" => nil)
         expect(json["favorites"]).to eq({})
         expect(json["sets"]).to eq({})
+      end
+
+      it "includes the profile text and an uncropped avatar" do
+        avatar_post = create(:post)
+        user.update_columns(profile_about: "About [b]me[/b]", profile_artinfo: "Commissions open", avatar_id: avatar_post.id)
+
+        expect(export_json["profile"]).to eq(
+          "about" => "About [b]me[/b]",
+          "artinfo" => "Commissions open",
+          "avatar" => { "post_id" => avatar_post.id, "cropped" => false },
+        )
+      end
+
+      it "marks a cropped avatar" do
+        avatar_post = create(:post)
+        user.update_columns(avatar_id: avatar_post.id, bit_prefs: user.bit_prefs | User.flag_value_for("has_cropped_avatar"))
+
+        expect(export_json["profile"]["avatar"]).to eq("post_id" => avatar_post.id, "cropped" => true)
       end
 
       it "includes favorites even with privacy mode on" do
@@ -129,8 +148,10 @@ RSpec.describe Maintenance::User::DataExportsController do
       it "ignores attempts to export another user's data" do
         FavoriteManager.add!(user: other_user, post: create(:post))
         make_set(other_user)
+        other_user.update_columns(profile_about: "Someone else")
 
         get maintenance_user_data_export_path, params: { user_id: other_user.id, id: other_user.id }
+        expect(response.parsed_body["profile"]["about"]).to eq("")
         expect(response.parsed_body["favorites"]).to eq({})
         expect(response.parsed_body["sets"]).to eq({})
       end

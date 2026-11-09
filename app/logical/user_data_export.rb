@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-# Builds a portable JSON export of a user's favorites and owned post sets,
-# so they can be restored on another e621ng-based site.
+# Builds a portable JSON export of a user's profile, favorites and owned
+# post sets, so they can be restored on another e621ng-based site.
 #
 # Format (version 1):
+#   profile:   the user's about text, artist/director info, and avatar
+#              (post ID and whether a crop was applied; crop coordinates aren't stored)
 #   favorites: when each post was favorited, keyed by post ID (as a string),
 #              in the order they were favorited, oldest first
 #   sets:      owned sets keyed by set ID (as a string), ordered by ID;
@@ -23,6 +25,7 @@ class UserDataExport
     {
       format_version: FORMAT_VERSION,
       exported_at: format_time(Time.current),
+      profile: profile,
       favorites: favorites,
       sets: sets,
     }
@@ -38,6 +41,21 @@ class UserDataExport
   end
 
   private
+
+  def profile
+    {
+      about: @user.profile_about,
+      artinfo: @user.profile_artinfo,
+      avatar: avatar,
+    }
+  end
+
+  # Only the source post and whether it was cropped are stored; the crop
+  # coordinates are used to render the avatar image and then discarded.
+  def avatar
+    return nil if @user.avatar_id.blank?
+    { post_id: @user.avatar_id, cropped: @user.has_cropped_avatar? }
+  end
 
   # favorites.created_at is when the post was favorited; the favorite ID breaks ties.
   def favorites
