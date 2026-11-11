@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="public/images/github-logo.svg" width="150" height="150" align="left">
   <div align="left">
     <h3>E6ai</h3>
     <a href="https://github.com/e6ai/e6ai/releases">
@@ -18,6 +17,7 @@
 </div>
 <br />
 
+The e6ai project had been discontinued on 2026-11-11.
 
 ## Installation (Easy mode - For development environments)
 
